@@ -14,6 +14,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
+#include <map>
 
 #define PORTION_SIZE  65000
 
@@ -29,7 +30,8 @@ class Client {
 	int					outfile_;
 	std::string	bufer_;
 	size_t			buf_len_;
-	char				tmp_[PORTION_SIZE + 1];
+	char*				tmp_;
+	std::map<std::string, std::string>	query_;
 
 public:
 	Client(int client_to_proxy, int file);
