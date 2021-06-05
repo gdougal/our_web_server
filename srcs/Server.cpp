@@ -25,9 +25,12 @@ void Server::run_server() {
 		create_client();
 		auto it = bridges_.begin();
 		while (it != bridges_.end()) {
-			is_any_set =			FD_ISSET((*it)->getFd(), &read_fds_)	||
-												FD_ISSET((*it)->getFd(), &write_fds_);
-			(*it)->caller(is_any_set);
+			if (FD_ISSET((*it)->getFd(), &read_fds_)) {
+				(*it)->read_from_client();
+			}
+			else if (FD_ISSET((*it)->getFd(), &write_fds_)) {
+				(*it)->send_to_client();
+			}
 			if ((*it)->getCurState() == state::FINALL) {
 				it = bridges_.erase(it);
 			}
@@ -45,19 +48,10 @@ void Server::manage_client_fd() {
 	FD_SET(listen_fd_, &read_fds_);
 	max_fd_ = listen_fd_;
 	for (auto &item: bridges_) {
-		switch (item->getCurState()) {
-			case state::FINALL:
-				return;
-			case state::READ_FROM_CLIENT:
-				FD_SET(item->getFd(), &read_fds_);
-				max_fd_ = max_fd_ > item->getFd() ? max_fd_ : item->getFd();
-				break;
-			case state::SEND_TO_CLIENT:
-				FD_SET(item->getFd(), &write_fds_);
-				max_fd_ = max_fd_ > item->getFd() ? max_fd_ : item->getFd();
-				break;
+		FD_SET(item->getFd(), &read_fds_);
+		FD_SET(item->getFd(), &write_fds_);
+		max_fd_ = max_fd_ > item->getFd() ? max_fd_ : item->getFd();
 		}
-	}
 }
 
 void Server::create_client() {

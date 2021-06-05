@@ -14,7 +14,8 @@
 #include <vector>
 #include <functional>
 #include <memory>
-#define PORTION_SIZE	10000
+
+#define PORTION_SIZE  65000
 
 enum state {
 	READ_FROM_CLIENT,
@@ -23,30 +24,23 @@ enum state {
 };
 
 class Client {
-	enum state				cur_state_;
-	int						fd_;
-	int						outfile_;
-	std::vector<char>		bufer_;
-	size_t					buf_len_;
-	std::function<void()>	handler_;
-	std::shared_ptr<char> 	tmp_;
+	enum state	cur_state_;
+	int					fd_;
+	int					outfile_;
+	std::string	bufer_;
+	size_t			buf_len_;
+	char				tmp_[PORTION_SIZE + 1];
+
 public:
 	Client(int client_to_proxy, int file);
-	virtual ~Client();
-	void				caller(bool a);
-	int					getFd()	const;
-	enum state			getCurState()		const;
-
+	virtual	~Client();
+	int			getFd() const;
+	enum		state getCurState() const;
+	void		read_from_client();
+	void		send_to_client();
 private:
-
-	void	send_to_db();
-	void	read_from_client();
-	void	send_to_client();
-	void	read_from_db();
-	uint	package_len();
-	void	logger();
+	void logger();
 };
-
 
 
 #endif //PROXY_SERVER_BRIDGE_HPP
