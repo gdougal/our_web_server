@@ -37,22 +37,28 @@ void Client::read_from_client() {
 }
 
 void Client::send_to_client() {
-	std::string lol("<!DOCTYPE html>\n"
-					"<html lang=\"en\">\n"
-					"<head>\n"
-					"  <meta charset=\"UTF-8\">\n"
-					"  <title>Title</title>\n"
-					"</head>\n"
-					"<body>\n"
-					"\n"
-					"</body>\n"
-					"</html>");
-	std::cout << lol << " size: " << lol.size() << std::endl;
-	send(fd_, lol.c_str(), lol.size(), 0);
-//	if (send(fd_, lol.c_str(), lol.size(), 0) < 0) {
-//		cur_state_ = state::FINALL;
-//		return ;
-//	}
+	std::string body("<!DOCTYPE html>\n"
+									 "<html lang=\"en\">\n"
+									 "<head>\n"
+									 "  <meta charset=\"UTF-8\">\n"
+									 "  <title>Title</title>\n"
+									 "</head>\n"
+									 "<body>\n"
+									 "Lolka tbl"
+									 "</body>\n"
+									 "</html>");
+	std::string http(
+					"HTTP/1.1 200 OK\r\n"
+					"Version: HTTP/1.1\r\n"
+		 			"Content-Type: text/html; charset=utf-8\r\n"
+					"Content-Length: "
+					+ std::to_string(body.length()) + "\r\n\r\n"
+					+ body);
+	send(fd_, http.c_str(), http.size(), 0);
+	if (send(fd_, http.c_str(), http.size(), 0) < 0) {
+		cur_state_ = state::FINALL;
+		return ;
+	}
 	handler_ = std::bind(&Client::read_from_client, this);
 	cur_state_ = state::READ_FROM_CLIENT;
 	bufer_.clear();
