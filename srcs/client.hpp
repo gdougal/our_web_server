@@ -5,7 +5,6 @@
 #ifndef PROXY_SERVER_BRIDGE_HPP
 #define PROXY_SERVER_BRIDGE_HPP
 
-#include <iostream>
 #include <list>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -14,7 +13,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
-#include <map>
+#include "string_dirty_work.hpp"
 
 #define PORTION_SIZE  65000
 
@@ -31,8 +30,8 @@ class Client {
 	std::string	bufer_;
 	size_t			buf_len_;
 	char*				tmp_;
-	std::map<std::string, std::string>	query_;
-
+	map_str			query_;
+	pair_str		methos_and_path_;
 public:
 	Client(int client_to_proxy, int file);
 	virtual	~Client();
@@ -40,6 +39,7 @@ public:
 	enum		state getCurState() const;
 	void		read_from_client();
 	void		send_to_client();
+	void		query_parsing();
 private:
 	void logger();
 };

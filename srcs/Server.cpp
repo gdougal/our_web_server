@@ -46,8 +46,10 @@ void Server::manage_client_fd() {
 	FD_SET(listen_fd_, &read_fds_);
 	max_fd_ = listen_fd_;
 	for (auto &item: clients_) {
-		FD_SET(item->getFd(), &read_fds_);
-		FD_SET(item->getFd(), &write_fds_);
+		if (item->getCurState() == state::READ_FROM_CLIENT)
+			FD_SET(item->getFd(), &read_fds_);
+		if (item->getCurState() == state::SEND_TO_CLIENT)
+			FD_SET(item->getFd(), &write_fds_);
 		max_fd_ = max_fd_ > item->getFd() ? max_fd_ : item->getFd();
 	}
 }
