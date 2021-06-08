@@ -22,9 +22,10 @@ enum state	Client::getCurState() const { return cur_state_; }
 
 void Client::query_parsing() {
 	size_t pos = 0;
-	methos_and_path_ = string_dirty_work::pair_maker(pos, bufer_, " ");
-	pos = 0;
-	pos =  string_dirty_work::next_line(pos, bufer_, "\n\r");
+	size_t first_block = bufer_.find_first_of("\r\n\r\n", bufer_);
+	methos_and_path_ = string_dirty_work::pair_maker(pos, bufer_, " ", "\n\r");
+//	pos = 0;
+//	pos =  string_dirty_work::next_line(pos, bufer_, "\n\r");
 	for(; pos != bufer_.npos;) {
 		pos = string_dirty_work::get_string_map(query_, bufer_, pos, " :", "\n\r");
 	}
@@ -38,14 +39,13 @@ void				Client::read_from_client() {
 		cur_state_ = state::FINALL;
 		return;
 	}
-	bufer_ += tmp_;
+	bufer_ = tmp_;
  	query_parsing();
 	logger();
 	bufer_.clear();
 	cur_state_ = state::SEND_TO_CLIENT;
 }
 
-#include <fstream>
 void				Client::send_to_client() {
 	/* Before sending - create response. Use of parsing result. */
 	if (methos_and_path_.second.empty())
@@ -68,14 +68,19 @@ void				Client::send_to_client() {
 };
 
 void		Client::logger() {
-		write(outfile_, bufer_.data(), bufer_.size());
-		write(outfile_, "\n\n", 2);
-		for(auto iter = query_.begin(); iter != query_.end(); ++iter) {
-			write(outfile_, "Key: ", 5);
-			write(outfile_, iter->first.data(), iter->first.size());
-			write(outfile_, " Value: ", 8);
-			write(outfile_, iter->second.data(), iter->second.size());
-			write(outfile_, "\n", 1);
-		}
+	write(outfile_, bufer_.data(), bufer_.size());
+	write(outfile_, "\n\n", 2);
+	write(outfile_, "Key: ", 5);
+	write(outfile_, methos_and_path_.first.data(), methos_and_path_.first.size());
+	write(outfile_, " Value: ", 8);
+	write(outfile_, methos_and_path_.second.data(), methos_and_path_.second.size());
+	write(outfile_, "\n", 1);
+	for(auto iter = query_.begin(); iter != query_.end(); ++iter) {
+		write(outfile_, "Key: ", 5);
+		write(outfile_, iter->first.data(), iter->first.size());
+		write(outfile_, " Value: ", 8);
+		write(outfile_, iter->second.data(), iter->second.size());
+		write(outfile_, "\n", 1);
+	}
 	write(outfile_, "\n\n", 2);
 }

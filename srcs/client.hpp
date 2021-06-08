@@ -13,6 +13,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
+#include <fstream>
 #include "string_dirty_work.hpp"
 
 #define PORTION_SIZE  65000

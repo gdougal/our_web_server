@@ -32,7 +32,7 @@ namespace string_dirty_work {
 		pos = next_line(end_second, str, end_line);
 		return insert_pair;
 	}
-
+//	"POST /asdfaf/?1=1_&2=2_&3=3_ HTTP/1.1\r\nContent-Type: multipart/form-data; boundary=--------------------------127545439466991343653611\r\ncache-control: no-cache\r\nPostman-Token: 0920aadf-0833-411d-ac14-333e7e5da404\r\nUser-Agent: PostmanRuntime/7.3.0\r\nAccept: */*\r\nHost: 127.0.0.1:8000\r\naccept-encoding: gzip, deflate\r\ncontent-length: 371\r\nConnection: keep-alive\r\n\r\n----------------------------127545439466991343653611\r\nContent-Disposition: form-data; name=\"qqe\"\r\n\r\nqwe"
 	size_t		get_string_map(map_str&	req_map, const std::string& str, size_t pos, const std::string& mask, const std::string& end_line) {
 		pair_str insert_pair(pair_maker(pos, str, mask, end_line));
 		if (!insert_pair.first.empty())
