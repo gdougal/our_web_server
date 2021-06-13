@@ -7,14 +7,14 @@
 
 #include <list>
 #include <netinet/in.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <cstring>
 #include <csignal>
 #include <vector>
 #include <functional>
 #include <memory>
-#include <fstream>
-#include "string_dirty_work.hpp"
+#include "HTTP_handler.hpp"
+#include <map>
 
 #define PORTION_SIZE  65000
 
@@ -25,14 +25,12 @@ enum state {
 };
 
 class Client {
-	enum state	cur_state_;
-	int					fd_;
-	int					outfile_;
-	std::string	bufer_;
-	size_t			buf_len_;
-	char*				tmp_;
-	map_str			query_;
-	pair_str		methos_and_path_;
+	enum state					cur_state_;
+	int									fd_;
+	int									outfile_;
+	std::string					buffer_;
+	char*								recv_buffer_;
+	BaseClientHandler*	handler_;
 public:
 	Client(int client_to_proxy, int file);
 	virtual	~Client();
@@ -40,9 +38,6 @@ public:
 	enum		state getCurState() const;
 	void		read_from_client();
 	void		send_to_client();
-	void		query_parsing();
-private:
-	void logger();
 };
 
 

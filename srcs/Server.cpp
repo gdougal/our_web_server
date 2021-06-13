@@ -23,10 +23,10 @@ void Server::run_server() {
 		create_client();
 		auto it = clients_.begin();
 		while (it != clients_.end()) {
-			if (FD_ISSET((*it)->getFd(), &read_fds_)) {
+			if (FD_ISSET((*it)->getFd(), &read_fds_) && (*it)->getCurState() == state::READ_FROM_CLIENT) {
 				(*it)->read_from_client();
 			}
-			else if (FD_ISSET((*it)->getFd(), &write_fds_)) {
+			else if (FD_ISSET((*it)->getFd(), &write_fds_) && (*it)->getCurState() == state::SEND_TO_CLIENT) {
 				(*it)->send_to_client();
 			}
 			if ((*it)->getCurState() == state::FINALL) {
