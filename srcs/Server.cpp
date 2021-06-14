@@ -59,7 +59,7 @@ void Server::create_client() {
 	if (FD_ISSET(listen_fd_, &read_fds_) &&
 			(client_fd = fd_creator::create_client_fd(listen_fd_)) > 0) {
 
-		clients_.emplace_back(new Client(client_fd, logfile_));
+		clients_.emplace_back(new Client(client_fd, logfile_, new http::HTTP_handler));
 	}
 }
 

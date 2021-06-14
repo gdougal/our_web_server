@@ -4,12 +4,12 @@
 
 #include "client.hpp"
 
-Client::Client(int client_fd, int file)  :
+Client::Client(int client_fd, int file, BaseClientHandler* type_client)  :
 				fd_(client_fd),
 				outfile_(file) {
 	recv_buffer_ = new char[PORTION_SIZE + 1];
 	cur_state_ = state::READ_FROM_CLIENT;
-	handler_ = new HTTP_handler();
+	handler_ = type_client;
 }
 
 Client::~Client() {
@@ -33,10 +33,9 @@ void				Client::read_from_client() {
 	}
 	buffer_.append(recv_buffer_);
 	if (handler_->is_recvest_end(buffer_)) {
-		handler_->operator()(buffer_);
+		handler_->query_parsing(buffer_);
 
 		handler_->logger(buffer_, outfile_);
-		write(outfile_, "\n\n", 2);
 
 		buffer_.clear();
 		cur_state_ = state::SEND_TO_CLIENT;
@@ -45,9 +44,9 @@ void				Client::read_from_client() {
 
 void				Client::send_to_client() {
 	std::string http(handler_->create_response());
-	/*if (*/send(fd_, http.c_str(), http.size(), 0);/* <= 0) {*/
+	if (send(fd_, http.c_str(), http.size(), 0)/*;*/ <= 0) {
 		cur_state_ = state::FINALL;
-//		return ;
-//	}
-//	cur_state_ = state::READ_FROM_CLIENT;
+		return ;
+	}
+	cur_state_ = state::READ_FROM_CLIENT;
 };

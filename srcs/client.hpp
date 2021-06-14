@@ -32,7 +32,7 @@ class Client {
 	char*								recv_buffer_;
 	BaseClientHandler*	handler_;
 public:
-	Client(int client_to_proxy, int file);
+	Client(int client_to_proxy, int file, BaseClientHandler* type_client);
 	virtual	~Client();
 	int			getFd() const;
 	enum		state getCurState() const;
