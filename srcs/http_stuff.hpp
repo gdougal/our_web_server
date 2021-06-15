@@ -19,10 +19,10 @@ namespace http {
 		static const char	DELETE[] = "DELETE";
 	}
 
-	namespace head_fields {
-		static const char length[] = "CONTENT-LENGTH";
-		static const char encoding[] = "TRANSFER-ENCODING";
-		static const char encoding_type[] = "chunked";
+	namespace header {
+		static const char* body_length_marker[] = { "CONTENT-LENGTH",
+                                                    "TRANSFER-ENCODING" };
+		static const char encoding_chunked[] = "chunked";
 	}
 
 	static const char	query_end[] = "\r\n\r\n";
@@ -33,7 +33,8 @@ namespace http {
 	static const char bad_request[] = "HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n"; /* Server: abracadabra\r\nContent-Type: text/html\r\nContent-Length: 126\r\n */
 
 	static void GET(std::string& response, const map_str& header, const pair_str& path) {
-		std::ifstream page("/Users/gdougal/Desktop/our_web_server" + path.second);
+//		std::ifstream page("/Users/gdougal/Desktop/our_web_server" + path.second);
+        std::ifstream page("/home/local/REGION/as.doynikov/clion_pj/hm" + path.second);
 		std::string body;
 		std::string tmp;
 		while (std::getline(page, tmp)) {

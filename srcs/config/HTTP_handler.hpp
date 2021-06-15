@@ -29,12 +29,14 @@ namespace http {
 	class HTTP_handler : public BaseClientHandler {
 
 		pair_str	pair_maker(const std::string &fo_pars, const std::string &delim);
-		void			get_string_map(const std::string &fo_pars);
-		void			header_parse(const std::string &fo_pars, size_t end_block);
+		void		get_string_map(const std::string &fo_pars);
+		void		header_parse(const std::string &fo_pars, size_t end_block);
 		size_t		next_line(const std::string &fo_pars, size_t pos)	const;
 		size_t		end_line(const std::string &fo_pars, size_t pos)	const;
-		size_t		end_block(const std::string &fo_pars)							const;
-		bool			is_recvest_end()																	const;
+		size_t		end_block(const std::string &fo_pars)				const;
+		bool		is_recvest_rly_end(const std::string &fo_pars)		const;
+		bool        parse_body(const std::string query, int length)    const; // length
+        bool        parse_body(const std::string query)                const;             //chunk
 
 	public:
 		HTTP_handler();

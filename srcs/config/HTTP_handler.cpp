@@ -4,6 +4,7 @@
 
 #include "HTTP_handler.hpp"
 #include "http_stuff.hpp"
+#include "cstring"
 
 namespace http {
 
@@ -62,31 +63,39 @@ namespace http {
 		size_t first_block = end_block(fo_pars);
 		methos_and_path_ = pair_maker(fo_pars, http::delim_method);
 		header_parse(fo_pars, first_block);
-		return is_recvest_end();
+		return is_recvest_rly_end(fo_pars);
 	}
-	template<typename Tbl_EBANAT>
-	struct functor1 {
-		static Tbl_EBANAT *function;
 
-		template<class T1, class T2, class T3>
-		void operator()(T1 response, T2 header, T3 path) const { (*function)(response, header, path); };
-		template<class T1, class T2>
-		void operator()(T1 response, T2 header) const { (*function)(response, header); };
-		template<class T1>
-		void operator()(T1 response) const { (*function)(response); };
+
+    bool        HTTP_handler::parse_body(const std::string body, int length) const {
+        return true;
 	};
+    bool        HTTP_handler::parse_body(const std::string chunk) const {
+        return false;
+    };
 
-	template <typename RET_TYPE>
-	static RET_TYPE find_field(const map_str& query, const std::string& field_name, RET_TYPE (*f)(const std::string&)) {
+	static std::pair<bool, std::string> find_field(const map_str& query, const std::string& field_name) {
 		map_str::const_iterator ret(query.find(field_name));
-		if (ret != query.end())
-			return f(ret->second);
-		return nullptr;
+		if (ret != query.end() && !ret->second.empty()) {
+                return std::make_pair(true, ret->second);
+        }
+		return std::make_pair(false, "");
 	}
 
-	bool HTTP_handler::is_recvest_end() const {
-		find_field<int>(query_, http::head_fields::length, std::stoi)
-
+	bool HTTP_handler::is_recvest_rly_end(const std::string &fo_pars) const {
+	    std::pair<bool, std::string> parametr;
+	    int lenght;
+	    for(int i = 0; !parametr.first; ++i) {
+            if (!http::header::body_length_marker[i])
+                return false;
+            parametr = find_field(query_, http::header::body_length_marker[i]);
+            std::cout << http::header::body_length_marker[i] << std::endl;
+	    }
+        if ( std::isdigit( parametr.second.at(0) )) {
+            lenght = std::stoi(parametr.second);
+            return parse_body( fo_pars.substr( end_block(fo_pars) + strlen(http::query_end)), lenght);
+        }
+        return parse_body( fo_pars.substr( end_block(fo_pars) + strlen(http::query_end) ) );
 	}
 
 	bool		HTTP_handler::is_recvest_end(const std::string &fo_pars) const {
