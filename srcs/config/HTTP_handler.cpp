@@ -68,7 +68,7 @@ namespace http {
 		return false;
 	};
 	bool			HTTP_handler::parse_body_chunked(const std::string& src) {
-
+		return true;
 	};
 
 	bool HTTP_handler::is_recvest_rly_end(const std::string &fo_pars) {

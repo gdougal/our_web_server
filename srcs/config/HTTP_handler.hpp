@@ -12,7 +12,7 @@ class BaseClientHandler {
 public:
 	virtual bool							query_parsing(const std::string &) = 0;
 	virtual bool							is_recvest_end(const std::string &) const = 0;
-	virtual void							append_query() = 0;
+//	virtual void							append_query() = 0;
 	virtual const std::string	create_response() const = 0;
 	virtual ~BaseClientHandler() = default;
 
