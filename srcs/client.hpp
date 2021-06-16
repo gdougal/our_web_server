@@ -5,16 +5,8 @@
 #ifndef PROXY_SERVER_BRIDGE_HPP
 #define PROXY_SERVER_BRIDGE_HPP
 
-#include <list>
 #include <netinet/in.h>
-//#include <unistd.h>
-#include <cstring>
-#include <csignal>
-#include <vector>
-#include <functional>
-#include <memory>
 #include "HTTP_handler.hpp"
-#include <map>
 
 #define PORTION_SIZE  65000
 

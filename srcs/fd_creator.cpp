@@ -28,7 +28,7 @@ namespace fd_creator {
 		if ((listen_fd_ = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 			throw std::runtime_error("Create socket error");
 		}
-//		std::memset(&servaddr, 0, sizeof(servaddr));
+		std::memset(&servaddr, 0, sizeof(servaddr));
 		servaddr.sin_family = AF_INET;
 		servaddr.sin_addr.s_addr = cfg.getSection("SERVER").getAddrVal("ip");
 		servaddr.sin_port = cfg.getSection("SERVER").getPortVal("port");

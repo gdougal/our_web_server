@@ -17,12 +17,13 @@ namespace http {
 		static const char	GET[] = "GET";
 		static const char	POST[] = "POST";
 		static const char	DELETE[] = "DELETE";
+		static const char	HEAD[] = "HEAD";
 	}
 
 	namespace header {
-		static const char* body_length_marker[] = { "CONTENT-LENGTH",
-                                                    "TRANSFER-ENCODING" };
-		static const char encoding_chunked[] = "chunked";
+		static const char* body_type[] = { "CONTENT-LENGTH",
+																				"TRANSFER-ENCODING" };
+		static const char chunked[] = "chunked";
 	}
 
 	static const char	query_end[] = "\r\n\r\n";
@@ -34,7 +35,7 @@ namespace http {
 
 	static void GET(std::string& response, const map_str& header, const pair_str& path) {
 //		std::ifstream page("/Users/gdougal/Desktop/our_web_server" + path.second);
-        std::ifstream page("/home/local/REGION/as.doynikov/clion_pj/hm" + path.second);
+        std::ifstream page("/Users/gdougal/Desktop/our_web_server" + path.second);
 		std::string body;
 		std::string tmp;
 		while (std::getline(page, tmp)) {
@@ -49,6 +50,11 @@ namespace http {
 	};
 
 	static void DELETE(std::string& response, const map_str& header, const pair_str& path) {
+		response = "Я тоже не ебу, что делать";
+		std::cout << response << std::endl;
+	};
+
+	static void HEAD(std::string& response, const map_str& header, const pair_str& path) {
 		response = "Я тоже не ебу, что делать";
 		std::cout << response << std::endl;
 	};
@@ -68,6 +74,7 @@ namespace http {
 			init_methods.insert(std::pair<std::string, functor>(query_type::GET, functor(GET)) );
 			init_methods.insert(std::pair<std::string, functor>(query_type::POST, functor(POST)) );
 			init_methods.insert(std::pair<std::string, functor>(query_type::DELETE, functor(DELETE)) );
+			init_methods.insert(std::pair<std::string, functor>(query_type::HEAD, functor(HEAD)) );
 			return init_methods;
 		}
 	}

@@ -10,12 +10,11 @@
 
 class BaseClientHandler {
 public:
-//	BaseDataPresent* f;
-//	BaseMethodHandler* d;
 	virtual bool							query_parsing(const std::string &) = 0;
 	virtual bool							is_recvest_end(const std::string &) const = 0;
+	virtual void							append_query() = 0;
 	virtual const std::string	create_response() const = 0;
-	virtual ~BaseClientHandler() {}
+	virtual ~BaseClientHandler() = default;
 
 	// отладочная
 	virtual void logger(const std::string &logs, int fd) const = 0;
@@ -29,23 +28,21 @@ namespace http {
 	class HTTP_handler : public BaseClientHandler {
 
 		pair_str	pair_maker(const std::string &fo_pars, const std::string &delim);
-		void		get_string_map(const std::string &fo_pars);
-		void		header_parse(const std::string &fo_pars, size_t end_block);
-		size_t		next_line(const std::string &fo_pars, size_t pos)	const;
-		size_t		end_line(const std::string &fo_pars, size_t pos)	const;
-		size_t		end_block(const std::string &fo_pars)				const;
-		bool		is_recvest_rly_end(const std::string &fo_pars)		const;
-		bool        parse_body(const std::string query, int length)    const; // length
-        bool        parse_body(const std::string query)                const;             //chunk
+		size_t		next_line(const std::string &fo_pars, size_t pos)				const;
+		size_t		end_line(const std::string &fo_pars, size_t pos)				const;
+		size_t		end_block(const std::string &fo_pars)										const;
+
+		bool			is_recvest_rly_end(const std::string &fo_pars);
+		bool			parse_body_length(const std::string&);	// length
+		bool			parse_body_chunked(const std::string&);	// chunk
 
 	public:
-		HTTP_handler();
-		virtual ~HTTP_handler();
+		/*construct*/							HTTP_handler();
+		virtual										~HTTP_handler();
 
-
-		virtual bool							is_recvest_end(const std::string &fo_pars)	const;
-		virtual bool							query_parsing(const std::string &fo_pars);
-		virtual const std::string	create_response()														const;
+		virtual				bool				is_recvest_end(const std::string &fo_pars)	const;
+		virtual				bool				query_parsing(const std::string &fo_pars);
+		virtual const	std::string	create_response()														const;
 
 
 		virtual void logger(const std::string &logs, int fd) const {
@@ -66,9 +63,11 @@ namespace http {
 		}
 
 	private:
-		size_t position_; // always start from end-line;
-		map_str query_;
-		pair_str methos_and_path_;
+		size_t			position_; // always start from end-line;
+		map_str			query_;
+		pair_str		methos_and_path_;
+		size_t			body_length_;
+		std::string	body_;
 	};
 }
 

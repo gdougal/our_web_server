@@ -37,11 +37,6 @@ namespace http {
 		position_ = next_line(fo_pars, end_second);
 		return insert_pair;
 	}
-	void			HTTP_handler::get_string_map(const std::string &fo_pars) {
-		pair_str insert_pair(pair_maker(fo_pars, http::delim_base));
-		if (!insert_pair.first.empty())
-			query_.insert(insert_pair);
-	}
 	size_t		HTTP_handler::next_line(const std::string &fo_pars, const size_t pos) const {
 		return end_line(fo_pars, pos) + strlen(http::line_end);
 	}
@@ -51,60 +46,57 @@ namespace http {
 	size_t		HTTP_handler::end_block(const std::string &fo_pars) const {
 		return fo_pars.find(http::query_end, position_, strlen(http::query_end));
 	}
-	void			HTTP_handler::header_parse(const std::string &fo_pars, size_t end_block) {
-		while (position_ != std::string::npos && position_ < end_block) {
-			get_string_map(fo_pars);
-		}
-	}
 
 	bool			HTTP_handler::query_parsing(const std::string &fo_pars) {
 		position_ = 0;
 		query_.clear();
 		size_t first_block = end_block(fo_pars);
 		methos_and_path_ = pair_maker(fo_pars, http::delim_method);
-		header_parse(fo_pars, first_block);
+		while (position_ < first_block) {
+			pair_str insert_pair(pair_maker(fo_pars, http::delim_base));
+			if (!insert_pair.first.empty())
+				query_.insert(insert_pair);
+		}
+		position_ = first_block;
 		return is_recvest_rly_end(fo_pars);
 	}
 
-
-    bool        HTTP_handler::parse_body(const std::string body, int length) const {
-        return true;
+	bool			HTTP_handler::parse_body_length(const std::string& src) {
+		body_.append(position_, end_block(src));
+		if (body_.size() == body_length_)
+			return true;
+		return false;
 	};
-    bool        HTTP_handler::parse_body(const std::string chunk) const {
-        return false;
-    };
+	bool			HTTP_handler::parse_body_chunked(const std::string& src) {
 
-	static std::pair<bool, std::string> find_field(const map_str& query, const std::string& field_name) {
-		map_str::const_iterator ret(query.find(field_name));
-		if (ret != query.end() && !ret->second.empty()) {
-                return std::make_pair(true, ret->second);
-        }
-		return std::make_pair(false, "");
+	};
+
+	bool HTTP_handler::is_recvest_rly_end(const std::string &fo_pars) {
+		map_str::const_iterator ret(query_.end());
+
+		for(int i = 0; ret == query_.end(); ++i) {
+			if (!http::header::body_type[i])
+				return false;
+			ret = query_.find(http::header::body_type[i]);
+		}
+
+		if ( std::isdigit(ret->second.at(0) ) ) {
+			body_length_ = std::stoi(ret->second);
+			position_ = position_ + strlen(query_end);
+			return parse_body_length(fo_pars);
+		}
+		else if ( ret->second == http::header::chunked ) {
+			return parse_body_chunked(fo_pars);
+		}
+		return true;
 	}
 
-	bool HTTP_handler::is_recvest_rly_end(const std::string &fo_pars) const {
-	    std::pair<bool, std::string> parametr;
-	    int lenght;
-	    for(int i = 0; !parametr.first; ++i) {
-            if (!http::header::body_length_marker[i])
-                return false;
-            parametr = find_field(query_, http::header::body_length_marker[i]);
-            std::cout << http::header::body_length_marker[i] << std::endl;
-	    }
-        if ( std::isdigit( parametr.second.at(0) )) {
-            lenght = std::stoi(parametr.second);
-            return parse_body( fo_pars.substr( end_block(fo_pars) + strlen(http::query_end)), lenght);
-        }
-        return parse_body( fo_pars.substr( end_block(fo_pars) + strlen(http::query_end) ) );
-	}
-
-	bool		HTTP_handler::is_recvest_end(const std::string &fo_pars) const {
+	bool		HTTP_handler::is_recvest_end(const std::string &fo_pars)	const {
 		if (end_block(fo_pars) != std::string::npos)
 			return true;
 		return false;
 	}
-
-	const std::string HTTP_handler::create_response() const {
+	const std::string HTTP_handler::create_response()									const {
 		std::string response;
 		http::methods.find(methos_and_path_.first)->second(response, query_, methos_and_path_);
 		return (response);
