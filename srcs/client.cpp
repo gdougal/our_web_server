@@ -33,12 +33,13 @@ void				Client::read_from_client() {
 	}
 	buffer_.append(recv_buffer_);
 	if (handler_->is_recvest_end(buffer_)) {
-		handler_->query_parsing(buffer_);
+		if ( handler_->query_parsing(buffer_) ) {
 
-		handler_->logger(buffer_, outfile_);
+            handler_->logger(buffer_, outfile_); /// TODO
 
-		buffer_.clear();
-		cur_state_ = state::SEND_TO_CLIENT;
+            buffer_.clear();
+            cur_state_ = state::SEND_TO_CLIENT;
+        }
 	}
 }
 

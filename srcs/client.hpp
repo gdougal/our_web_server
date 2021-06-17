@@ -6,6 +6,7 @@
 #define PROXY_SERVER_BRIDGE_HPP
 
 #include <netinet/in.h>
+#include "cstring"
 #include "HTTP_handler.hpp"
 
 #define PORTION_SIZE  65000

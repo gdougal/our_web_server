@@ -21,9 +21,9 @@ namespace http {
 	}
 
 	namespace header {
-		static const char* body_type[] = { "CONTENT-LENGTH",
-																				"TRANSFER-ENCODING" };
-		static const char chunked[] = "chunked";
+			static const char cont_len[] = "CONTENT-LENGTH";
+			static const char encoding[] = "TRANSFER-ENCODING";
+			static const char chunked[] = "chunked";
 	}
 
 	static const char	query_end[] = "\r\n\r\n";
@@ -35,7 +35,7 @@ namespace http {
 
 	static void GET(std::string& response, const map_str& header, const pair_str& path) {
 //		std::ifstream page("/Users/gdougal/Desktop/our_web_server" + path.second);
-        std::ifstream page("/Users/gdougal/Desktop/our_web_server" + path.second);
+    std::ifstream page("/home/local/REGION/as.doynikov/clion_pj/hm" + path.second);
 		std::string body;
 		std::string tmp;
 		while (std::getline(page, tmp)) {

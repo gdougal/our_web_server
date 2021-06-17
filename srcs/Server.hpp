@@ -10,6 +10,8 @@
 #include "fd_creator.hpp"
 #include <list>
 
+#include "memory"
+
 template <typename PROTOCOL_HANDLER>
 class Server {
 public:

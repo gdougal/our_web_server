@@ -12,7 +12,7 @@ class BaseClientHandler {
 public:
 	virtual bool							query_parsing(const std::string &) = 0;
 	virtual bool							is_recvest_end(const std::string &) const = 0;
-//	virtual void							append_query() = 0;
+	virtual bool							append_query(const std::string& src) = 0;
 	virtual const std::string	create_response() const = 0;
 	virtual ~BaseClientHandler() = default;
 
@@ -32,9 +32,9 @@ namespace http {
 		size_t		end_line(const std::string &fo_pars, size_t pos)				const;
 		size_t		end_block(const std::string &fo_pars)										const;
 
-		bool			is_recvest_rly_end(const std::string &fo_pars);
-		bool			parse_body_length(const std::string&);	// length
-		bool			parse_body_chunked(const std::string&);	// chunk
+		bool		  is_recvest_rly_end(const std::string &fo_pars);
+		static bool		  parse_body_length(HTTP_handler& obj, const std::string&);	// length
+		static bool		  parse_body_chunked(HTTP_handler& obj, const std::string&);	// chunk
 
 	public:
 		/*construct*/							HTTP_handler();
@@ -43,9 +43,10 @@ namespace http {
 		virtual				bool				is_recvest_end(const std::string &fo_pars)	const;
 		virtual				bool				query_parsing(const std::string &fo_pars);
 		virtual const	std::string	create_response()														const;
+		virtual bool              append_query(const std::string& src);
 
 
-		virtual void logger(const std::string &logs, int fd) const {
+			virtual void logger(const std::string &logs, int fd) const {
 			write(fd, logs.data(), logs.size());
 			write(fd, "\n", 1);
 			write(fd, "Key: ", 5);
@@ -68,6 +69,8 @@ namespace http {
 		pair_str		methos_and_path_;
 		size_t			body_length_;
 		std::string	body_;
+		size_t      MAX_LENGTH_;
+		bool (*body_parse)(HTTP_handler& obj, const std::string&);
 	};
 }
 

@@ -9,7 +9,7 @@
 namespace http {
 
 
-	HTTP_handler::HTTP_handler() : position_(0) {};
+	HTTP_handler::HTTP_handler() : position_(0), body_parse(nullptr), body_length_(0), MAX_LENGTH_(0) {};
 	HTTP_handler::~HTTP_handler() {}
 
 	pair_str	HTTP_handler::pair_maker(const std::string &fo_pars, const std::string &delim) {
@@ -48,6 +48,8 @@ namespace http {
 	}
 
 	bool			HTTP_handler::query_parsing(const std::string &fo_pars) {
+		if (body_parse)
+			return body_parse(*this, fo_pars);
 		position_ = 0;
 		query_.clear();
 		size_t first_block = end_block(fo_pars);
@@ -57,36 +59,46 @@ namespace http {
 			if (!insert_pair.first.empty())
 				query_.insert(insert_pair);
 		}
-		position_ = first_block;
+		position_ = first_block + strlen(http::query_end);
 		return is_recvest_rly_end(fo_pars);
 	}
 
-	bool			HTTP_handler::parse_body_length(const std::string& src) {
-		body_.append(position_, end_block(src));
-		if (body_.size() == body_length_)
+	bool			HTTP_handler::parse_body_length(HTTP_handler& obj, const std::string& src) {
+		obj.body_.append(obj.position_, obj.end_block(src));
+		if (obj.body_.size() == obj.body_length_)
 			return true;
 		return false;
 	};
-	bool			HTTP_handler::parse_body_chunked(const std::string& src) {
-		return true;
+	bool			HTTP_handler::parse_body_chunked(HTTP_handler& obj, const std::string& src) {
+		obj.body_length_ = std::stoi(
+														std::string(src[obj.position_], src[obj.end_line(src, obj.position_)]),
+														nullptr,
+														16);
+		if (obj.body_length_ == 0) {
+			return true;
+		}
+		obj.body_.append(obj.position_, obj.end_line(src, obj.position_));
+		return false;
 	};
 
-	bool HTTP_handler::is_recvest_rly_end(const std::string &fo_pars) {
-		map_str::const_iterator ret(query_.end());
-
-		for(int i = 0; ret == query_.end(); ++i) {
-			if (!http::header::body_type[i])
-				return false;
-			ret = query_.find(http::header::body_type[i]);
+		bool HTTP_handler::append_query(const std::string& src) {
+			return (*body_parse)(*this, src);
 		}
 
-		if ( std::isdigit(ret->second.at(0) ) ) {
-			body_length_ = std::stoi(ret->second);
-			position_ = position_ + strlen(query_end);
-			return parse_body_length(fo_pars);
+
+		bool HTTP_handler::is_recvest_rly_end(const std::string &fo_pars) {
+		map_str::const_iterator find;
+		if (( find = query_.find(header::encoding) ) != query_.end()) {
+				body_length_ = std::stoi(find->second);
+				body_parse = parse_body_length;
 		}
-		else if ( ret->second == http::header::chunked ) {
-			return parse_body_chunked(fo_pars);
+		else if ((find = query_.find(header::cont_len) ) != query_.end()) {
+			if (find->second == header::chunked) {
+				body_parse = parse_body_chunked;
+			}
+		}
+		if (body_parse != nullptr) {
+			return (*body_parse)(*this, fo_pars);
 		}
 		return true;
 	}
