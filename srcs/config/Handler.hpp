@@ -2,8 +2,8 @@
 // Created by Gilberto Dougal on 6/6/21.
 //
 
-#ifndef WEB_SERVER_HTTP_HANDLER_HPP
-#define WEB_SERVER_HTTP_HANDLER_HPP
+#ifndef WEB_SERVER_HANDLER_HPP
+#define WEB_SERVER_HANDLER_HPP
 #include <iostream>
 #include <map>
 #include <unistd.h>
@@ -13,7 +13,7 @@ public:
 	virtual bool							query_parsing(const std::string &) = 0;
 	virtual bool							is_recvest_end(const std::string &) const = 0;
 	virtual bool							append_query(const std::string& src) = 0;
-	virtual const std::string	create_response() const = 0;
+	virtual const std::string	create_response() = 0;
 	virtual ~BaseClientHandler() = default;
 
 	// отладочная
@@ -25,25 +25,27 @@ namespace http {
 	typedef std::map<std::string, std::string> map_str;
 	typedef std::pair<std::string, std::string> pair_str;
 
-	class HTTP_handler : public BaseClientHandler {
+	class Handler : public BaseClientHandler {
 
-		pair_str	pair_maker(const std::string &fo_pars, const std::string &delim);
-		size_t		next_line(const std::string &fo_pars, size_t pos)				const;
-		size_t		end_line(const std::string &fo_pars, size_t pos)				const;
-		size_t		end_block(const std::string &fo_pars)										const;
+		pair_str			pair_maker(const std::string& , const std::string &delim);
+		void					header_part(const std::string&);
+		size_t				next_line(const std::string& , size_t pos)	const;
+		size_t				end_line(const std::string& , size_t pos)		const;
+		size_t				end_block(const std::string& )				const;
 
-		bool		  is_recvest_rly_end(const std::string &fo_pars);
-		static bool		  parse_body_length(HTTP_handler& obj, const std::string&);	// length
-		static bool		  parse_body_chunked(HTTP_handler& obj, const std::string&);	// chunk
+		bool					is_recvest_rly_end(const std::string& );
+		static bool		parse_body_length(Handler& , const std::string& );	// length
+		static bool		parse_body_chunked(Handler& , const std::string& );	// chunk
+		void					after_all();
 
 	public:
-		/*construct*/							HTTP_handler();
-		virtual										~HTTP_handler();
+		/*construct*/							Handler();
+		virtual										~Handler();
 
-		virtual				bool				is_recvest_end(const std::string &fo_pars)	const;
-		virtual				bool				query_parsing(const std::string &fo_pars);
-		virtual const	std::string	create_response()														const;
-		virtual bool              append_query(const std::string& src);
+		virtual				bool				is_recvest_end(const std::string& )	const;
+		virtual				bool				query_parsing(const std::string& );
+		virtual const	std::string	create_response();
+		virtual bool              append_query(const std::string& );
 
 
 			virtual void logger(const std::string &logs, int fd) const {
@@ -70,9 +72,9 @@ namespace http {
 		size_t			body_length_;
 		std::string	body_;
 		size_t      MAX_LENGTH_;
-		bool (*body_parse)(HTTP_handler& obj, const std::string&);
+		bool (*body_parse)(Handler& obj, const std::string&);
 	};
 }
 
 
-#endif //WEB_SERVER_HTTP_HANDLER_HPP
+#endif //WEB_SERVER_HANDLER_HPP

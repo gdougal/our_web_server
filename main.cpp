@@ -12,7 +12,7 @@ int main()
 {
 	signal(SIGPIPE, pipe);
 	std::string path("./config.txt");
-	std::shared_ptr<Server<http::HTTP_handler> > serv(new Server<http::HTTP_handler>(Config(path)));
+	std::shared_ptr<Server<http::Handler> > serv(new Server<http::Handler>(Config(path)));
 	serv->run_server();
 	return 0;
 }
