@@ -45,10 +45,9 @@ namespace http {
 		virtual				bool				is_recvest_end(const std::string& )	const;
 		virtual				bool				query_parsing(const std::string& );
 		virtual const	std::string	create_response();
-		virtual bool              append_query(const std::string& );
+		virtual bool							append_query(const std::string& );
 
-
-			virtual void logger(const std::string &logs, int fd) const {
+		virtual void logger(const std::string &logs, int fd) const {
 			write(fd, logs.data(), logs.size());
 			write(fd, "\n", 1);
 			write(fd, "Key: ", 5);

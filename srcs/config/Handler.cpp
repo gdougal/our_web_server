@@ -67,13 +67,13 @@ namespace http {
 	bool			Handler::is_recvest_rly_end(const std::string &fo_pars) {
 		map_str::const_iterator find;
 		if (( find = query_.find(header::encoding) ) != query_.end()) {
-			body_length_ = std::stoi(find->second);
-			body_parse = parse_body_length;
-		}
-		else if ((find = query_.find(header::cont_len) ) != query_.end()) {
 			if (find->second == header::chunked) {
 				body_parse = parse_body_chunked;
 			}
+		}
+		else if ((find = query_.find(header::cont_len) ) != query_.end()) {
+			body_length_ = std::stoi(find->second);
+			body_parse = parse_body_length;
 		}
 		if (body_parse != nullptr) {
 			return (*body_parse)(*this, fo_pars);
@@ -82,31 +82,30 @@ namespace http {
 	}
 
 	bool			Handler::parse_body_length(Handler& obj, const std::string& src) {
-		size_t end_pos = obj.end_block(src);
-		if (end_pos == std::string::npos)
-			end_pos = src.size();
-		obj.body_.append(obj.position_, end_pos);
+		obj.body_.append(src.substr(obj.position_));
 		if (obj.body_.size() == obj.body_length_)
 			return true;
 		return false;
 	};
+
 	bool			Handler::parse_body_chunked(Handler& obj, const std::string& src) {
-		size_t tmp = obj.end_line(src, obj.position_);
-		if (tmp == std::string::npos)
+		if (src.substr(src.size() - strlen(http::query_end)) != http::query_end)
 			return false;
-		obj.body_length_ = std::stoi(
-														std::string(src[obj.position_], src[tmp]),
-														nullptr,
-														16);
+	size_t tmp = obj.end_line(src, obj.position_);
+	if (tmp == std::string::npos)
+		return false;
+	std::string number(src.substr(obj.position_, tmp - obj.position_));
+	obj.body_length_ = std::stoi(number,
+													nullptr,
+												16);
 		if (obj.body_length_ == 0)
 			return true;
 		obj.position_ = obj.next_line(src, obj.position_);
-		tmp = obj.end_line(src, obj.position_);
-		if (tmp == std::string::npos)
-			return false;
-		obj.body_.append(obj.position_, tmp);
-		return false;
+		obj.body_.append(src.substr(obj.position_, obj.body_length_));
+		obj.position_ = obj.next_line(src, obj.position_);
+		return parse_body_chunked(obj, src);
 	};
+	
 	bool			Handler::append_query(const std::string& src) {
 			return (*body_parse)(*this, src);
 		}

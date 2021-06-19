@@ -53,6 +53,7 @@ private:
 	void	manage_client_fd() {
 		FD_ZERO(&read_fds_);
 		FD_ZERO(&write_fds_);
+		// TODO:от тут цикл
 		FD_SET(listen_fd_, &read_fds_);
 		max_fd_ = listen_fd_;
 		for (auto &item: clients_) {
@@ -66,19 +67,27 @@ private:
 
 	void	create_client() {
 		int		client_fd;
+		//TODO:от тут тоже цикл, можно связать виртуальный сервер и клиентов
 		if (FD_ISSET(listen_fd_, &read_fds_) &&
 				(client_fd = fd_creator::create_client_fd(listen_fd_)) > 0) {
-
 			clients_.emplace_back(new Client(client_fd, logfile_, new PROTOCOL_HANDLER));
 		}
 	}
 
-	int									listen_fd_;
-	int									max_fd_;
-	fd_set							read_fds_;
-	fd_set							write_fds_;
+	int																	listen_fd_;
+	struct serv_data {
+		int fd;
+		std::string f1;
+		std::string f2;
+		std::string f3;
+		std::string f4;
+	};
+	int																	max_fd_;
+	fd_set															read_fds_;
+	fd_set															write_fds_;
 	std::list<std::shared_ptr<Client> >	clients_;
-	int									logfile_;
+//	std::list<std::pair<serv, std::list<Client> > >
+	int																	logfile_;
 };
 
 #endif //PROXY_SERVER_SERVER_HPP

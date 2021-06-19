@@ -20,10 +20,9 @@ enum state {
 class Client {
 	enum state					cur_state_;
 	int									fd_;
-	int									outfile_;
 	std::string					buffer_;
-	char*								recv_buffer_;
 	BaseClientHandler*	handler_;
+	int									outfile_;
 public:
 	Client(int client_to_proxy, int file, BaseClientHandler* type_client);
 	virtual	~Client();

@@ -13,6 +13,7 @@ namespace http {
 	typedef std::map<std::string, std::string> map_str;
 	typedef std::pair<std::string, std::string> pair_str;
 
+
 	namespace query_type {
 		static const char	GET[] = "GET";
 		static const char	POST[] = "POST";
