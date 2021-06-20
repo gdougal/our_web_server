@@ -22,7 +22,7 @@ namespace fd_creator {
 		return new_client_fd;
 	}
 
-	int create_listen_socket(const Config &cfg) {
+	int create_listen_socket(const ConfigParser &cfg) {
 		int listen_fd_;
 		struct sockaddr_in servaddr{};
 

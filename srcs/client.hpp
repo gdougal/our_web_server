@@ -5,17 +5,13 @@
 #ifndef PROXY_SERVER_BRIDGE_HPP
 #define PROXY_SERVER_BRIDGE_HPP
 
-#include <netinet/in.h>
-#include "cstring"
 #include "Handler.hpp"
+#include "cstring"
+#include <netinet/in.h>
 
-#define PORTION_SIZE  65000
+#define PORTION_SIZE 65000
 
-enum state {
-	READ_FROM_CLIENT,
-	SEND_TO_CLIENT,
-	FINALL
-};
+enum state { READ_FROM_CLIENT, SEND_TO_CLIENT, FINALL };
 
 class Client {
 	enum state					cur_state_;
@@ -25,13 +21,12 @@ class Client {
 	int									outfile_;
 	char*								g_recv_buffer;
 public:
-	Client(int client_to_proxy, int file, BaseClientHandler* type_client);
-	virtual	~Client();
-	int			getFd() const;
-	enum		state getCurState() const;
-	void		read_from_client();
-	void		send_to_client();
+  Client(int client_to_proxy, int file, BaseClientHandler *type_client);
+  virtual ~Client();
+  int getFd() const;
+  enum state getCurState() const;
+  void read_from_client();
+  void send_to_client();
 };
 
-
-#endif //PROXY_SERVER_BRIDGE_HPP
+#endif // PROXY_SERVER_BRIDGE_HPP
