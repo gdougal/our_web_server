@@ -22,7 +22,7 @@ namespace fd_creator {
 		return new_client_fd;
 	}
 
-	int create_listen_socket(const ConfigParser &cfg) {
+	int create_listen_socket(const std::string& host, const std::string& port) {
 		int listen_fd_;
 		struct sockaddr_in servaddr{};
 
@@ -31,8 +31,8 @@ namespace fd_creator {
 		}
 		bzero(&servaddr, sizeof(servaddr));
 		servaddr.sin_family = AF_INET;
-		servaddr.sin_addr.s_addr = cfg.getSection("SERVER").getAddrVal("ip");
-		servaddr.sin_port = cfg.getSection("SERVER").getPortVal("port");
+		servaddr.sin_addr.s_addr = inet_addr(host.c_str());;
+		servaddr.sin_port = htons(static_cast<uint16_t>(std::stoul(port)));
 		int yes = 1;
 
 		if (setsockopt(listen_fd_, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {

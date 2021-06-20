@@ -12,18 +12,41 @@
 
 #include "memory"
 
+
+struct virtual_server {
+	int							serv_fd_;
+	server_config		config_data;
+	std::list<std::shared_ptr<Client> > clients_;
+
+	virtual_server(int servFd, const server_config &configData) : serv_fd_(
+					servFd), config_data(configData) {}
+
+	virtual ~virtual_server() {
+		close(serv_fd_);
+	}
+};
+
 template <typename PROTOCOL_HANDLER>
 class Server {
 public:
-	Server(const ConfigParser &cfg) {
-		listen_fd_ = fd_creator::create_listen_socket(cfg);
-		logfile_ = open(cfg.getSection("LOGS_PATH").getStringVal("file").c_str(), O_CREAT | O_TRUNC | O_WRONLY, 0644);
-		if (logfile_ < 0)
-			throw std::runtime_error("Can't create file");
+	Server(const std::list<server_config>& cfg) {
+		for (auto& item : cfg ) {
+			serv_.emplace_back(
+							std::make_shared<virtual_server>(
+											fd_creator::create_listen_socket(item.host, item.port),
+											item
+																								)
+												);
+		}
+		logfile_ = open("logfile.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+			if (logfile_ < 0)
+				throw std::runtime_error("Can't create file");
 	};
 
 	virtual ~Server() {
-		close(listen_fd_);
+		for (auto& v_serv: serv_) {
+			close(v_serv->serv_fd_);
+		}
 		close(logfile_);
 	};
 	[[noreturn]] void run_server() {
@@ -31,19 +54,21 @@ public:
 			manage_client_fd();
 			select(max_fd_ + 1, &read_fds_, &write_fds_, nullptr, nullptr);
 			create_client();
-			auto it = clients_.begin();
-			while (it != clients_.end()) {
-				if (FD_ISSET((*it)->getFd(), &read_fds_) && (*it)->getCurState() == state::READ_FROM_CLIENT) {
-					(*it)->read_from_client();
-				}
-				else if (FD_ISSET((*it)->getFd(), &write_fds_) && (*it)->getCurState() == state::SEND_TO_CLIENT) {
-					(*it)->send_to_client();
-				}
-				if ((*it)->getCurState() == state::FINALL) {
-					it = clients_.erase(it);
-				}
-				else {
-					++it;
+			for (auto &v_serv: serv_) {
+				auto it = v_serv->clients_.begin();
+				while (it != v_serv->clients_.end()) {
+					if (FD_ISSET((*it)->getFd(), &read_fds_) && (*it)->getCurState() == state::READ_FROM_CLIENT) {
+						(*it)->read_from_client();
+					}
+					else if (FD_ISSET((*it)->getFd(), &write_fds_) && (*it)->getCurState() == state::SEND_TO_CLIENT) {
+						(*it)->send_to_client(v_serv->config_data);
+					}
+					if ((*it)->getCurState() == state::FINALL) {
+						it = v_serv->clients_.erase(it);
+					}
+					else {
+						++it;
+					}
 				}
 			}
 		}
@@ -53,33 +78,34 @@ private:
 	void	manage_client_fd() {
 		FD_ZERO(&read_fds_);
 		FD_ZERO(&write_fds_);
-		// TODO: от тут цикл добавлять фд всех серверов
-		FD_SET(listen_fd_, &read_fds_);
-		max_fd_ = listen_fd_;
-		for (auto &item: clients_) {
-			if (item->getCurState() == state::READ_FROM_CLIENT)
-				FD_SET(item->getFd(), &read_fds_);
-			if (item->getCurState() == state::SEND_TO_CLIENT)
-				FD_SET(item->getFd(), &write_fds_);
-			max_fd_ = max_fd_ > item->getFd() ? max_fd_ : item->getFd();
+		max_fd_ = 0;
+		for (auto &v_serv: serv_) {
+			FD_SET(v_serv->serv_fd_, &read_fds_);
+			if (max_fd_ < v_serv->serv_fd_)
+				max_fd_ = v_serv->serv_fd_;
+			for (auto &item: v_serv->clients_) {
+				if (item->getCurState() == state::READ_FROM_CLIENT)
+					FD_SET(item->getFd(), &read_fds_);
+				if (item->getCurState() == state::SEND_TO_CLIENT)
+					FD_SET(item->getFd(), &write_fds_);
+				max_fd_ = max_fd_ > item->getFd() ? max_fd_ : item->getFd();
+			}
 		}
 	};
 
 	void	create_client() {
 		int		client_fd;
-		//TODO: от тут тоже цикл, можно связать виртуальный сервер и клиентов
-		if (FD_ISSET(listen_fd_, &read_fds_) &&
-				(client_fd = fd_creator::create_client_fd(listen_fd_)) > 0) {
-			clients_.emplace_back(new Client(client_fd, logfile_, new PROTOCOL_HANDLER));
+		for (auto& v_serv: serv_) {
+			if (FD_ISSET(v_serv->serv_fd_, &read_fds_) &&
+					(client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
+				v_serv->clients_.emplace_back( new Client(client_fd, logfile_, new PROTOCOL_HANDLER));
+			}
 		}
 	}
-
-	int																	listen_fd_;
 	int																	max_fd_;
 	fd_set															read_fds_;
 	fd_set															write_fds_;
-	std::list<std::shared_ptr<Client> >	clients_;
-//	std::list<std::pair<serv, std::list<Client> > >
+	std::list<std::shared_ptr<virtual_server> >	serv_;
 	int																	logfile_;
 };
 

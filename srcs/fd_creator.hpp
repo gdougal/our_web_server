@@ -12,7 +12,7 @@
 
 namespace fd_creator {
 	void close_fd_error(std::string except, int listen_fd_);
-	int create_listen_socket(const ConfigParser &cfg);
+	int create_listen_socket(const std::string& host, const std::string& port);
 	int create_client_fd(int listen_fd);
 }
 

@@ -39,7 +39,7 @@ void				Client::read_from_client() {
 	}
 }
 
-void				Client::send_to_client() {
+void				Client::send_to_client(const server_config& data) {
 	std::string http(handler_->create_response());
 	buffer_.clear();
 	if (send(fd_, http.c_str(), http.size(), 0)/*;*/ <= 0) {

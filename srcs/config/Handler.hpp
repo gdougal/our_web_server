@@ -7,6 +7,8 @@
 #include <iostream>
 #include <map>
 #include <unistd.h>
+#include "RouteEntity.hpp"
+#include "ConfigRepository.hpp"
 
 class BaseClientHandler {
 public:
