@@ -42,30 +42,33 @@ static const char bad_request[] =
                         text/html\r\nContent-Length:
                         126\r\n */
 
-static void GET(std::string &response, const map_str &header,
+static void get(std::string &response, const map_str &header,
                 const pair_str &path) {
-  route = route("/", false, "/pages/simple.html", "/pages/lyubaya.html",
-                "/pages/lyubaya.html", methods.GET);
+  std::list<route> routes;
+  std::list<methods> allowed_methods;
+  allowed_methods.push_back(methods(GET));
+  allowed_methods.push_back(methods(HEAD));
+  routes.push_back(route("/", false, "/pages/simple.html", "/pages/lyubaya.html",
+                "/pages/lyubaya.html", allowed_methods));
   server_config serverConfig("127.0.0.1", "8000", "lol", 21,
                              "/pages/simple"
-                             ".html", methods)
-          response =
-      ResponseBuilder(server_config()).build_response();
+                             ".html", routes);
+      ResponseBuilder(serverConfig, header, path).build_response();
 };
 
-static void POST(std::string &response, const map_str &header,
+static void post(std::string &response, const map_str &header,
                  const pair_str &path) {
   response = "Я не ебу, что делать";
   std::cout << response << std::endl;
 };
 
-static void DELETE(std::string &response, const map_str &header,
+static void delete_(std::string &response, const map_str &header,
                    const pair_str &path) {
   response = "Я тоже не ебу, что делать";
   std::cout << response << std::endl;
 };
 
-static void HEAD(std::string &response, const map_str &header,
+static void head(std::string &response, const map_str &header,
                  const pair_str &path) {
   response = "Я тоже не ебу, что делать";
   std::cout << response << std::endl;
@@ -85,13 +88,13 @@ struct functor {
 static std::map<std::string, functor> initialize() {
   std::map<std::string, functor> init_methods;
   init_methods.insert(
-      std::pair<std::string, functor>(query_type::GET, functor(GET)));
+      std::pair<std::string, functor>(query_type::GET, functor(get)));
   init_methods.insert(
-      std::pair<std::string, functor>(query_type::POST, functor(POST)));
+      std::pair<std::string, functor>(query_type::POST, functor(post)));
   init_methods.insert(
-      std::pair<std::string, functor>(query_type::DELETE, functor(DELETE)));
+      std::pair<std::string, functor>(query_type::DELETE, functor(delete_)));
   init_methods.insert(
-      std::pair<std::string, functor>(query_type::HEAD, functor(HEAD)));
+      std::pair<std::string, functor>(query_type::HEAD, functor(head)));
   return init_methods;
 }
 } // namespace
