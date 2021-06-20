@@ -23,6 +23,7 @@ class Client {
 	std::string					buffer_;
 	BaseClientHandler*	handler_;
 	int									outfile_;
+	char*								g_recv_buffer;
 public:
 	Client(int client_to_proxy, int file, BaseClientHandler* type_client);
 	virtual	~Client();

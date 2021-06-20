@@ -3,13 +3,13 @@
 //
 
 #include "client.hpp"
-char								g_recv_buffer[PORTION_SIZE + 1];
 
 Client::Client(int client_fd, int file, BaseClientHandler* type_client)  :
 				fd_(client_fd),
 				outfile_(file) {
 	cur_state_ = state::READ_FROM_CLIENT;
 	handler_ = type_client;
+	g_recv_buffer = new char[PORTION_SIZE + 1];
 }
 
 Client::~Client() {
@@ -32,9 +32,8 @@ void				Client::read_from_client() {
 	}
 	buffer_.append(g_recv_buffer);
 	if ( handler_->is_recvest_end(buffer_) ) {
-		std::cout << buffer_ << std::endl;
 		if ( handler_->query_parsing(buffer_) ) {
-			handler_->logger(buffer_, outfile_); /// TODO
+			handler_->logger(buffer_, outfile_); /// TODO:
 			cur_state_ = state::SEND_TO_CLIENT;
 		}
 	}

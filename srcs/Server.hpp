@@ -53,7 +53,7 @@ private:
 	void	manage_client_fd() {
 		FD_ZERO(&read_fds_);
 		FD_ZERO(&write_fds_);
-		// TODO:от тут цикл
+		// TODO: от тут цикл добавлять фд всех серверов
 		FD_SET(listen_fd_, &read_fds_);
 		max_fd_ = listen_fd_;
 		for (auto &item: clients_) {
@@ -67,7 +67,7 @@ private:
 
 	void	create_client() {
 		int		client_fd;
-		//TODO:от тут тоже цикл, можно связать виртуальный сервер и клиентов
+		//TODO: от тут тоже цикл, можно связать виртуальный сервер и клиентов
 		if (FD_ISSET(listen_fd_, &read_fds_) &&
 				(client_fd = fd_creator::create_client_fd(listen_fd_)) > 0) {
 			clients_.emplace_back(new Client(client_fd, logfile_, new PROTOCOL_HANDLER));

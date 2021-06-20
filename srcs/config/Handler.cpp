@@ -9,10 +9,10 @@
 namespace http {
 
 
-	Handler::Handler() : position_(0), body_parse(nullptr), body_length_(0), MAX_LENGTH_(0) {};
+	Handler::Handler() : position_(0), body_parse(nullptr), body_length_(0) {};
 	Handler::~Handler() {}
 
-	//HEADER PARSING
+
 	pair_str	Handler::pair_maker(const std::string &fo_pars, const std::string &delim) {
 		size_t end_first = fo_pars.find_first_of(delim, position_);
 		size_t start_second = fo_pars.find_first_not_of(delim, end_first);
@@ -38,6 +38,7 @@ namespace http {
 		position_ = next_line(fo_pars, end_second);
 		return insert_pair;
 	}
+
 	void			Handler::header_part(const std::string &fo_pars) {
 		size_t first_block = end_block(fo_pars);
 		methos_and_path_ = pair_maker(fo_pars, http::delim_method);
@@ -48,15 +49,19 @@ namespace http {
 		}
 		position_ = first_block + strlen(http::query_end);
 	}
+
 	size_t		Handler::next_line(const std::string &fo_pars, const size_t pos) const {
 		return end_line(fo_pars, pos) + strlen(http::line_end);
 	}
+
 	size_t		Handler::end_line(const std::string &fo_pars, const size_t pos) const {
 		return fo_pars.find_first_of(http::line_end, pos);
 	}
+
 	size_t		Handler::end_block(const std::string &fo_pars) const {
 		return fo_pars.find( http::query_end, position_, strlen(http::query_end) );
 	}
+
 	bool			Handler::query_parsing(const std::string &fo_pars) {
 		if (body_parse)
 			return body_parse(*this, fo_pars);
@@ -82,7 +87,10 @@ namespace http {
 	}
 
 	bool			Handler::parse_body_length(Handler& obj, const std::string& src) {
-		obj.body_.append(src.substr(obj.position_));
+		if (src.size() - obj.position_ != obj.body_length_)
+			return false;
+		obj.body_.append(src.substr(obj.position_, obj.body_length_));
+		std::cout << obj.body_ << std::endl;
 		if (obj.body_.size() == obj.body_length_)
 			return true;
 		return false;
@@ -92,8 +100,6 @@ namespace http {
 		if (src.substr(src.size() - strlen(http::query_end)) != http::query_end)
 			return false;
 	size_t tmp = obj.end_line(src, obj.position_);
-	if (tmp == std::string::npos)
-		return false;
 	std::string number(src.substr(obj.position_, tmp - obj.position_));
 	obj.body_length_ = std::stoi(number,
 													nullptr,
@@ -105,16 +111,13 @@ namespace http {
 		obj.position_ = obj.next_line(src, obj.position_);
 		return parse_body_chunked(obj, src);
 	};
-	
-	bool			Handler::append_query(const std::string& src) {
-			return (*body_parse)(*this, src);
-		}
 
-	bool		Handler::is_recvest_end(const std::string &fo_pars)	const {
-		if (end_block(fo_pars) != std::string::npos)
+	bool			Handler::is_recvest_end(const std::string &fo_pars)	const {
+		if (end_block(fo_pars) != std::string::npos || body_parse)
 			return true;
 		return false;
 	}
+
 	const		std::string Handler::create_response() {
 		std::string response;
 		http::methods.find(methos_and_path_.first)->second(response, query_, methos_and_path_);
@@ -128,7 +131,5 @@ namespace http {
 		body_.clear();
 		body_parse = nullptr;
 		body_length_ = 0;
-		MAX_LENGTH_ = 0;
 	}
-
 }
