@@ -44,44 +44,35 @@ static const char bad_request[] =
                         126\r\n */
 
 static void query_get(std::string &response, const map_str &header,
-                const pair_str &path) {
-  std::list<route> routes;
-  std::list<methods> allowed_methods;
-  allowed_methods.push_back(methods(GET));
-  allowed_methods.push_back(methods(HEAD));
-  routes.push_back(route("/", false, "/pages/simple.html", "/pages/lyubaya.html",
-                "/pages/lyubaya.html", allowed_methods));
-  server_config serverConfig("127.0.0.1", "8000", "lol", 21,
-                             "/pages/simple"
-                             ".html", routes);
+                const pair_str &path, const server_config& serverConfig) {
      response = ResponseBuilder(serverConfig, header, path).build_response();
 };
 
 static void query_post(std::string &response, const map_str &header,
-                 const pair_str &path) {
+                 const pair_str &path, const server_config& serverConfig) {
   response = "Я не ебу, что делать";
   std::cout << response << std::endl;
 };
 
 static void query_delete(std::string &response, const map_str &header,
-                   const pair_str &path) {
+                   const pair_str &path, const server_config& serverConfig) {
   response = "Я тоже не ебу, что делать";
   std::cout << response << std::endl;
 };
 
 static void query_head(std::string &response, const map_str &header,
-                 const pair_str &path) {
+                 const pair_str &path, const server_config& serverConfig) {
   response = "Я тоже не ебу, что делать";
   std::cout << response << std::endl;
 };
 
 namespace {
-typedef void(t_f)(std::string &, const map_str &, const pair_str &);
+typedef void(t_f)(std::string &, const map_str &, const pair_str &, const server_config&);
 struct functor {
   t_f *function;
   void operator()(std::string &response, const map_str &header,
-                  const pair_str &path) const {
-    (*function)(response, header, path);
+                  const pair_str &path, const server_config& conf) const {
+    (*function)(response, header, path, conf);
   };
   explicit functor(t_f *function) : function(function) {}
 };

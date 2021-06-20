@@ -13,20 +13,8 @@
 #include "memory"
 
 
-struct virtual_server {
-	int							serv_fd_;
-	server_config		config_data;
-	std::list<std::shared_ptr<Client> > clients_;
 
-	virtual_server(int servFd, const server_config &configData) : serv_fd_(
-					servFd), config_data(configData) {}
-
-	virtual ~virtual_server() {
-		close(serv_fd_);
-	}
-};
-
-template <typename PROTOCOL_HANDLER>
+template <typename PROTOCOL_HANDLER, typename t_data>
 class Server {
 public:
 	Server(const std::list<server_config>& cfg) {
@@ -98,10 +86,22 @@ private:
 		for (auto& v_serv: serv_) {
 			if (FD_ISSET(v_serv->serv_fd_, &read_fds_) &&
 					(client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
-				v_serv->clients_.emplace_back( new Client(client_fd, logfile_, new PROTOCOL_HANDLER));
+				v_serv->clients_.emplace_back( new Client<PROTOCOL_HANDLER, t_data>(client_fd, logfile_, new PROTOCOL_HANDLER));
 			}
 		}
 	}
+	struct virtual_server {
+		int							serv_fd_;
+		server_config		config_data;
+		std::list<std::shared_ptr<Client<PROTOCOL_HANDLER, t_data>> > clients_;
+
+		virtual_server(int servFd, const server_config &configData) : serv_fd_(
+						servFd), config_data(configData) {}
+
+		virtual ~virtual_server() {
+			close(serv_fd_);
+		}
+	};
 	int																	max_fd_;
 	fd_set															read_fds_;
 	fd_set															write_fds_;

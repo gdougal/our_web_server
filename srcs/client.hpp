@@ -14,20 +14,54 @@
 
 enum state { READ_FROM_CLIENT, SEND_TO_CLIENT, FINALL };
 
+template <class PROTOCOL, typename t_data>
 class Client {
-	enum state						cur_state_;
-	int										fd_;
-	std::string						buffer_;
-	BaseClientHandler*		handler_;
-	int										outfile_;
-	char*									g_recv_buffer;
+	enum state										cur_state_;
+	int														fd_;
+	std::string										buffer_;
+	BaseClientHandler<t_data>*		handler_;
+	int														outfile_;
+	char*													g_recv_buffer;
 public:
-  Client(int client_to_proxy, int file, BaseClientHandler *type_client);
-  virtual ~Client();
-  int getFd() const;
-  enum state getCurState() const;
-  void read_from_client();
-  void send_to_client(const server_config& data);
+	Client(int client_fd, int file, BaseClientHandler<t_data>* type_client)  :
+					fd_(client_fd),
+					outfile_(file) {
+		cur_state_ = state::READ_FROM_CLIENT;
+		handler_ = type_client;
+		g_recv_buffer = new char[PORTION_SIZE + 1];
+	}
+  virtual ~Client() {
+		close(fd_);
+		delete handler_;
+	};
+  int getFd() const { return fd_; };
+  enum state getCurState() const { return cur_state_; };
+
+  void read_from_client() {
+		bzero(g_recv_buffer, PORTION_SIZE + 1);
+		static size_t buffer_len;
+		buffer_len = recv(fd_, g_recv_buffer, PORTION_SIZE, 0);
+		if (buffer_len <= 0 || buffer_len > PORTION_SIZE) {
+			cur_state_ = state::FINALL;
+			return;
+		}
+		buffer_.append(g_recv_buffer);
+		if ( handler_->is_recvest_end(buffer_) ) {
+			if ( handler_->query_parsing(buffer_) ) {
+				handler_->logger(buffer_, outfile_);
+				cur_state_ = state::SEND_TO_CLIENT;
+			}
+		}
+	}
+  void	send_to_client(const t_data& data) {
+		std::string http(handler_->create_response(data));
+		buffer_.clear();
+		if (send(fd_, http.c_str(), http.size(), 0)/*;*/ <= 0) {
+			cur_state_ = state::FINALL;
+			return ;
+		}
+		cur_state_ = state::READ_FROM_CLIENT;
+	}
 };
 
 #endif // PROXY_SERVER_BRIDGE_HPP

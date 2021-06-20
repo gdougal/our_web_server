@@ -10,11 +10,12 @@
 #include "RouteEntity.hpp"
 #include "ConfigRepository.hpp"
 
+template <typename t_data>
 class BaseClientHandler {
 public:
 	virtual bool							query_parsing(const std::string &) = 0;
 	virtual bool							is_recvest_end(const std::string &) const = 0;
-	virtual const std::string	create_response() = 0;
+	virtual const std::string	create_response(const t_data& data) = 0;
 	virtual ~BaseClientHandler() = default;
 
 	// отладочная
@@ -26,7 +27,7 @@ namespace http {
 	typedef std::map<std::string, std::string> map_str;
 	typedef std::pair<std::string, std::string> pair_str;
 
-	class Handler : public BaseClientHandler {
+	class Handler : public BaseClientHandler<server_config> {
 
 		pair_str			pair_maker(const std::string& , const std::string &delim);
 		void					header_part(const std::string&);
@@ -45,7 +46,7 @@ namespace http {
 
 		virtual				bool				is_recvest_end(const std::string& )	const;
 		virtual				bool				query_parsing(const std::string& );
-		virtual const	std::string	create_response();
+		virtual const	std::string	create_response(const server_config&);
 
 		virtual void logger(const std::string &logs, int fd) const {
 			write(fd, logs.data(), logs.size());

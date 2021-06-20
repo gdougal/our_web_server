@@ -3,7 +3,7 @@ project(web_server)
 
 set(CMAKE_CXX_STANDARD 14)
 include_directories(srcs srcs/config srcs/config/repository srcs/builders)
-set(My_SRCS srcs/client.cpp
+set(My_SRCS
         srcs/config/ConfigParser.cpp
         srcs/fd_creator.cpp
         srcs/config/Handler.cpp

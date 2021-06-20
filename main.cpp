@@ -23,7 +23,7 @@ int main()
 	std::string path("./config.txt");
 	std::list<server_config> cfgs;
 	cfgs.emplace_back(serverConfig);
-	Server<http::Handler> serv(cfgs);
+	Server<http::Handler, server_config> serv(cfgs);
 	serv.run_server();
 	return 0;
 }
