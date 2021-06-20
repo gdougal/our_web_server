@@ -5,8 +5,8 @@
 #ifndef PROXY_SERVER_SERVER_HPP
 #define PROXY_SERVER_SERVER_HPP
 
+#include "ConfigParser.hpp"
 #include "client.hpp"
-#include "Config.hpp"
 #include "fd_creator.hpp"
 #include <list>
 
@@ -15,7 +15,7 @@
 template <typename PROTOCOL_HANDLER>
 class Server {
 public:
-	Server(const Config &cfg) {
+	Server(const ConfigParser &cfg) {
 		listen_fd_ = fd_creator::create_listen_socket(cfg);
 		logfile_ = open(cfg.getSection("LOGS_PATH").getStringVal("file").c_str(), O_CREAT | O_TRUNC | O_WRONLY, 0644);
 		if (logfile_ < 0)

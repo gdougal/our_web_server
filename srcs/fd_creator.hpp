@@ -5,14 +5,14 @@
 #ifndef WEB_SERVER_FD_CREATOR_HPP
 #define WEB_SERVER_FD_CREATOR_HPP
 
-#include "Config.hpp"
+#include "ConfigParser.hpp"
+#include <iostream>
 #include <sys/fcntl.h>
 #include <unistd.h>
-#include <iostream>
 
 namespace fd_creator {
 	void close_fd_error(std::string except, int listen_fd_);
-	int create_listen_socket(const Config &cfg);
+	int create_listen_socket(const ConfigParser &cfg);
 	int create_client_fd(int listen_fd);
 }
 

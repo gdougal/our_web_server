@@ -2,14 +2,15 @@ cmake_minimum_required(VERSION 3.17)
 project(web_server)
 
 set(CMAKE_CXX_STANDARD 14)
-include_directories(srcs srcs/config)
+include_directories(srcs srcs/config srcs/config/repository srcs/builders)
 set(My_SRCS srcs/client.cpp
-         srcs/config/Config.cpp
-         srcs/fd_creator.cpp
+        srcs/config/ConfigParser.cpp
+        srcs/fd_creator.cpp
         srcs/config/Handler.cpp
-         srcs/http_stuff.hpp)
+        srcs/config/repository/ConfigRepository.hpp srcs/config/repository/RouteEntity.hpp
+        srcs/builders/ResponseBuilder.cpp srcs/builders/ResponseBuilder.hpp
+        srcs/http_stuff.hpp)
 
 add_executable(web_server
         main.cpp
-        ${My_SRCS}
-        )
+        ${My_SRCS})
