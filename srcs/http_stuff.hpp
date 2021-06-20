@@ -42,7 +42,7 @@ static const char bad_request[] =
                         text/html\r\nContent-Length:
                         126\r\n */
 
-static void get(std::string &response, const map_str &header,
+static void query_get(std::string &response, const map_str &header,
                 const pair_str &path) {
   std::list<route> routes;
   std::list<methods> allowed_methods;
@@ -56,19 +56,19 @@ static void get(std::string &response, const map_str &header,
       ResponseBuilder(serverConfig, header, path).build_response();
 };
 
-static void post(std::string &response, const map_str &header,
+static void query_post(std::string &response, const map_str &header,
                  const pair_str &path) {
   response = "Я не ебу, что делать";
   std::cout << response << std::endl;
 };
 
-static void delete_(std::string &response, const map_str &header,
+static void query_delete(std::string &response, const map_str &header,
                    const pair_str &path) {
   response = "Я тоже не ебу, что делать";
   std::cout << response << std::endl;
 };
 
-static void head(std::string &response, const map_str &header,
+static void query_head(std::string &response, const map_str &header,
                  const pair_str &path) {
   response = "Я тоже не ебу, что делать";
   std::cout << response << std::endl;
@@ -88,13 +88,13 @@ struct functor {
 static std::map<std::string, functor> initialize() {
   std::map<std::string, functor> init_methods;
   init_methods.insert(
-      std::pair<std::string, functor>(query_type::GET, functor(get)));
+      std::pair<std::string, functor>(query_type::GET, functor(query_get)));
   init_methods.insert(
-      std::pair<std::string, functor>(query_type::POST, functor(post)));
+      std::pair<std::string, functor>(query_type::POST, functor(query_post)));
   init_methods.insert(
-      std::pair<std::string, functor>(query_type::DELETE, functor(delete_)));
+      std::pair<std::string, functor>(query_type::DELETE, functor(query_delete)));
   init_methods.insert(
-      std::pair<std::string, functor>(query_type::HEAD, functor(head)));
+      std::pair<std::string, functor>(query_type::HEAD, functor(query_head)));
   return init_methods;
 }
 } // namespace
