@@ -8,6 +8,7 @@
 #include "ResponseBuilder.hpp"
 #include "RouteEntity.hpp"
 #include <fstream>
+#include <iostream>
 #include <map>
 
 namespace http {
@@ -53,7 +54,7 @@ static void query_get(std::string &response, const map_str &header,
   server_config serverConfig("127.0.0.1", "8000", "lol", 21,
                              "/pages/simple"
                              ".html", routes);
-      ResponseBuilder(serverConfig, header, path).build_response();
+     response = ResponseBuilder(serverConfig, header, path).build_response();
 };
 
 static void query_post(std::string &response, const map_str &header,
