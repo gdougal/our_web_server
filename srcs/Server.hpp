@@ -14,10 +14,22 @@
 
 
 
-template <typename PROTOCOL_HANDLER, typename t_data>
+template <typename types>
 class Server {
 public:
-	Server(const std::list<server_config>& cfg) {
+	Server(const typename types::datatypes& cfg) {
+		for (auto& item : cfg ) {
+			serv_.emplace_back(
+					std::make_shared<virtual_server>(
+							fd_creator::create_listen_socket(item.host, item.port),
+							item )
+			);
+		}
+		logfile_ = open("logfile.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+		if (logfile_ < 0)
+			throw std::runtime_error("Can't create file");
+	};
+	Server(const std::list<typename types::datatypes>& cfg) {
 		for (auto& item : cfg ) {
 			serv_.emplace_back(
 			std::make_shared<virtual_server>(
@@ -85,27 +97,27 @@ private:
 		for (auto& v_serv: serv_) {
 			if (FD_ISSET(v_serv->serv_fd_, &read_fds_) &&
 					(client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
-				v_serv->clients_.emplace_back( new Client<PROTOCOL_HANDLER, t_data>(client_fd, logfile_, new PROTOCOL_HANDLER));
+				v_serv->clients_.emplace_back( new Client<types>(client_fd, logfile_, new typename types::protocol));
 			}
 		}
 	}
 	struct virtual_server {
-		int							serv_fd_;
+		int					serv_fd_;
 		server_config		config_data;
-		std::list<std::shared_ptr<Client<PROTOCOL_HANDLER, t_data>> > clients_;
+		std::list<std::shared_ptr< Client<types> > > clients_;
 
-		virtual_server(int servFd, const server_config &configData) : serv_fd_(
+		virtual_server(int servFd, const typename types::datatypes &configData) : serv_fd_(
 						servFd), config_data(configData) {}
 
 		virtual ~virtual_server() {
 			close(serv_fd_);
 		}
 	};
-	int																	max_fd_;
-	fd_set															read_fds_;
-	fd_set															write_fds_;
+	int											max_fd_;
+	fd_set										read_fds_;
+	fd_set										write_fds_;
 	std::list<std::shared_ptr<virtual_server> >	serv_;
-	int																	logfile_;
+	int											logfile_;
 };
 
 #endif //PROXY_SERVER_SERVER_HPP

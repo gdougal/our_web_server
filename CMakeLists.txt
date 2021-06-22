@@ -9,7 +9,7 @@ set(My_SRCS
         srcs/config/Handler.cpp
         srcs/config/repository/ConfigRepository.hpp srcs/config/repository/RouteEntity.hpp
         srcs/builders/ResponseBuilder.cpp srcs/builders/ResponseBuilder.hpp
-        srcs/http_stuff.hpp)
+        srcs/http_stuff.hpp srcs/manual_types.h)
 
 add_executable(web_server
         main.cpp

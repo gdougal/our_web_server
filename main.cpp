@@ -7,7 +7,6 @@ void pipe(int l) {
 	sigignore(l);
 }
 
-
 int main()
 {
 	std::list<route> routes;
@@ -25,7 +24,7 @@ int main()
 	std::string path("./config.txt");
 	std::list<server_config> cfgs;
 	cfgs.emplace_back(serverConfig);
-	Server<http::Handler, server_config> serv(cfgs);
+	Server<http_types> serv(cfgs);
 	serv.run_server();
 	return 0;
 }

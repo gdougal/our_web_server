@@ -9,21 +9,22 @@
 #include "cstring"
 #include <netinet/in.h>
 #include "ConfigRepository.hpp"
+#include "manual_types.h"
 
 #define PORTION_SIZE 65000
 
 enum state { READ_FROM_CLIENT, SEND_TO_CLIENT, FINALL };
 
-template <class PROTOCOL, typename t_data>
+template <class types>
 class Client {
 	enum state										cur_state_;
-	int														fd_;
+	int												fd_;
 	std::string										buffer_;
-	BaseClientHandler<t_data>*		handler_;
-	int														outfile_;
-	char*													g_recv_buffer;
+	BaseClientHandler<typename types::datatypes>*	handler_;
+	int												outfile_;
+	char*											g_recv_buffer;
 public:
-	Client(int client_fd, int file, BaseClientHandler<t_data>* type_client)  :
+	Client(int client_fd, int file, BaseClientHandler<typename types::datatypes>* type_client)  :
 					fd_(client_fd),
 					outfile_(file) {
 		cur_state_ = state::READ_FROM_CLIENT;
@@ -53,7 +54,7 @@ public:
 			}
 		}
 	}
-  void	send_to_client(const t_data& data) {
+  void	send_to_client(const typename types::datatypes& data) {
 		std::string http(handler_->create_response(data));
 		buffer_.clear();
 		if (send(fd_, http.c_str(), http.size(), 0)/*;*/ <= 0) {
