@@ -6,8 +6,8 @@
 #include <http_stuff.hpp>
 
 ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
-                                 map<string, string> headers,
-                                 pair<string, string> path)
+                                 const map<string, string>& headers,
+                                 const pair<string, string>& path)
     : serverConfig(serverConfig), headers(headers), path(path) {}
 
 bool ResponseBuilder::search_file(methods qurey_type) {
@@ -21,7 +21,7 @@ bool ResponseBuilder::search_file(methods qurey_type) {
 string ResponseBuilder::build_response(methods qurey_type) {
   if (!search_file(qurey_type))
     return build_error(404);
-  std::ifstream page("/Users/lmallado/Desktop/our_web_server" + path.second);
+  std::ifstream page("/home/gdougal/Documents/project_scchool21/our_web_server" + path.second);
   std::string body;
   std::string tmp;
   while (std::getline(page, tmp)) {
@@ -37,8 +37,8 @@ string ResponseBuilder::build_headers() { return std::string(); }
 
 bool ResponseBuilder::get_route() {
   pair<int, route> max_equals(0, serverConfig.routes.front());
-  list<route>::iterator first = serverConfig.routes.begin();
-  list<route>::iterator last = serverConfig.routes.end();
+  list<route>::const_iterator first = serverConfig.routes.begin();
+  list<route>::const_iterator last = serverConfig.routes.end();
 
   list<list<string>> res;
   while (first != last) {

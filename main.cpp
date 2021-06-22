@@ -16,9 +16,11 @@ int main()
 	allowed_methods.push_back(methods(HEAD));
 	routes.push_back(route("/", false, "/pages/simple.html", "/pages/lyubaya.html",
 												 "/pages/lyubaya.html", allowed_methods));
+	std::map<int, std::string > error_page;
+	error_page.insert(std::make_pair(1, "/pages/simple"));
 	server_config serverConfig("127.0.0.1", "8000", "lol", 21,
-														 "/pages/simple"
-														 ".html", routes);
+														 error_page,
+														 routes);
 	signal(SIGPIPE, pipe);
 	std::string path("./config.txt");
 	std::list<server_config> cfgs;

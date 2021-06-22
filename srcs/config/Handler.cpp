@@ -120,7 +120,7 @@ namespace http {
 
 	const		std::string Handler::create_response(const server_config& config) {
 		std::string response;
-		http::methods.find(methos_and_path_.first)->second(response, query_, methos_and_path_, dynamic_cast<const server_config&>(config) );
+		http::methods.find(methos_and_path_.first)->second(config, response, query_, methos_and_path_);
 		after_all();
 		return (response);
 	}
