@@ -14,10 +14,10 @@
 
 
 
-template <typename types>
+template <typename types, typename protocol_handler = typename types::protocol, typename data_type = typename types::datatypes>
 class Server {
 public:
-	Server(const typename types::datatypes& cfg) {
+	Server(const data_type& cfg) {
 		for (auto& item : cfg ) {
 			serv_.emplace_back(
 					std::make_shared<virtual_server>(
@@ -29,7 +29,7 @@ public:
 		if (logfile_ < 0)
 			throw std::runtime_error("Can't create file");
 	};
-	Server(const std::list<typename types::datatypes>& cfg) {
+	Server(const std::list<data_type> cfg) {
 		for (auto& item : cfg ) {
 			serv_.emplace_back(
 			std::make_shared<virtual_server>(
@@ -97,7 +97,7 @@ private:
 		for (auto& v_serv: serv_) {
 			if (FD_ISSET(v_serv->serv_fd_, &read_fds_) &&
 					(client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
-				v_serv->clients_.emplace_back( new Client<types>(client_fd, logfile_, new typename types::protocol));
+				v_serv->clients_.emplace_back( new Client<types>(client_fd, logfile_, new protocol_handler));
 			}
 		}
 	}
@@ -106,7 +106,7 @@ private:
 		server_config		config_data;
 		std::list<std::shared_ptr< Client<types> > > clients_;
 
-		virtual_server(int servFd, const typename types::datatypes &configData) : serv_fd_(
+		virtual_server(int servFd, const data_type& configData) : serv_fd_(
 						servFd), config_data(configData) {}
 
 		virtual ~virtual_server() {

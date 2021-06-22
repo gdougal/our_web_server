@@ -15,16 +15,16 @@
 
 enum state { READ_FROM_CLIENT, SEND_TO_CLIENT, FINALL };
 
-template <class types>
+template <typename types, typename protocol_handler = typename types::protocol, typename data_type = typename types::datatypes>
 class Client {
-	enum state										cur_state_;
-	int												fd_;
-	std::string										buffer_;
-	BaseClientHandler<typename types::datatypes>*	handler_;
-	int												outfile_;
-	char*											g_recv_buffer;
+	enum state						cur_state_;
+	int								fd_;
+	std::string						buffer_;
+	BaseClientHandler<data_type>*	handler_;
+	int								outfile_;
+	char*							g_recv_buffer;
 public:
-	Client(int client_fd, int file, BaseClientHandler<typename types::datatypes>* type_client)  :
+	Client(int client_fd, int file, BaseClientHandler<data_type>* type_client)  :
 					fd_(client_fd),
 					outfile_(file) {
 		cur_state_ = state::READ_FROM_CLIENT;
@@ -54,7 +54,7 @@ public:
 			}
 		}
 	}
-  void	send_to_client(const typename types::datatypes& data) {
+  void	send_to_client(const data_type& data) {
 		std::string http(handler_->create_response(data));
 		buffer_.clear();
 		if (send(fd_, http.c_str(), http.size(), 0)/*;*/ <= 0) {
