@@ -24,7 +24,7 @@ int main()
 	std::string path("./config.txt");
 	std::list<server_config> cfgs;
 	cfgs.emplace_back(serverConfig);
-	Server<http_types> serv(cfgs);
+	Server<http::types> serv(cfgs);
 	serv.run_server();
 	return 0;
 }

@@ -10,11 +10,9 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include "manual_types.h"
 
 namespace http {
-
-typedef std::map<std::string, std::string> map_str;
-typedef std::pair<std::string, std::string> pair_str;
 
 namespace query_type {
 static const char GET[] = "GET";
@@ -45,11 +43,6 @@ static const char bad_request[] =
 
 static void query_get(const server_config& serverConfig, std::string &response, const map_str &header,
                       const pair_str &path) {
-  std::list<route> routes;
-  std::list<methods> allowed_methods;
-  allowed_methods.push_back(methods(GET));
-  allowed_methods.push_back(methods(HEAD));
-  std::list<pair<int, string>> error_pages;
   response = ResponseBuilder(serverConfig, header, path).build_response(methods(GET));
 };
 

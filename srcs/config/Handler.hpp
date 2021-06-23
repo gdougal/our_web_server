@@ -9,12 +9,13 @@
 #include <unistd.h>
 #include "RouteEntity.hpp"
 #include "ConfigRepository.hpp"
+#include "manual_types.h"
 
 template <typename data_type>
 class BaseClientHandler {
 public:
-	virtual bool							query_parsing(const std::string &) = 0;
-	virtual bool							is_recvest_end(const std::string &) const = 0;
+	virtual bool							      query_parsing(const std::string &) = 0;
+	virtual bool							      is_recvest_end(const std::string &) const = 0;
 	virtual const std::string				create_response(const data_type& data) = 0;
 	virtual ~BaseClientHandler() = default;
 
@@ -24,8 +25,6 @@ public:
 
 namespace http {
 
-	typedef std::map<std::string, std::string> map_str;
-	typedef std::pair<std::string, std::string> pair_str;
 
 	class Handler : public BaseClientHandler<server_config> {
 

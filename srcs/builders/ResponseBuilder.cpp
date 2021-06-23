@@ -21,7 +21,7 @@ bool ResponseBuilder::search_file(methods qurey_type) {
 string ResponseBuilder::build_response(methods qurey_type) {
   if (!search_file(qurey_type))
     return build_error(404);
-  std::ifstream page("/home/gdougal/Documents/project_scchool21/our_web_server" + path.second);
+  std::ifstream page("/home/local/REGION/as.doynikov/clion_pj/hm" + path.second);
   std::string body;
   std::string tmp;
   while (std::getline(page, tmp)) {

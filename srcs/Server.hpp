@@ -97,7 +97,7 @@ private:
 		for (auto& v_serv: serv_) {
 			if (FD_ISSET(v_serv->serv_fd_, &read_fds_) &&
 					(client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
-				v_serv->clients_.emplace_back( new Client<types>(client_fd, logfile_, new protocol_handler));
+				v_serv->clients_.emplace_back( new Client<types>(client_fd, logfile_));
 			}
 		}
 	}

@@ -9,7 +9,6 @@
 #include "cstring"
 #include <netinet/in.h>
 #include "ConfigRepository.hpp"
-#include "manual_types.h"
 
 #define PORTION_SIZE 65000
 
@@ -24,11 +23,11 @@ class Client {
 	int								outfile_;
 	char*							g_recv_buffer;
 public:
-	Client(int client_fd, int file, BaseClientHandler<data_type>* type_client)  :
+	Client(int client_fd, int file)  :
 					fd_(client_fd),
 					outfile_(file) {
 		cur_state_ = state::READ_FROM_CLIENT;
-		handler_ = type_client;
+		handler_ = new protocol_handler;
 		g_recv_buffer = new char[PORTION_SIZE + 1];
 	}
   virtual ~Client() {
