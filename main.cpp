@@ -9,6 +9,8 @@ void pipe(int l) {
 
 int main()
 {
+	signal(SIGPIPE, pipe);
+	// TODO: Thies piece of data should filling by parsing part
 	std::list<route> routes;
 	std::list<methods> allowed_methods;
 	allowed_methods.push_back(methods(GET));
@@ -20,10 +22,13 @@ int main()
 	server_config serverConfig("127.0.0.1", "8000", "lol", 21,
 														 error_page,
 														 routes);
-	signal(SIGPIPE, pipe);
-	std::string path("./config.txt");
+	// TODO: Thies piece of data should filling by parsing part
+
 	std::list<server_config> cfgs;
 	cfgs.emplace_back(serverConfig);
+
+
+
 	Server<http::types> serv(cfgs);
 	serv.run_server();
 	return 0;

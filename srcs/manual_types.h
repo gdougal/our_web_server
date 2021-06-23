@@ -11,6 +11,17 @@ struct Itypes {
 	typedef std::nullptr_t datatypes; //type of data
 };
 
+template <typename data_type>
+class BaseClientHandler {
+public:
+		virtual bool							      query_parsing(const std::string &) = 0;
+		virtual bool							      is_recvest_end(const std::string &) const = 0;
+		virtual const std::string				create_response(const data_type& data) = 0;
+		virtual ~BaseClientHandler() = default;
+
+		// отладочная
+		virtual void logger(const std::string &logs, int fd) const = 0;
+};
 
 namespace http {
 		class Handler;
