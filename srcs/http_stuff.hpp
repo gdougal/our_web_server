@@ -10,9 +10,11 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include "manual_types.h"
 
 namespace http {
+
+typedef std::map<std::string, std::string> map_str;
+typedef std::pair<std::string, std::string> pair_str;
 
 namespace query_type {
 static const char GET[] = "GET";
@@ -41,24 +43,49 @@ static const char bad_request[] =
                         text/html\r\nContent-Length:
                         126\r\n */
 
-static void query_get(const server_config& serverConfig, std::string &response, const map_str &header,
+static void query_get(const server_config& config, std::string &response,
+                      const map_str &header,
                       const pair_str &path) {
-  response = ResponseBuilder(serverConfig, header, path).build_response(methods(GET));
+  std::list<route> routes;
+  std::list<methods> allowed_methods;
+  allowed_methods.push_back(methods(GET));
+  allowed_methods.push_back(methods(HEAD));
+  std::map<int, string> error_pages;
+  error_pages.insert(pair<int, string>(404, "/pages/error_pages.html"));
+  routes.push_back(route("/pages/some/", "/data/www", false, "simple.html",
+                         "/pages/lyubaya.html", "/pages/lyubaya.html",
+                         allowed_methods));
+  routes.push_back(route("/", "/pages_root", false, "simple.html",
+                         "/pages/lyubaya.html", "/pages/lyubaya.html",
+                         allowed_methods));
+
+  routes.push_back(route("/data/www/html/", "/pages_root", false, "simple.html"
+                                                    ".html",
+                         "/pages/lyubaya.html", "/pages/lyubaya.html",
+                         allowed_methods));
+
+  server_config serverConfig("127.0.0.1", "8000", "lol", 21, error_pages,
+                             routes);
+  response =
+      ResponseBuilder(serverConfig, header, path).build_response(methods(GET));
 };
 
-static void query_post(const server_config& serverConfig, std::string &response, const map_str &header,
+static void query_post(const server_config& config, std::string &response,
+                       const map_str &header,
                        const pair_str &path) {
   response = "Я не ебу, что делать";
   std::cout << response << std::endl;
 };
 
-static void query_delete(const server_config& serverConfig, std::string &response, const map_str &header,
+static void query_delete(const server_config& config, std::string &response,
+                         const map_str &header,
                          const pair_str &path) {
   response = "Я тоже не ебу, что делать";
   std::cout << response << std::endl;
 };
 
-static void query_head(const server_config& serverConfig, std::string &response, const map_str &header,
+static void query_head(const server_config& config, std::string &response,
+                       const map_str &header,
                        const pair_str &path) {
   response = "Я тоже не ебу, что делать";
   std::cout << response << std::endl;

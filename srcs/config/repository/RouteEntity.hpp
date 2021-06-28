@@ -13,6 +13,7 @@ enum methods { GET, POST, DELETE, HEAD, };
 using namespace std;
 
 struct route {
+  string location;
   string directory;
   bool autoindex;
   string index_file;
@@ -20,10 +21,10 @@ struct route {
   string cgi_path;
   std::list<methods> methods_allowed;
 
-  route(const string &directory,
+  route(const string &location, const string &directory,
         bool autoindex, const string &indexFile, const string &redirectPath,
         const string &cgiPath, std::list<methods> methodsAllowed)
-      : directory(directory), methods_allowed(methodsAllowed),
+      : location(location), directory(directory), methods_allowed(methodsAllowed),
         autoindex(autoindex), index_file(indexFile),
         redirect_path(redirectPath), cgi_path(cgiPath) {}
 };

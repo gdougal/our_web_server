@@ -15,7 +15,8 @@ int main()
 	std::list<methods> allowed_methods;
 	allowed_methods.push_back(methods(GET));
 	allowed_methods.push_back(methods(HEAD));
-	routes.push_back(route("/", false, "/pages/simple.html", "/pages/lyubaya.html",
+	routes.push_back(route("/", "direction", false, "/pages/simple.html",
+                               "/pages/lyubaya.html",
 												 "/pages/lyubaya.html", allowed_methods));
 	std::map<int, std::string > error_page;
 	error_page.insert(std::make_pair(1, "/pages/simple"));
