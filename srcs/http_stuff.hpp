@@ -51,9 +51,18 @@ static void query_get(std::string &response, const map_str &header,
   allowed_methods.push_back(methods(HEAD));
   std::list<pair<int, string>> error_pages;
   error_pages.push_back(pair<int, string>(404, "/pages/error_pages.html"));
-  routes.push_back(route("/", false, "/pages/simple.html",
+  routes.push_back(route("/pages/some/", "/data/www", false, "simple.html",
                          "/pages/lyubaya.html", "/pages/lyubaya.html",
                          allowed_methods));
+  routes.push_back(route("/", "/pages_root", false, "simple.html",
+                         "/pages/lyubaya.html", "/pages/lyubaya.html",
+                         allowed_methods));
+
+  routes.push_back(route("/data/www/html/", "/pages_root", false, "simple.html"
+                                                    ".html",
+                         "/pages/lyubaya.html", "/pages/lyubaya.html",
+                         allowed_methods));
+
   server_config serverConfig("127.0.0.1", "8000", "lol", 21, error_pages,
                              routes);
   response =
