@@ -10,6 +10,7 @@
 #include <repository/ConfigRepository.hpp>
 #include "AutoindexResonseBuilder.hpp"
 #include "ResponseUtils.hpp"
+#include "Client/request_data.hpp"
 
 using namespace std;
 
@@ -17,18 +18,15 @@ class ResponseBuilder {
 
 private:
   server_config serverConfig;
-  map<string, string> &headers;
-  pair<string, string> path;
   string search_file(route *r);
   string build_headers();
+  const t_request_data& request_data;
   list<list<string>> server_routes;
   route *get_route();
   list<string> getDirectoryList(string src);
   string read_from_file(string path_res);
 public:
-  ResponseBuilder(const server_config &serverConfig, map<string, string>
-      headers,
-                  pair<string, string> path);
+  ResponseBuilder(const server_config &serverConfig, const t_request_data& data);
   string build_response(methods qurey_type);
   virtual ~ResponseBuilder();
 };

@@ -45,7 +45,7 @@ namespace http {
 		while (position_ < first_block) {
 			pair_str insert_pair(pair_maker(fo_pars, http::delim_base));
 			if (!insert_pair.first.empty())
-				query_.insert(insert_pair);
+				header_.insert(insert_pair);
 		}
 		position_ = first_block + strlen(http::query_end);
 	}
@@ -71,12 +71,12 @@ namespace http {
 
 	bool			Handler::is_recvest_rly_end(const std::string &fo_pars) {
 		map_str::const_iterator find;
-		if (( find = query_.find(header::encoding) ) != query_.end()) {
+		if (( find = header_.find(header::encoding) ) != header_.end()) {
 			if (find->second == header::chunked) {
 				body_parse = parse_body_chunked;
 			}
 		}
-		else if ((find = query_.find(header::cont_len) ) != query_.end()) {
+		else if ((find = header_.find(header::cont_len) ) != header_.end()) {
 			body_length_ = std::stoi(find->second);
 			body_parse = parse_body_length;
 		}
@@ -119,15 +119,14 @@ namespace http {
 	}
 
 	const		std::string Handler::create_response(const server_config& config) {
-		std::string response;
-		http::methods.find(methos_and_path_.first)->second(config, response, query_, methos_and_path_);
+		std::string response(http::methods.find(methos_and_path_.first)->second(config, t_request_data{header_, methos_and_path_, body_}));
 		after_all();
 		return (response);
 	}
 
 	void Handler::after_all() {
 		position_ = 0;
-		query_.clear();
+		header_.clear();
 		body_.clear();
 		body_parse = nullptr;
 		body_length_ = 0;

@@ -14,10 +14,9 @@ string AutoindexResonseBuilder::build(server_config serverConfig, string path,
   page += generateHead(index_directory);
   for (struct dirent *dir = readdir(current_dir); dir;
        dir = readdir(current_dir)) {
-    page += generateDirLink(string(dir->d_name), path, serverConfig);
+    page += generateDirLink(string(dir->d_name), index_directory, serverConfig);
   }
   page += generateEnd();
-  cout << page << endl;
   closedir(current_dir);
   return page;
 }
@@ -37,10 +36,11 @@ string AutoindexResonseBuilder::generateEnd() {
          "</html>";
 }
 
-string AutoindexResonseBuilder::generateDirLink(string dir_name, string path,
+string AutoindexResonseBuilder::generateDirLink(string dir_name, string
+                                                                     index_directory,
                                                 server_config serverConfig) {
   stringstream ss;
   ss << "<p><a href=\"http://" + serverConfig.host + ":" << serverConfig.port
-     << "/" + dir_name + "\\" + "\">" + dir_name + "</a></p>";
+     <<  index_directory + dir_name + "\">" + dir_name + "</a></p>";
   return ss.str();
 }

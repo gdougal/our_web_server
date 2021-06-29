@@ -9,7 +9,7 @@
 #include "RouteEntity.hpp"
 #include <fstream>
 #include <iostream>
-#include <map>
+#include "request_data.hpp"
 
 namespace http {
 
@@ -43,9 +43,7 @@ static const char bad_request[] =
                         text/html\r\nContent-Length:
                         126\r\n */
 
-static void query_get(const server_config& config, std::string &response,
-                      const map_str &header,
-                      const pair_str &path) {
+	static std::string query_get(const server_config& config, const t_request_data& data) {
   std::list<route> routes;
   std::list<methods> allowed_methods;
   allowed_methods.push_back(methods(GET));
@@ -66,38 +64,27 @@ static void query_get(const server_config& config, std::string &response,
 
   server_config serverConfig("127.0.0.1", "8000", "lol", 21, error_pages,
                              routes);
-  response =
-      ResponseBuilder(serverConfig, header, path).build_response(methods(GET));
-};
+		return ResponseBuilder(serverConfig, data).build_response(methods(GET));
+	};
 
-static void query_post(const server_config& config, std::string &response,
-                       const map_str &header,
-                       const pair_str &path) {
-  response = "Я не ебу, что делать";
-  std::cout << response << std::endl;
-};
+	static std::string query_post(const server_config& config, const t_request_data& data) {
+		return "Я не ебу, что делать";
+	};
 
-static void query_delete(const server_config& config, std::string &response,
-                         const map_str &header,
-                         const pair_str &path) {
-  response = "Я тоже не ебу, что делать";
-  std::cout << response << std::endl;
-};
+	static std::string query_delete(const server_config& config, const t_request_data& data) {
+		return "Я тоже не ебу, что делать";
+	};
 
-static void query_head(const server_config& config, std::string &response,
-                       const map_str &header,
-                       const pair_str &path) {
-  response = "Я тоже не ебу, что делать";
-  std::cout << response << std::endl;
-};
+	static std::string query_head(const server_config& config, const t_request_data& data) {
+		return "Я тоже не ебу, что делать";
+	};
 
 namespace {
-typedef void(t_f)(const server_config&, std::string &, const map_str &, const pair_str &);
+typedef std::string(t_f)(const server_config&, const t_request_data&);
 struct functor {
   t_f *function;
-  void operator()(const server_config& serverConfig, std::string &response, const map_str &header,
-                  const pair_str &path) const {
-    (*function)(serverConfig, response, header, path);
+  std::string operator()(const server_config& serverConfig,  const t_request_data& data) const {
+    return (*function)(serverConfig, data);
   };
   explicit functor(t_f *function) : function(function) {}
 };

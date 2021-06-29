@@ -5,10 +5,8 @@
 #include "ResponseBuilder.hpp"
 #include <http_stuff.hpp>
 
-ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
-                                 map<string, string> headers,
-                                 pair<string, string> path)
-    : serverConfig(serverConfig), headers(headers), path(path) {
+ResponseBuilder::ResponseBuilder(const server_config &serverConfig,  const t_request_data& data)
+    : serverConfig(serverConfig), request_data(data) {
   pair<int, route> max_equals(0, serverConfig.routes.front());
   list<route>::const_iterator first = serverConfig.routes.begin();
   list<route>::const_iterator last = serverConfig.routes.end();
@@ -23,8 +21,8 @@ string ResponseBuilder::search_file(route *r) {
   if (r == nullptr)
     return "";
   path_res = r->directory + r->location +
-             path.second.substr(r->location.length(),
-                                path.second.length() - r->location.length());
+             request_data.path.second.substr(r->location.length(),
+                                             request_data.path.second.length() - r->location.length());
   if (ResponseUtils::is_directory(path_res))
     path_res += r->index_file;
   return path_res;
@@ -34,7 +32,17 @@ string ResponseBuilder::build_response(methods qurey_type) {
   route *r = get_route();
   string path_res = search_file(r);
   std::string body;
-
+  cout << path_res << endl;
+  switch (qurey_type) {
+    case methods::GET:
+    break;
+    case methods::POST:
+    break;
+    case methods::DELETE:
+    break;
+    case methods::HEAD:
+    break;
+  }
   if (ResponseUtils::is_directory(path_res) && r->autoindex)
     body = AutoindexResonseBuilder().build(
         serverConfig,  PATH_TO_ROOT + path_res,
@@ -48,7 +56,7 @@ string ResponseBuilder::build_response(methods qurey_type) {
 string ResponseBuilder::build_headers() { return std::string(); }
 
 route *ResponseBuilder::get_route() {
-  list<string> request_directories = getDirectoryList(path.second);
+  list<string> request_directories = getDirectoryList(request_data.path.second);
   route *result = nullptr;
 
   list<list<string>>::iterator first_server_routes = server_routes.begin();
