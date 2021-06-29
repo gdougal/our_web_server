@@ -9,6 +9,7 @@
 #include <map>
 #include <repository/ConfigRepository.hpp>
 #include "AutoindexResonseBuilder.hpp"
+#include "ResponseUtils.hpp"
 
 using namespace std;
 
@@ -19,7 +20,6 @@ private:
   map<string, string> &headers;
   pair<string, string> path;
   string search_file(route *r);
-  string build_error(int error_code);
   string build_headers();
   list<list<string>> server_routes;
   route *get_route();

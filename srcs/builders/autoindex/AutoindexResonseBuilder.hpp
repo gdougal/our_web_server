@@ -12,12 +12,13 @@ using namespace std;
 
 class AutoindexResonseBuilder {
 private:
-    string  generateDirLink(string const dir_name, std::string const &path, server_config serverConfig);
-    string generateLinks();
-    string generateHead();
+    string generateDirLink(string dir_name, string path, server_config
+                                                           serverConfig);
+    string generateHead(string path);
     string generateEnd();
+
 public:
-  string build(server_config serverConfig, string path);
+  string build(server_config serverConfig, string path, string index_directory);
 };
 
 #endif // WEB_SERVER_AUTOINDEXRESONSEBUILDER_HPP
