@@ -5,8 +5,12 @@
 #ifndef WEB_SERVER_AUTOINDEXRESONSEBUILDER_HPP
 #define WEB_SERVER_AUTOINDEXRESONSEBUILDER_HPP
 
-class AutoindexResonseBuilder {
+#include <string>
+using namespace std;
 
+class AutoindexResonseBuilder {
+public:
+  string build(string path);
 };
 
 #endif // WEB_SERVER_AUTOINDEXRESONSEBUILDER_HPP

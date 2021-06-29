@@ -3,3 +3,4 @@
 //
 
 #include "AutoindexResonseBuilder.hpp"
+string AutoindexResonseBuilder::build(string path) { return std::string(); }

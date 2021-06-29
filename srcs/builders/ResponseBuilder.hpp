@@ -8,6 +8,7 @@
 #include "ConfigRepository.hpp"
 #include <map>
 #include <repository/ConfigRepository.hpp>
+#include "AutoindexResonseBuilder.hpp"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ private:
   server_config serverConfig;
   map<string, string> &headers;
   pair<string, string> path;
-  string search_file();
+  string search_file(route *r);
   string build_error(int error_code);
   string build_headers();
   list<list<string>> server_routes;

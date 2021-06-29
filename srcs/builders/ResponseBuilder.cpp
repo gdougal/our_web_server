@@ -18,9 +18,8 @@ ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
   }
 }
 
-string ResponseBuilder::search_file() {
+string ResponseBuilder::search_file(route *r) {
   string path_res;
-  route *r = get_route();
   if (r == nullptr)
     return "";
   path_res = r->directory + r->location +
@@ -32,9 +31,10 @@ string ResponseBuilder::search_file() {
 }
 
 string ResponseBuilder::build_response(methods qurey_type) {
-  string path_res = search_file();
-  if (path_res.c_str()[path_res.length() - 1] == '/')
-
+  route *r = get_route();
+  string path_res = search_file(r);
+  if (path_res.c_str()[path_res.length() - 1] == '/' && r->autoindex)
+    return AutoindexResonseBuilder().build(path_res);
     std::ifstream page("/Users/lmallado/Desktop/our_web_server" + path_res);
   std::string body;
   std::string tmp;
