@@ -6,7 +6,7 @@
 #define PROXY_SERVER_SERVER_HPP
 
 #include "ConfigParser.hpp"
-#include "client.hpp"
+#include "Client/client.hpp"
 #include "fd_creator.hpp"
 #include <list>
 
