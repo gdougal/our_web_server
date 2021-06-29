@@ -33,7 +33,9 @@ string ResponseBuilder::search_file() {
 
 string ResponseBuilder::build_response(methods qurey_type) {
   string path_res = search_file();
-  std::ifstream page("/Users/lmallado/Desktop/our_web_server" + path_res);
+  if (path_res.c_str()[path_res.length() - 1] == '/')
+
+    std::ifstream page("/Users/lmallado/Desktop/our_web_server" + path_res);
   std::string body;
   std::string tmp;
   while (std::getline(page, tmp)) {
@@ -42,8 +44,6 @@ string ResponseBuilder::build_response(methods qurey_type) {
   return http::request_init + std::to_string(body.length()) + http::query_end +
          body;
 }
-
-string ResponseBuilder::build_error(int error_code) { return std::string(); }
 
 string ResponseBuilder::build_headers() { return std::string(); }
 
