@@ -55,7 +55,7 @@ static void query_get(const server_config& config, std::string &response,
   routes.push_back(route("/pages/some/", "/data/www", false, "simple.html",
                          "/pages/lyubaya.html", "/pages/lyubaya.html",
                          allowed_methods));
-  routes.push_back(route("/", "/pages_root", false, "simple.html",
+  routes.push_back(route("/", "/pages_root", true, "",
                          "/pages/lyubaya.html", "/pages/lyubaya.html",
                          allowed_methods));
 

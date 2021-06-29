@@ -24,6 +24,7 @@ private:
   list<list<string>> server_routes;
   route *get_route();
   list<string> getDirectoryList(string src);
+  string read_from_file(string path_res);
 public:
   ResponseBuilder(const server_config &serverConfig, map<string, string>
       headers,
