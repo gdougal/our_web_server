@@ -1,0 +1,34 @@
+server:
+	host: 127.0.0.1 // функциональное - создание сокета
+	port: 8080 // функциональное - создание сокета
+	server_name: 404 // для ответа
+	error_page: 402 /error_pages_402.html
+    limit_body_size: 34
+	error_page: путь до страницы с ошибкой
+	routes:
+		route: “/”
+			directory: хде искать
+			methods_allowed: GET POST
+			redirection:
+            autoindex: on/off
+            index_file: index.html
+        route: “/huita”
+	        cgi_path: .bla resources/cgi_tester
+	        methods_allowed: какие запросы можно GET POST bla bla
+
+server:
+	host: 127.0.0.1
+	port: 80
+	server_name: kek
+limit_body_size:
+	error_page: путь до страницы с ошибкой
+	routes:
+		route: “/”
+			directory: хде искать
+			methods_allowed: GET
+			redirection:
+            autoindex: on/off
+            index_file: index.html
+        route: “/huita”
+	        cgi_path: .bla resources/cgi_tester
+	        methods_allowed: какие запросы можно GET POST bla bla
