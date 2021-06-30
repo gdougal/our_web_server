@@ -3,6 +3,7 @@
 //
 
 #include "HeadersBuilder.hpp"
+
 string HeadersBuilder::build(int response_code, string response_description,
                              connection connectionType,
                              content_type contentType, int contentLength) {

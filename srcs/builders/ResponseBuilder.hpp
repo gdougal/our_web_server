@@ -29,6 +29,7 @@ public:
   ResponseBuilder(const server_config &serverConfig, const t_request_data& data);
   string build_response(methods qurey_type);
   virtual ~ResponseBuilder();
+
 };
 
 #endif // WEB_SERVER_RESPONSEBUILDER_HPP

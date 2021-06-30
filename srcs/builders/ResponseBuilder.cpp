@@ -46,7 +46,7 @@ string ResponseBuilder::build_response(methods qurey_type) {
       }
       break;
     }
-    case methods::POST: {
+    case methods::HEAD: {
 
       break;
     }
@@ -54,11 +54,11 @@ string ResponseBuilder::build_response(methods qurey_type) {
 
       break;
     }
-    case methods::DELETE: {
+    case methods::POST: {
 
       break;
     }
-    case methods::HEAD: {
+    case methods::DELETE: {
 
       break;
     }
