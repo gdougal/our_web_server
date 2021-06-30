@@ -10,11 +10,24 @@
 class Post {
 private:
 
-public:
 	Post() = delete;
 	Post(const Post &ref) = delete;
 	Post &operator=(const Post &ref) = delete;
-//	static const std::string	put(const pair<std::string, std::string>&, );
+public:
+	static const int	put(const std::string& filename, const t_request_data& data) {
+		std::ofstream	outfile;
+		outfile.open( filename.c_str() );
+		if (outfile.is_open()) {
+			outfile.write(data.body.c_str(), data.body.size());
+			return 204;
+		}
+		else {
+			outfile.open(filename.c_str());
+			outfile.write(data.body.c_str(), data.body.size());
+			return 201;
+		}
+	};
+
 	virtual ~Post() {};
 };
 

@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include <csignal>
 #include <iostream>
+#include "Post.hpp"
 
 using std::string;
 using std::list;
