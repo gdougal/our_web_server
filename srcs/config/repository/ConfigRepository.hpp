@@ -27,6 +27,8 @@ struct server_config {
       : host(host), port(port), server_name(serverName),
         error_pages_paths(errorPagesPaths), routes(routes),
         client_body_size(client_body_size) {}
+
+    server_config() {}
 };
 
 #endif // WEB_SERVER_CONFIGREPOSITORY_HPP

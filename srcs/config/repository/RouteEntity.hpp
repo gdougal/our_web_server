@@ -27,6 +27,9 @@ struct route {
       : location(location), directory(directory), methods_allowed(methodsAllowed),
         autoindex(autoindex), index_file(indexFile),
         redirect_path(redirectPath), cgi_path(cgiPath) {}
+
+    route() {}
+
 };
 
 #endif // WEB_SERVER_ROUTEENTITY_HPP
