@@ -13,8 +13,12 @@ using namespace std;
 
 static const string PATH_TO_ERROR_PAGES = "/default_error_pages/";
 static const map<int, string> default_error_pages = {
+    {400, PATH_TO_ERROR_PAGES + "400.html"},
     {404, PATH_TO_ERROR_PAGES + "404.html"},
     {403, PATH_TO_ERROR_PAGES + "403.html"},
+    {405, PATH_TO_ERROR_PAGES + "405.html"},
+    {413, PATH_TO_ERROR_PAGES + "413.html"},
+    {500, PATH_TO_ERROR_PAGES + "500.html"}
     };
 
 class ErrorBuilder {

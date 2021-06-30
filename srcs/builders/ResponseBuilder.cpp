@@ -3,11 +3,10 @@
 //
 
 #include "ResponseBuilder.hpp"
-#include <http_stuff.hpp>
 
-ResponseBuilder::ResponseBuilder(const server_config &serverConfig,  const t_request_data& data)
+ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
+                                 const t_request_data &data)
     : serverConfig(serverConfig), request_data(data) {
-  pair<int, route> max_equals(0, serverConfig.routes.front());
   list<route>::const_iterator first = serverConfig.routes.begin();
   list<route>::const_iterator last = serverConfig.routes.end();
   while (first != last) {
@@ -22,7 +21,8 @@ string ResponseBuilder::search_file(route *r) {
     return "";
   path_res = r->directory + r->location +
              request_data.path.second.substr(r->location.length(),
-                                             request_data.path.second.length() - r->location.length());
+                                             request_data.path.second.length() -
+                                                 r->location.length());
   if (ResponseUtils::is_directory(path_res))
     path_res += r->index_file;
   return path_res;
@@ -33,38 +33,49 @@ string ResponseBuilder::build_response(methods qurey_type) {
   string path_res = search_file(r);
   std::string body;
 
+  if (!is_method_allowed(qurey_type, r))
+    return ErrorBuilder::build(405, serverConfig);
+
   switch (qurey_type) {
-    case methods::GET: {
-      if (ResponseUtils::is_directory(path_res) && r->autoindex)
-        body = AutoindexResonseBuilder().build(
-            serverConfig,  PATH_TO_ROOT + path_res,
-            request_data.path.second);
-      else {
-        body = ResponseUtils::read_from_file(path_res);
-        if (body.empty())
-          body = ErrorBuilder::build(404, serverConfig);
-      }
-      break;
+  case methods::GET: {
+    if (ResponseUtils::is_directory(path_res) && r->autoindex)
+      body = AutoindexResonseBuilder().build(
+          serverConfig, PATH_TO_ROOT + path_res, request_data.path.second);
+    else {
+      body = ResponseUtils::read_from_file(path_res);
+      if (body.empty())
+        return ErrorBuilder::build(404, serverConfig);
     }
-    case methods::HEAD: {
+    break;
+  }
+  case methods::HEAD: {
 
-      break;
-    }
-    case methods::PUT: {
+    break;
+  }
+  case methods::PUT: {
 
-      break;
+    break;
+  }
+  case methods::POST: {
+    if (!r->cgi_path.empty()) {
+     // run cgi post
+    } else {
+      // run post
     }
-    case methods::POST: {
-
-      break;
+    break;
+  }
+  case methods::DELETE: {
+    if (!r->cgi_path.empty()) {
+      // run cgi delete
+    } else {
+      // run delete
     }
-    case methods::DELETE: {
-
-      break;
-    }
+    break;
+  }
   }
 
-  return http::request_init + std::to_string(body.length()) + http::query_end +
+  return HeadersBuilder::build(200, connection(KEEP_ALIVE), content_type(HTML),
+                               body.length()) +
          body;
 }
 
@@ -126,6 +137,16 @@ list<string> ResponseBuilder::getDirectoryList(string src) {
   return res;
 }
 
+bool ResponseBuilder::is_method_allowed(methods request_method, route *r) {
+  list<methods>::iterator first = r->methods_allowed.begin();
+  list<methods>::iterator last = r->methods_allowed.end();
 
+  while (first != last) {
+    if (*first == request_method)
+      return true;
+    first++;
+  }
+  return false;
+}
 
 ResponseBuilder::~ResponseBuilder() {}

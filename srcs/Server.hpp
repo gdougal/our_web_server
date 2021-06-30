@@ -16,16 +16,7 @@ template <typename types, typename protocol_handler = typename types::protocol,
           typename data_type = typename types::datatypes>
 class Server {
 public:
-  Server(const data_type &cfg) {
-    for (auto &item : cfg) {
-      serv_.emplace_back(std::make_shared<virtual_server>(
-          fd_creator::create_listen_socket(item.host, item.port), item));
-    }
-    logfile_ = open("logfile.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
-    if (logfile_ < 0)
-      throw std::runtime_error("Can't create file");
-  };
-  Server(const std::list<data_type> cfg) {
+  explicit Server(const std::list<data_type>& cfg) {
     for (auto &item : cfg) {
       serv_.emplace_back(std::make_shared<virtual_server>(
           fd_creator::create_listen_socket(item.host, item.port), item));

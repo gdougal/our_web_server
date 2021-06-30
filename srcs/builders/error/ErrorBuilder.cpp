@@ -3,6 +3,7 @@
 //
 
 #include "ErrorBuilder.hpp"
+#include <HeadersBuilder.hpp>
 #include <iostream>
 
 string ErrorBuilder::build(const int &error_code, server_config serverConfig) {
@@ -15,5 +16,7 @@ string ErrorBuilder::build(const int &error_code, server_config serverConfig) {
     path_to_error_page = it->second;
   }
   string body = ResponseUtils::read_from_file(path_to_error_page);
-  return body;
+  return HeadersBuilder::build(error_code,
+                               connection(CLOSE), content_type(HTML),
+                               body.length()) + body;
 }

@@ -13,7 +13,7 @@
 using namespace std;
 
 enum connection {KEEP_ALIVE, CLOSE};
-enum content_type { HTML };
+enum content_type { HTML, CSS, JS, JPEG, PNG, BMP, UNDEFINED };
 
 struct server_config {
   string host = "127.0.0.1";

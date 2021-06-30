@@ -8,7 +8,7 @@
 #include "list"
 #include <string>
 
-enum methods { GET, POST, DELETE, HEAD, PUT };
+enum methods { GET, POST, DELETE, HEAD, PUT};
 
 using namespace std;
 

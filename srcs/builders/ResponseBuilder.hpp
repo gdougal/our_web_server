@@ -12,6 +12,8 @@
 #include "ResponseUtils.hpp"
 #include "Client/request_data.hpp"
 #include "ErrorBuilder.hpp"
+#include "ParseUtils.hpp"
+#include "HeadersBuilder.hpp"
 
 using namespace std;
 
@@ -25,6 +27,7 @@ private:
   list<list<string>> server_routes;
   route *get_route();
   list<string> getDirectoryList(string src);
+  bool is_method_allowed(methods request_method, route *r);
 public:
   ResponseBuilder(const server_config &serverConfig, const t_request_data& data);
   string build_response(methods qurey_type);

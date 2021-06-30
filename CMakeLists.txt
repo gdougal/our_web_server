@@ -12,6 +12,7 @@ include_directories(
         srcs/Client
         srcs/builders/response_utils
         srcs/builders/error
+        srcs/utils
 )
 set(My_SRCS
         srcs/config/ConfigParser.cpp
