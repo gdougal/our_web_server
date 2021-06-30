@@ -5,6 +5,7 @@
 #ifndef WEB_SERVER_POST_HPP
 #define WEB_SERVER_POST_HPP
 #include "ResponseBuilder.hpp"
+#include "fstream"
 
 
 class Post {
@@ -19,7 +20,8 @@ public:
 		outfile.open( filename.c_str() );
 		if (outfile.is_open()) {
 			outfile.write(data.body.c_str(), data.body.size());
-			return 204;
+			return 204; // TODO: will call headerBuildr and
+                                    // return std::string
 		}
 		else {
 			outfile.open(filename.c_str());

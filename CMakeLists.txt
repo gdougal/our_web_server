@@ -8,7 +8,7 @@ include_directories(
         srcs/config/repository
         srcs/builders
         srcs/builders/autoindex
-        srcs/builders/post_put
+        srcs/builders/methods
         srcs/Client
         srcs/builders/response_utils
         srcs/builders/error
@@ -22,7 +22,7 @@ set(My_SRCS
         srcs/manual_types.h
         srcs/builders/autoindex/AutoindexResonseBuilder.cpp
         srcs/builders/response_utils/HeadersBuilder.cpp
-        srcs/builders/post_put/Post.cpp
+        srcs/builders/methods/Post.cpp
         srcs/builders/response_utils/ResponseUtils.cpp
         srcs/builders/error/ErrorBuilder.cpp)
 
