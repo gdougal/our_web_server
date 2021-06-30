@@ -15,6 +15,7 @@ static const string PATH_TO_ROOT = "/Users/lmallado/Desktop/our_web_server";
 class ResponseUtils {
 public:
   static bool is_directory(const string &path);
+  static string read_from_file(string path_res);
 };
 
 #endif // WEB_SERVER_RESPONSEUTILS_HPP

@@ -32,23 +32,38 @@ string ResponseBuilder::build_response(methods qurey_type) {
   route *r = get_route();
   string path_res = search_file(r);
   std::string body;
-  cout << path_res << endl;
+
   switch (qurey_type) {
-    case methods::GET:
-    break;
-    case methods::POST:
-    break;
-    case methods::DELETE:
-    break;
-    case methods::HEAD:
-    break;
+    case methods::GET: {
+      if (ResponseUtils::is_directory(path_res) && r->autoindex)
+        body = AutoindexResonseBuilder().build(
+            serverConfig,  PATH_TO_ROOT + path_res,
+            request_data.path.second);
+      else {
+        body = ResponseUtils::read_from_file(path_res);
+        if (body.empty())
+          body = ErrorBuilder::build(404, serverConfig);
+      }
+      break;
+    }
+    case methods::POST: {
+
+      break;
+    }
+    case methods::PUT: {
+
+      break;
+    }
+    case methods::DELETE: {
+
+      break;
+    }
+    case methods::HEAD: {
+
+      break;
+    }
   }
-  if (ResponseUtils::is_directory(path_res) && r->autoindex)
-    body = AutoindexResonseBuilder().build(
-        serverConfig,  PATH_TO_ROOT + path_res,
-        path_res);
-  else
-    body = read_from_file(path_res);
+
   return http::request_init + std::to_string(body.length()) + http::query_end +
          body;
 }
@@ -111,14 +126,6 @@ list<string> ResponseBuilder::getDirectoryList(string src) {
   return res;
 }
 
-string ResponseBuilder::read_from_file(string path_res) {
-  ifstream page(PATH_TO_ROOT + path_res);
-  string tmp;
-  string body;
-  while (std::getline(page, tmp)) {
-    body += tmp;
-  };
-  return body;
-}
+
 
 ResponseBuilder::~ResponseBuilder() {}

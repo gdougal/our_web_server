@@ -11,6 +11,7 @@
 #include "AutoindexResonseBuilder.hpp"
 #include "ResponseUtils.hpp"
 #include "Client/request_data.hpp"
+#include "ErrorBuilder.hpp"
 
 using namespace std;
 
@@ -24,7 +25,6 @@ private:
   list<list<string>> server_routes;
   route *get_route();
   list<string> getDirectoryList(string src);
-  string read_from_file(string path_res);
 public:
   ResponseBuilder(const server_config &serverConfig, const t_request_data& data);
   string build_response(methods qurey_type);

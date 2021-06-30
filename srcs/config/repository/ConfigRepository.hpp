@@ -12,6 +12,9 @@
 
 using namespace std;
 
+enum connection {KEEP_ALIVE, CLOSE};
+enum content_type { HTML };
+
 struct server_config {
   string host = "127.0.0.1";
   string port = "8080";

@@ -5,6 +5,16 @@
 #ifndef WEB_SERVER_HEADERSBUILDER_HPP
 #define WEB_SERVER_HEADERSBUILDER_HPP
 
-class HeadersBuilder {};
+#include <string>
+#include "ConfigRepository.hpp"
+
+using namespace std;
+
+class HeadersBuilder {
+public:
+  static string build(int response_code, string response_description,
+                      connection connectionType, content_type contentType,
+                      int contentLength);
+};
 
 #endif // WEB_SERVER_HEADERSBUILDER_HPP

@@ -11,6 +11,7 @@ include_directories(
         srcs/builders/post_put
         srcs/Client
         srcs/builders/response_utils
+        srcs/builders/error
 )
 set(My_SRCS
         srcs/config/ConfigParser.cpp
@@ -22,7 +23,7 @@ set(My_SRCS
         srcs/builders/response_utils/HeadersBuilder.cpp
         srcs/builders/post_put/Post.cpp
         srcs/builders/response_utils/ResponseUtils.cpp
-        )
+        srcs/builders/error/ErrorBuilder.cpp)
 
 add_executable(web_server
         main.cpp

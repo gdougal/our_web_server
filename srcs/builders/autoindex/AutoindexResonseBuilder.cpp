@@ -28,7 +28,7 @@ string AutoindexResonseBuilder::generateHead(string path) {
          "</head>"
          "<body>"
          "<h1> Index of " +
-         path + "</h1>";
+         path + "</h1><hr>";
 }
 
 string AutoindexResonseBuilder::generateEnd() {
@@ -40,7 +40,9 @@ string AutoindexResonseBuilder::generateDirLink(string dir_name, string
                                                                      index_directory,
                                                 server_config serverConfig) {
   stringstream ss;
-  ss << "<p><a href=\"http://" + serverConfig.host + ":" << serverConfig.port
-     <<  index_directory + dir_name + "\">" + dir_name + "</a></p>";
+  if (index_directory.c_str()[index_directory.length() - 1] != '/')
+    index_directory += "/";
+  ss << "<br><a href=\"http://" + serverConfig.host + ":" << serverConfig.port
+     <<  index_directory + dir_name + "\">" + dir_name + "</a>";
   return ss.str();
 }

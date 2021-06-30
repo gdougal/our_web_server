@@ -7,9 +7,9 @@
 
 #include "ResponseBuilder.hpp"
 #include "RouteEntity.hpp"
+#include "request_data.hpp"
 #include <fstream>
 #include <iostream>
-#include "request_data.hpp"
 
 namespace http {
 
@@ -43,47 +43,55 @@ static const char bad_request[] =
                         text/html\r\nContent-Length:
                         126\r\n */
 
-	static std::string query_get(const server_config& config, const t_request_data& data) {
+static std::string query_get(const server_config &config,
+                             const t_request_data &data) {
   std::list<route> routes;
   std::list<methods> allowed_methods;
   allowed_methods.push_back(methods(GET));
   allowed_methods.push_back(methods(HEAD));
   std::map<int, string> error_pages;
-  error_pages.insert(pair<int, string>(404, "/pages/error_pages.html"));
+//  error_pages.insert(pair<int, string>(404, "/pages_root/error_pages/404_error"
+//                                            ".html"));
+  error_pages.insert(pair<int, string>(403, "/pages_root/error_pages/403_error"
+                                            ".html"));
   routes.push_back(route("/pages/some/", "/data/www", false, "simple.html",
                          "/pages/lyubaya.html", "/pages/lyubaya.html",
                          allowed_methods));
-  routes.push_back(route("/", "/pages_root", true, "",
-                         "/pages/lyubaya.html", "/pages/lyubaya.html",
-                         allowed_methods));
+  routes.push_back(route("/", "/pages_root", true, "", "/pages/lyubaya.html",
+                         "/pages/lyubaya.html", allowed_methods));
 
-  routes.push_back(route("/data/www/html/", "/pages_root", false, "simple.html"
-                                                    ".html",
+  routes.push_back(route("/data/www/html/", "/pages_root", false,
+                         "simple.html"
+                         ".html",
                          "/pages/lyubaya.html", "/pages/lyubaya.html",
                          allowed_methods));
 
   server_config serverConfig("127.0.0.1", "8000", "lol", 21, error_pages,
                              routes);
-		return ResponseBuilder(serverConfig, data).build_response(methods(GET));
-	};
+  return ResponseBuilder(serverConfig, data).build_response(methods(GET));
+};
 
-	static std::string query_post(const server_config& config, const t_request_data& data) {
-		return "Я не ебу, что делать";
-	};
+static std::string query_post(const server_config &config,
+                              const t_request_data &data) {
+  return "Я не ебу, что делать";
+};
 
-	static std::string query_delete(const server_config& config, const t_request_data& data) {
-		return "Я тоже не ебу, что делать";
-	};
+static std::string query_delete(const server_config &config,
+                                const t_request_data &data) {
+  return "Я тоже не ебу, что делать";
+};
 
-	static std::string query_head(const server_config& config, const t_request_data& data) {
-		return "Я тоже не ебу, что делать";
-	};
+static std::string query_head(const server_config &config,
+                              const t_request_data &data) {
+  return "Я тоже не ебу, что делать";
+};
 
 namespace {
-typedef std::string(t_f)(const server_config&, const t_request_data&);
+typedef std::string(t_f)(const server_config &, const t_request_data &);
 struct functor {
   t_f *function;
-  std::string operator()(const server_config& serverConfig,  const t_request_data& data) const {
+  std::string operator()(const server_config &serverConfig,
+                         const t_request_data &data) const {
     return (*function)(serverConfig, data);
   };
   explicit functor(t_f *function) : function(function) {}

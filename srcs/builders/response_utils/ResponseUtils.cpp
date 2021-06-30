@@ -3,6 +3,7 @@
 //
 
 #include "ResponseUtils.hpp"
+#include <fstream>
 #include <sys/stat.h>
 
 bool ResponseUtils::is_directory(const string &path) {
@@ -13,4 +14,14 @@ bool ResponseUtils::is_directory(const string &path) {
       return true;
     }
   return false;
+}
+
+string ResponseUtils::read_from_file(string path_res) {
+  ifstream page(PATH_TO_ROOT + path_res);
+  string tmp;
+  string body;
+  while (std::getline(page, tmp)) {
+    body += tmp;
+  };
+  return body;
 }
