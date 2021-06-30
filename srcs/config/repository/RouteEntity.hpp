@@ -10,26 +10,31 @@
 
 enum methods { GET, POST, DELETE, HEAD, };
 
-using namespace std;
-
 struct route {
-  string location;
-  string directory;
-  bool autoindex;
-  string index_file;
-  string redirect_path;
-  string cgi_path;
-  std::list<methods> methods_allowed;
+		std::string location;
+		std::string directory;
+		std::string index_file;
+		std::string redirect_path;
+		std::string cgi_path;
+		bool autoindex;
+		std::list<methods> methods_allowed;
 
-  route(const string &location, const string &directory,
-        bool autoindex, const string &indexFile, const string &redirectPath,
-        const string &cgiPath, std::list<methods> methodsAllowed)
-      : location(location), directory(directory), methods_allowed(methodsAllowed),
-        autoindex(autoindex), index_file(indexFile),
-        redirect_path(redirectPath), cgi_path(cgiPath) {}
-
-    route() {}
-
+		route() {}
+		route(const route& route) {
+			if(this != &route) {
+				*this = route;
+			}
+		}
+		route& operator=(const route& route) {
+			this->location = route.location;
+			this->directory = route.directory;
+			this->index_file = route.index_file;
+			this->redirect_path = route.redirect_path;
+			this->cgi_path = route.cgi_path;
+			this->autoindex = route.autoindex;
+			this->methods_allowed = route.methods_allowed;
+		}
+		~route() {}
 };
 
 #endif // WEB_SERVER_ROUTEENTITY_HPP

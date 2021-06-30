@@ -2,6 +2,8 @@
 #include <csignal>
 #include <iostream>
 
+using std::string;
+using std::list;
 
 string configFileName = "config.wsc";
 
@@ -13,11 +15,14 @@ string trimFrontSpaces(string &line) {
     if (line[0] != ' ') {
         return(line);
     }
-    return line.substr(line.find_first_not_of(' '), line.size());
+    return line.substr(line.find_first_not_of(" \t"), line.size());
 }
 
 string trimBackSpaces(string &line) {
-    return line.substr(0, line.find_last_not_of(' ') + 1);
+	// т.к. сюда попадает уже обрезанная с начала строка
+	// - чтобы можно было в конфиге оставлять комментарии после ключа - сделал find_first_of
+	// если неправильно - переделать
+    return line.substr(0, line.find_first_of(' '));
 }
 
 string trimSpaces(string &line) {
@@ -131,7 +136,6 @@ server_config parseServer(std::ifstream &configFile) {
             std::cout << "Unexpected field in configuration file\n" << getKey(line) << std::endl;
             return parsed;
         }
-        std::getline(configFile, line);
     }
     return parsed;
 }
@@ -166,37 +170,33 @@ list<server_config> parseConfigFile(void) {
 }
 
 // main for test parser
-//int main() {
-//    string line = "     methods_allowed: GET POST     ";
-//    std::cout << trimKey(line) << std::endl;
-//    std::cout << trimKey(line) << std::endl;
-//    std::cout << getErrorPagePath(line) << std::endl;
-//    list<server_config> parsed = parseConfigFile();
-//    return 228;
-//}
-
-void pipe(int l) { sigignore(l); }
 int main() {
-  signal(SIGPIPE, pipe);
-  // TODO: Thies piece of data should filling by parsing part
-  parseConfigFile();
-  std::list<route> routes;
-  std::list<methods> allowed_methods;
-  allowed_methods.push_back(methods(GET));
-  allowed_methods.push_back(methods(HEAD));
-  routes.push_back(route("/", "direction", false, "/pages/simple.html",
-                         "/pages/lyubaya.html", "/pages/lyubaya.html",
-                         allowed_methods));
-  std::map<int, std::string> error_page;
-  error_page.insert(std::make_pair(1, "/pages/simple"));
-  server_config serverConfig("127.0.0.1", "8000", "lol", 21, error_page,
-                             routes);
-  // TODO: Thies piece of data should filling by parsing part
-
-  std::list<server_config> cfgs;
-  cfgs.emplace_back(serverConfig);
-
-  Server<http::types> serv(cfgs);
-  serv.run_server();
-  return 0;
+    list<server_config> parsed(parseConfigFile());
+    return 228;
 }
+
+//void pipe(int l) { sigignore(l); }
+//int main() {
+//  signal(SIGPIPE, pipe);
+//  // TODO: Thies piece of data should filling by parsing part
+//  parseConfigFile();
+//  std::list<route> routes;
+//  std::list<methods> allowed_methods;
+//  allowed_methods.push_back(methods(GET));
+//  allowed_methods.push_back(methods(HEAD));
+//  routes.push_back(route("/", "direction", false, "/pages/simple.html",
+//                         "/pages/lyubaya.html", "/pages/lyubaya.html",
+//                         allowed_methods));
+//  std::map<int, std::string> error_page;
+//  error_page.insert(std::make_pair(1, "/pages/simple"));
+//  server_config serverConfig("127.0.0.1", "8000", "lol", 21, error_page,
+//                             routes);
+//  // TODO: Thies piece of data should filling by parsing part
+//
+//  std::list<server_config> cfgs;
+//  cfgs.emplace_back(serverConfig);
+//
+//  Server<http::types> serv(cfgs);
+//  serv.run_server();
+//  return 0;
+//}
