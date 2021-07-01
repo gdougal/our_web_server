@@ -36,25 +36,25 @@ string HeadersBuilder::get_connection_type(connection conn) {
 string HeadersBuilder::get_content_type(content_type type) {
   string content_type = "";
   switch (type) {
-  case content_type::HTML:
+  case HTML:
     content_type += HTML_STR;
     break;
-  case content_type::CSS:
+  case CSS:
     content_type += CSS_STR;
     break;
-  case content_type::JS:
+  case JS:
     content_type += JS_STR;
     break;
-  case content_type::JPEG:
+  case JPEG:
     content_type += JPG_STR;
     break;
-  case content_type::PNG:
+  case PNG:
     content_type += PNG_STR;
     break;
-  case content_type::BMP:
+  case BMP:
     content_type += BMP_STR;
     break;
-  case content_type::UNDEFINED:
+  case UNDEFINED:
     content_type += UNDEFINED_STR;
     break;
   }

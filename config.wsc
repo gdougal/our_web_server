@@ -1,34 +1,37 @@
-server:
+server
 	host: 127.0.0.1 // функциональное - создание сокета
 	port: 8080 // функциональное - создание сокета
-	server_name: 404 // для ответа
-	error_page: 402 /error_pages_402.html
-    limit_body_size: 34
-	error_page: путь до страницы с ошибкой
-	routes:
-		route: “/”
-			directory: хде искать
-			methods_allowed: GET POST
-			redirection:
+	server_name: lol // для ответа
+    cgi_ext: “.php”
+    cgi_path: /resources/cgi_tester
+	error_pages
+	        404 : /error_pages_404.html
+            402 : /error_pages_402.html
+            500 : /error_pages_500.html
+	routes
+		route: /
+			directory: /some_shit_directory
+            limit_body_size:  13 //функциональное хз
+			methods_allowed: GET;POST //какие запросы можно GET POST bla bla
+			redirection: off
             autoindex: on/off
             index_file: index.html
-        route: “/huita”
-	        cgi_path: .bla resources/cgi_tester
-	        methods_allowed: какие запросы можно GET POST bla bla
-
-server:
+        route: /huita
+            limit_body_size:  20 // функциональное хз
+        	methods_allowed: GET;POST //какие запросы можно GET POST bla bla
+server
 	host: 127.0.0.1
 	port: 80
 	server_name: kek
-limit_body_size:
-	error_page: путь до страницы с ошибкой
-	routes:
-		route: “/”
+	cgi_ext: “.php”
+    cgi_path: /resources/cgi_tester
+	routes
+		route: /
 			directory: хде искать
 			methods_allowed: GET
-			redirection:
+			redirection: on
             autoindex: on/off
             index_file: index.html
-        route: “/huita”
-	        cgi_path: .bla resources/cgi_tester
-	        methods_allowed: какие запросы можно GET POST bla bla
+        route: /huita
+        	save_path: /some/path;
+        	methods_allowed: какие запросы можно GET POST bla bla
