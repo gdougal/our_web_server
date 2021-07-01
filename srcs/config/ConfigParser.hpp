@@ -104,6 +104,7 @@ private:
 	  std::string line;
 	  std::string cur_section;
 		size_t main_part_counter = 0;
+	  std::string::iterator delimiter_iterator;
 	  while (std::getline(ifs, line)) {
 		  line = jewMaker(line);
 		  if (find_some(main_part_delim_, line)) {
@@ -115,13 +116,9 @@ private:
 			  cur_section = line;
 			  all_sections[main_part_counter - 1].insert(std::pair<std::string, Section>(cur_section, Section()));
 		  }
-		  else
+		  else if ( !line.empty() && (delimiter_iterator = std::find(line.begin(), line.end(), ':')) != line.end())
 		  {
-			  auto delimiter_iterator = std::find(line.begin(), line.end(), ':');
-			  if (delimiter_iterator == line.end() && !line.empty())
-				  throw(std::invalid_argument("Wrong config!"));
-			  else if (delimiter_iterator == line.end())
-				  continue;
+			  delimiter_iterator = std::find(line.begin(), line.end(), ':');
 			  auto key = jewMaker(std::string(line.begin(), delimiter_iterator));
 			  auto value = std::string(delimiter_iterator + 1, line.end() );
 			  value = jewMaker(value);
