@@ -23,7 +23,7 @@ struct route {
   bool autoindex;
   std::list<methods> methods_allowed;
 
-  route() = delete;
+  route() = default;
   explicit route(const ConfigParser::Section& ref, int idx)
       :
 				autoindex(false),

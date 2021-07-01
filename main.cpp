@@ -11,11 +11,10 @@ string configFileName = "config.wsc";
 
 // main for test parser
 int main() {
-		std::list<server_config> parsed;
+		std::list<std::shared_ptr<server_config> > parsed;
 		ConfigParser hehe(configFileName, {"server"}, {"error_pages", "routes"}, {"route"});
 	for (size_t idx = 0; idx < hehe.getContentCount(); ++ idx) {
-		server_config cur( hehe.getVarietyOfSection(idx) );
-		parsed.push_back(cur);
+		parsed.emplace_back(std::make_shared<server_config>(hehe.getVarietyOfSection(idx)));
 	}
     return 228;
 }
