@@ -57,19 +57,19 @@ string ResponseBuilder::build_response(methods qurey_type) {
     break;
   }
   case methods::POST: {
-    if (!r->cgi_path.empty()) {
-     // run cgi post
-    } else {
-      // run post
-    }
+//    if (!r->cgi_path.empty()) {
+//     // run cgi post
+//    } else {
+//      // run post
+//    }
     break;
   }
   case methods::DELETE: {
-    if (!r->cgi_path.empty()) {
-      // run cgi delete
-    } else {
-      // run delete
-    }
+//    if (!r->cgi_path.empty()) {
+//      // run cgi delete
+//    } else {
+//      // run delete
+//    }
     break;
   }
   }
