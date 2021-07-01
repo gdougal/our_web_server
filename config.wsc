@@ -16,6 +16,7 @@ server
 			redirection: off
             autoindex: on/off
             index_file: index.html
+            save_path: /some/path
         route: /huita
             limit_body_size:  20 // функциональное хз
         	methods_allowed: GET;POST //какие запросы можно GET POST bla bla
