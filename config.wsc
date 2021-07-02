@@ -1,7 +1,7 @@
 server
-	host: 127.0.0.1 // функциональное - создание сокета
-	port: 8080 // функциональное - создание сокета
-	server_name: lol // для ответа
+	host: 127.0.0.1 // комментарии кстати можно писать
+	port: 8080  // а вот пробелы между значениями делать не стоит
+	server_name: lol
     cgi_ext: “.php”
     cgi_path: /resources/cgi_tester
 	error_pages
@@ -9,30 +9,30 @@ server
             402 : /error_pages_402.html
             500 : /error_pages_500.html
 	routes
-		route: /
+		    route: /
 			directory: /some_shit_directory
-            limit_body_size:  13 //функциональное хз
-			methods_allowed: GET;POST //какие запросы можно GET POST bla bla
+            limit_body_size:  13
+			methods_allowed: GET;POST
 			redirection: off
-            autoindex: on/off
+            autoindex: on
             index_file: index.html
             save_path: /some/path
-        route: /huita
-            limit_body_size:  20 // функциональное хз
-        	methods_allowed: GET;POST //какие запросы можно GET POST bla bla
+            route: /huita
+            limit_body_size:  20
+        	methods_allowed: GET;POST
 server
 	host: 127.0.0.1
 	port: 80
 	server_name: kek
-	cgi_ext: “.php”
+	cgi_ext: .php
     cgi_path: /resources/cgi_tester
 	routes
-		route: /
-			directory: хде искать
+		    route: /
+			directory: /laladir/dirlala
 			methods_allowed: GET
 			redirection: on
-            autoindex: on/off
+            autoindex: off
             index_file: index.html
-        route: /huita
-        	save_path: /some/path;
-        	methods_allowed: какие запросы можно GET POST bla bla
+            route: /huita
+        	save_path: /some/path
+        	methods_allowed: GET;POST

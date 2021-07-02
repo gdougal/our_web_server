@@ -28,11 +28,13 @@ struct Optional_simple {
 	};
 
 	void set_value(const T& value) {
-		Optional_simple::value_ = value;
+		value_ = value;
 		is_val_ = true;
 	}
-	Optional_simple(): is_val_(false) {}
-	Optional_simple(const T& value): is_val_(true), value_(value) {}
+	Optional_simple(): is_val_(false) {};
+	explicit Optional_simple(const T& value): is_val_(true), value_(value) {}
+	Optional_simple(const Optional_simple<T>& ref) = default;
+	Optional_simple& operator=(const Optional_simple<T>& ref)  = default;
 	virtual ~Optional_simple() {}
 private:
 	bool	is_val_;
@@ -85,7 +87,7 @@ public:
     void setContent(const std::string &key, const std::string &value, bool new_list = false) {
 	    if (new_list || content.empty())
 		    Section::content.emplace_back();
-	    Section::content.back()[key] = value;
+	    Section::content.back()[key] = Optional_simple<std::string>(value);
     };
 
 		Optional_simple<std::string> throw_or_not(const std::string &Key, size_t num = 0) const {
@@ -98,7 +100,7 @@ public:
 		};
   public:
     Section() {}
-    std::string	getStrValue(const std::string &Key, size_t num = 0, std::string or_val = "") const {
+    std::string	getStrValue(const std::string &Key, size_t num = 0, const std::string& or_val = "") const {
 	    return throw_or_not(Key, num).get_or(or_val);
     };
     const t_section& getRawMap(size_t num = 0) { return content[num]; }
