@@ -8,6 +8,7 @@
 #include "map"
 #include "string"
 #include "manual_types.h"
+#include "RouteEntity.hpp"
 
 typedef struct request_data {
 	http::map_str&	header;

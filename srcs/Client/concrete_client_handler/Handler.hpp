@@ -2,15 +2,8 @@
 // Created by Gilberto Dougal on 6/6/21.
 //
 
-#ifndef WEB_SERVER_HANDLER_HPP
-#define WEB_SERVER_HANDLER_HPP
-#include "ConfigRepository.hpp"
-#include "ParseUtils.hpp"
-#include "RouteEntity.hpp"
+#pragma once
 #include "manual_types.h"
-#include <iostream>
-#include <map>
-#include <unistd.h>
 #include "request_data.hpp"
 
 namespace http {
@@ -35,22 +28,7 @@ public:
   virtual bool query_parsing(const std::string &);
   virtual const std::string create_response();
 
-  virtual void logger(const std::string &logs, int fd) const {
-    write(fd, logs.data(), logs.size());
-    write(fd, "\n", 1);
-    write(fd, "Key: ", 5);
-    write(fd, methos_and_path_.first.data(), methos_and_path_.first.size());
-    write(fd, " Value: ", 8);
-    write(fd, methos_and_path_.second.data(), methos_and_path_.second.size());
-    write(fd, "\n", 1);
-    for (auto iter = header_.begin(); iter != header_.end(); ++iter) {
-      write(fd, "Key: ", 5);
-      write(fd, iter->first.data(), iter->first.size());
-      write(fd, " Value: ", 8);
-      write(fd, iter->second.data(), iter->second.size());
-      write(fd, "\n", 1);
-    }
-  }
+  virtual void logger(const std::string &logs, int fd) const;
 
 private:
   size_t position_; // always start from end-line;
@@ -63,5 +41,3 @@ private:
   bool (*body_parse)(Handler &obj, const std::string &);
 };
 } // namespace http
-
-#endif // WEB_SERVER_HANDLER_HPP

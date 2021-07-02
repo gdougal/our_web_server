@@ -8,6 +8,9 @@
 #include "ResponseBuilder.hpp"
 #include "manual_types.h"
 #include "RoutingUtils.hpp"
+#include <unistd.h>
+#include <iostream>
+#include "RouteEntity.hpp"
 
 namespace http {
 
@@ -144,4 +147,23 @@ void Handler::after_all() {
   body_parse = nullptr;
   body_length_ = 0;
 }
+
+	void Handler::logger(const string &logs, int fd) const {
+		{
+			write(fd, logs.data(), logs.size());
+			write(fd, "\n", 1);
+			write(fd, "Key: ", 5);
+			write(fd, methos_and_path_.first.data(), methos_and_path_.first.size());
+			write(fd, " Value: ", 8);
+			write(fd, methos_and_path_.second.data(), methos_and_path_.second.size());
+			write(fd, "\n", 1);
+			for (auto iter = header_.begin(); iter != header_.end(); ++iter) {
+				write(fd, "Key: ", 5);
+				write(fd, iter->first.data(), iter->first.size());
+				write(fd, " Value: ", 8);
+				write(fd, iter->second.data(), iter->second.size());
+				write(fd, "\n", 1);
+			}
+		}
+	}
 } // namespace http

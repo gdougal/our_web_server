@@ -5,12 +5,10 @@
 #ifndef PROXY_SERVER_SERVER_HPP
 #define PROXY_SERVER_SERVER_HPP
 
-#include "ConfigParser.hpp"
 #include "Client/client.hpp"
 #include "fd_creator.hpp"
-#include <list>
-
-#include "memory"
+#include <sys/fcntl.h>
+#include "unistd.h"
 
 template <typename types, typename protocol_handler = typename types::protocol,
           typename data_type = typename types::datatypes>

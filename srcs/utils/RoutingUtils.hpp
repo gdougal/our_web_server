@@ -46,8 +46,4 @@ namespace routing_utils {
 		return result;
 	}
 
-//
-//	bool is_method_allowed(methods request_method, const route &r) {
-//		return find_some(r.methods_allowed, request_method);
-//	}
 }// routing_utils

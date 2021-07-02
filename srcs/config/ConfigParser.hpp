@@ -5,7 +5,7 @@
 #ifndef HELLO_SFML_CONFIG_HPP
 #define HELLO_SFML_CONFIG_HPP
 
-#include <arpa/inet.h>
+
 #include <exception>
 #include <fstream>
 #include <istream>
@@ -13,35 +13,10 @@
 #include <list>
 #include <vector>
 #include "CommonUtils.hpp"
+#include "manual_types.h"
 
 /// Вариант парсера для файла с повторением базовых конструкций имеющие вложенные повторяемые конструкции
 /// list
-
-template<typename T>
-struct Optional_simple {
-
-	bool is_val() const { return is_val_; }
-	const T& get_or(const T& alt_ret) const {
-		if (is_val_)
-			return value_;
-		return alt_ret;
-	};
-
-	void set_value(const T& value) {
-		value_ = value;
-		is_val_ = true;
-	}
-	Optional_simple(): is_val_(false) {};
-	explicit Optional_simple(const T& value): is_val_(true), value_(value) {}
-	Optional_simple(const Optional_simple<T>& ref) = default;
-	Optional_simple& operator=(const Optional_simple<T>& ref)  = default;
-	virtual ~Optional_simple() {}
-private:
-	bool	is_val_;
-	T			value_;
-};
-
-typedef Optional_simple<std::string> OptStr;
 
 class ConfigParser {
 public:

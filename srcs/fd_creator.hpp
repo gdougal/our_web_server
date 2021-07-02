@@ -5,10 +5,7 @@
 #ifndef WEB_SERVER_FD_CREATOR_HPP
 #define WEB_SERVER_FD_CREATOR_HPP
 
-#include "ConfigParser.hpp"
-#include <iostream>
-#include <sys/fcntl.h>
-#include <unistd.h>
+#include "string"
 
 namespace fd_creator {
 	void close_fd_error(std::string except, int listen_fd_);

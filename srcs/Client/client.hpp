@@ -9,6 +9,7 @@
 #include "cstring"
 #include <netinet/in.h>
 #include "ConfigRepository.hpp"
+#include <unistd.h>
 
 #define PORTION_SIZE 65000
 

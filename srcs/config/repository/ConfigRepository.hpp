@@ -7,12 +7,7 @@
 
 #include "RouteEntity.hpp"
 #include "list"
-#include <string>
-#include <memory>
-
-
-enum connection {KEEP_ALIVE, CLOSE};
-enum content_type { HTML, CSS, JS, JPEG, PNG, BMP, UNDEFINED };
+#include "manual_types.h"
 
 struct server_config {
   std::string	host;

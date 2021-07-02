@@ -1,11 +1,8 @@
 //
 // Created by Lonmouth Mallador on 6/30/21.
 //
-
-#ifndef WEB_SERVER_PARSEUTILS_HPP
-#define WEB_SERVER_PARSEUTILS_HPP
-
-enum methods: int { GET, POST, DELETE, HEAD, PUT, LAST_METH };
+#pragma once
+#include "manual_types.h"
 namespace parse_utils {
 
 static const char query_end[] = "\r\n\r\n";
@@ -51,4 +48,3 @@ static methods get_enum_methods(const std::string &method_str) {
 
 } // namespace parse_utils
 
-#endif // WEB_SERVER_PARSEUTILS_HPP
