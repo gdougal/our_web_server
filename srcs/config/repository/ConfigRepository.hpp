@@ -20,7 +20,7 @@ struct server_config {
   std::string	cgi_ext;
 	std::string	cgi_path;
   std::map<int, std::string> error_pages_paths;
-  std::list<route> routes;
+  std::list<route> routes; // TODO: сделать на указателях
 
   server_config() {}
   server_config(std::map<std::string, ConfigParser::Section>& data):
@@ -38,8 +38,7 @@ struct server_config {
 			}
 		}
   	for (int idx = 0; idx < data["routes"].getContentSize(); ++idx) {
-			route cur(data["routes"], idx );
-  		routes.push_back(cur);
+			routes.emplace_back(route(data["routes"], idx ));
   	}
   }
   server_config(const server_config&  config)
@@ -55,11 +54,10 @@ struct server_config {
 		this->cgi_ext = config.cgi_ext;
 		this->cgi_path = config.cgi_path;
 		this->error_pages_paths = config.error_pages_paths;
-		this->routes.assign(config.routes.begin(), config.routes.end());
+		this->routes = config.routes;
 		return *this;
   };
-	server_config(server_config&&  config) = delete;
-	server_config(const server_config&&  config) = delete;
+	server_config(server_config&&  config) = default;
 
   ~server_config() {}
 };

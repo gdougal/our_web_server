@@ -28,9 +28,9 @@ struct route {
       :
 				autoindex(false),
       	location( ref.getStrValue("route", idx) ),
-      	directory( ref.getStrValue("directory"), idx ),
+      	directory( ref.getStrValue("directory"), idx ), // TODO: разобраться, почему при копировании объекта класса меняется
         index_file(ref.getStrValue("index_file", idx) ),
-        redirect_path(ref.getStrValue("directory", idx) ),
+        redirect_path(ref.getStrValue("directory", idx) ), // TODO: Какой path
         save_path(ref.getStrValue("save_path", idx) ),
         body_size(std::stoi(ref.getStrValue("limit_body_size", idx, "-1") )) {
 		if (ref.getStrValue("autoindex", idx) == "on")
@@ -58,8 +58,6 @@ struct route {
   		*this = route;
   }
 
-	route(const route &&route) = delete;
-	route(route &&route) = delete;
   route &operator=(const route &route) {
 		this->location = route.location;
 		this->directory = route.directory;
@@ -71,6 +69,7 @@ struct route {
 		this->methods_allowed = route.methods_allowed;
 		return *this;
   };
+	route(route &&route) = default;
   ~route() {}
 };
 
