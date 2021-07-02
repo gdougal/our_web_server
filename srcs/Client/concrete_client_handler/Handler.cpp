@@ -7,10 +7,11 @@
 #include "ParseUtils.hpp"
 #include "ResponseBuilder.hpp"
 #include "manual_types.h"
+#include "RoutingUtils.hpp"
 
 namespace http {
 
-Handler::Handler() : position_(0), body_parse(nullptr), body_length_(0){};
+Handler::Handler(const server_config& cfg) : position_(0), body_parse(nullptr), body_length_(0), config(cfg) {};
 Handler::~Handler() {}
 
 pair_str Handler::pair_maker(const std::string &fo_pars,
@@ -48,6 +49,16 @@ void Handler::header_part(const std::string &fo_pars) {
     if (!insert_pair.first.empty())
       header_.insert(insert_pair);
   }
+  route* cur_route = routing_utils::get_route(methos_and_path_.second, config);
+
+  if (!cur_route)
+		std::cout << "404" << std::endl;
+	if ( find_some(cur_route->methods_allowed, parse_utils::get_enum_methods(methos_and_path_.first)) )
+		std::cout << "405" << std::endl;
+//	data_.header = header_;
+//	data_.request_route = *cur_route;
+//	data_.path = methos_and_path_.second;
+
   position_ = first_block + strlen(parse_utils::query_end);
 }
 
@@ -118,8 +129,9 @@ bool Handler::is_recvest_end(const std::string &fo_pars) const {
   return false;
 }
 
-const std::string Handler::create_response(const server_config &config) {
-  ResponseBuilder builder(config, t_request_data{header_, methos_and_path_, body_});
+const std::string Handler::create_response() {
+
+  ResponseBuilder builder(config, *data_.get());
   std::string response(builder.build_response(parse_utils::get_enum_methods(methos_and_path_.first)));
   after_all();
   return (response);

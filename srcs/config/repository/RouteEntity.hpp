@@ -8,14 +8,18 @@
 #include "list"
 #include <string>
 #include "map"
+#include "ParseUtils.hpp"
 #include "ConfigParser.hpp"
 
-enum methods: int { GET, POST, DELETE, HEAD, PUT, LAST_METH };
+
+
+
 static const char* enum_str[] = { "GET", "POST", "DELETE", "HEAD", "PUT" };
 
 struct route {
   std::string location;
   std::string directory;
+	std::list<std::string> directory_word_list;
   std::string index_file;
   std::string redirect_path;
   std::string save_path;
@@ -49,6 +53,7 @@ struct route {
 			if (end == meth.size())
 				break;
 		}
+    directory_word_list = (parse_utils::getDirectoryList(directory));
   }
 
   route(const route &route)

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <map>
 #include <unistd.h>
+#include "request_data.hpp"
 
 namespace http {
 
@@ -27,11 +28,12 @@ class Handler : public BaseClientHandler<server_config> {
   void after_all();
 
 public:
-  /*construct*/ Handler();
+	Handler() = delete;
+  Handler(const server_config& cfg);
   virtual ~Handler();
   virtual bool is_recvest_end(const std::string &) const;
   virtual bool query_parsing(const std::string &);
-  virtual const std::string create_response(const server_config &);
+  virtual const std::string create_response();
 
   virtual void logger(const std::string &logs, int fd) const {
     write(fd, logs.data(), logs.size());
@@ -56,6 +58,8 @@ private:
   pair_str methos_and_path_;
   size_t body_length_;
   std::string body_;
+	std::shared_ptr<t_request_data>	data_;
+	const server_config& config;
   bool (*body_parse)(Handler &obj, const std::string &);
 };
 } // namespace http

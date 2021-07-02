@@ -7,15 +7,13 @@
 
 #include "map"
 #include "string"
-
-
-typedef std::map<std::string, std::string> map_str;
-typedef std::pair<std::string, std::string> pair_str;
+#include "manual_types.h"
 
 typedef struct request_data {
-	const map_str& header;
-	const pair_str& path;
-	const std::string& body;
+	http::map_str&	header;
+	std::string&		body;
+	route&					request_route;
+	std::string&		path;
 }							t_request_data;
 
 #endif //WEB_SERVER_REQUEST_DATA_HPP

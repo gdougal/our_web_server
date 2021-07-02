@@ -11,8 +11,8 @@
 #include <istream>
 #include <map>
 #include <list>
-#include <algorithm>
 #include <vector>
+#include "CommonUtils.hpp"
 
 /// Вариант парсера для файла с повторением базовых конструкций имеющие вложенные повторяемые конструкции
 /// list
@@ -128,12 +128,6 @@ private:
 			throw std::length_error("Empty value field!");
 		return str_with.substr(pos_start, pos_end);
 	}
-		template<class Container, typename t_element>
-		bool find_some(const Container& cont, const t_element& elem) {
-			if (std::find(cont.begin(), cont.end(), elem) != cont.end())
-				return true;
-			return false;
-		}
 
 		const std::vector<std::string>& main_part_delim_;
 		const std::vector<std::string>& sub_part_delim_;

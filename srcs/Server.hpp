@@ -45,7 +45,7 @@ public:
             (*it)->read_from_client();
           } else if (FD_ISSET((*it)->getFd(), &write_fds_) &&
                      (*it)->getCurState() == state::SEND_TO_CLIENT) {
-            (*it)->send_to_client(*(v_serv->config_data));
+            (*it)->send_to_client();
           }
           if ((*it)->getCurState() == state::FINALL) {
             it = v_serv->clients_.erase(it);
@@ -81,7 +81,7 @@ private:
     for (auto &v_serv : serv_) {
       if (FD_ISSET(v_serv->serv_fd_, &read_fds_) &&
           (client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
-        v_serv->clients_.emplace_back(std::make_shared<Client<types> >(client_fd, logfile_));
+        v_serv->clients_.emplace_back(std::make_shared<Client<types> >(client_fd, logfile_, *(v_serv->config_data)) );
       }
     }
   }

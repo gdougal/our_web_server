@@ -23,11 +23,11 @@ class Client {
 	int														outfile_;
 	char*													g_recv_buffer;
 public:
-	Client(int client_fd, int file)  :
+	Client(int client_fd, int file, const data_type& data)  :
 					fd_(client_fd),
 					outfile_(file) {
 		cur_state_ = state::READ_FROM_CLIENT;
-		handler_ = new protocol_handler;
+		handler_ = new protocol_handler(data);
 		g_recv_buffer = new char[PORTION_SIZE + 1];
 	}
   virtual ~Client() {
@@ -53,8 +53,8 @@ public:
 			}
 		}
 	}
-  void	send_to_client(const data_type& data) {
-		std::string http(handler_->create_response(data));
+  void	send_to_client() {
+		std::string http(handler_->create_response());
 		buffer_.clear();
 		if (send(fd_, http.c_str(), http.size(), 0)/*;*/ <= 0) {
 			cur_state_ = state::FINALL;

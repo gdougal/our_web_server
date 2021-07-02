@@ -21,13 +21,9 @@ class ResponseBuilder {
 
 private:
   server_config serverConfig;
-  string search_file(route *r);
+  string search_file(const route& r) const;
   string build_headers();
   const t_request_data& request_data;
-  list<list<string>> server_routes;
-  route *get_route();
-  list<string> getDirectoryList(string src);
-  bool is_method_allowed(methods request_method, route *r);
 public:
   ResponseBuilder(const server_config &serverConfig, const t_request_data& data);
   string build_response(methods qurey_type);

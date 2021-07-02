@@ -5,6 +5,7 @@
 #ifndef WEB_SERVER_PARSEUTILS_HPP
 #define WEB_SERVER_PARSEUTILS_HPP
 
+enum methods: int { GET, POST, DELETE, HEAD, PUT, LAST_METH };
 namespace parse_utils {
 
 static const char query_end[] = "\r\n\r\n";
@@ -33,6 +34,20 @@ static methods get_enum_methods(const std::string &method_str) {
   //  if (method_str == DELETE)
   return methods::DELETE;
 }
+
+	std::list<std::string> getDirectoryList(const std::string& src) {
+		std::list<std::string> res;
+		res.push_front("/");
+
+		if (src == "/")
+			return res;
+		for (int first = 0, second = src.find('/', first + 1); first < second;
+				 first = second, second = src.find('/', second + 1)) {
+			if (first < second)
+				res.push_back(src.substr(first + 1, second - 1 - first));
+		}
+		return res;
+	}
 
 } // namespace parse_utils
 
