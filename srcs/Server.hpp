@@ -16,10 +16,10 @@ template <typename types, typename protocol_handler = typename types::protocol,
           typename data_type = typename types::datatypes>
 class Server {
 public:
-  explicit Server(const std::list<data_type>& cfg) {
+  explicit Server(const std::list< std::shared_ptr<data_type> >& cfg) {
     for (auto &item : cfg) {
       serv_.emplace_back(std::make_shared<virtual_server>(
-          fd_creator::create_listen_socket(item.host, item.port), item));
+          fd_creator::create_listen_socket(item->host, item->port), item));
     }
     logfile_ = open("logfile.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
     if (logfile_ < 0)
@@ -45,7 +45,7 @@ public:
             (*it)->read_from_client();
           } else if (FD_ISSET((*it)->getFd(), &write_fds_) &&
                      (*it)->getCurState() == state::SEND_TO_CLIENT) {
-            (*it)->send_to_client(v_serv->config_data);
+            (*it)->send_to_client(*(v_serv->config_data));
           }
           if ((*it)->getCurState() == state::FINALL) {
             it = v_serv->clients_.erase(it);
@@ -81,16 +81,16 @@ private:
     for (auto &v_serv : serv_) {
       if (FD_ISSET(v_serv->serv_fd_, &read_fds_) &&
           (client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
-        v_serv->clients_.emplace_back(new Client<types>(client_fd, logfile_));
+        v_serv->clients_.emplace_back(std::make_shared<Client<types> >(client_fd, logfile_));
       }
     }
   }
   struct virtual_server {
     int serv_fd_;
-    server_config config_data;
-    std::list<std::shared_ptr<Client<types>>> clients_;
+    std::shared_ptr<data_type> config_data;
+    std::list<std::shared_ptr<Client<types> > > clients_;
 
-    virtual_server(int servFd, const data_type &configData)
+    virtual_server(int servFd, const std::shared_ptr<data_type>& configData)
         : serv_fd_(servFd), config_data(configData) {}
 
     virtual ~virtual_server() { close(serv_fd_); }

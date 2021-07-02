@@ -7,10 +7,10 @@
 ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
                                  const t_request_data &data)
     : serverConfig(serverConfig), request_data(data) {
-  list<route>::const_iterator first = serverConfig.routes.begin();
-  list<route>::const_iterator last = serverConfig.routes.end();
+  auto first = serverConfig.routes.begin();
+  auto last = serverConfig.routes.end();
   while (first != last) {
-    server_routes.push_back(getDirectoryList(first->location));
+    server_routes.push_back(getDirectoryList((*first)->location));
     first++;
   }
 }
@@ -85,17 +85,17 @@ route *ResponseBuilder::get_route() {
   list<string> request_directories = getDirectoryList(request_data.path.second);
   route *result = nullptr;
 
-  list<list<string>>::iterator first_server_routes = server_routes.begin();
-  list<list<string>>::iterator last_server_routes = server_routes.end();
-  list<route>::iterator current_route = serverConfig.routes.begin();
+  auto first_server_routes = server_routes.begin();
+  auto last_server_routes = server_routes.end();
+  auto current_route = serverConfig.routes.begin();
 
   int max_match_words_count = 0;
   while (first_server_routes != last_server_routes) {
-    list<string>::iterator f_word = first_server_routes->begin();
-    list<string>::iterator l_word = first_server_routes->end();
+    auto f_word = first_server_routes->begin();
+    auto l_word = first_server_routes->end();
 
-    list<string>::iterator f_request_word = request_directories.begin();
-    list<string>::iterator l_request_word = request_directories.end();
+    auto f_request_word = request_directories.begin();
+    auto l_request_word = request_directories.end();
 
     int match_words = 0;
     while (f_word != l_word) {
@@ -114,7 +114,7 @@ route *ResponseBuilder::get_route() {
     }
     if (match_words > max_match_words_count) {
       max_match_words_count = match_words;
-      result = &(*current_route);
+      result = current_route->get();
     }
     current_route++;
     first_server_routes++;
@@ -138,8 +138,8 @@ list<string> ResponseBuilder::getDirectoryList(string src) {
 }
 
 bool ResponseBuilder::is_method_allowed(methods request_method, route *r) {
-  list<methods>::iterator first = r->methods_allowed.begin();
-  list<methods>::iterator last = r->methods_allowed.end();
+  auto first = r->methods_allowed.begin();
+  auto last = r->methods_allowed.end();
 
   while (first != last) {
     if (*first == request_method)

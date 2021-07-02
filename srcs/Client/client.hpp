@@ -16,12 +16,12 @@ enum state { READ_FROM_CLIENT, SEND_TO_CLIENT, FINALL };
 
 template <typename types, typename protocol_handler = typename types::protocol, typename data_type = typename types::datatypes>
 class Client {
-	enum state						cur_state_;
-	int								fd_;
-	std::string						buffer_;
+	enum state										cur_state_;
+	int														fd_;
+	std::string										buffer_;
 	BaseClientHandler<data_type>*	handler_;
-	int								outfile_;
-	char*							g_recv_buffer;
+	int														outfile_;
+	char*													g_recv_buffer;
 public:
 	Client(int client_fd, int file)  :
 					fd_(client_fd),

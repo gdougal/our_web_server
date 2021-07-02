@@ -1,6 +1,6 @@
 server
-	host: 127.0.0.1 // комментарии кстати можно писать
-	port: 8080  // а вот пробелы между значениями делать не стоит
+	host: 127.0.0.1
+	port: 8080
 	server_name: lol
     cgi_ext: “.php”
     cgi_path: /resources/cgi_tester
@@ -10,19 +10,19 @@ server
             500 : /error_pages_500.html
 	routes
 		    route: /
-			directory: /some_shit_directory
+			directory: /pages_root
             limit_body_size:  13
 			methods_allowed: GET;POST
-			redirection: off
+			redirection: /path
             autoindex: on
-            index_file: index.html
             save_path: /some/path
             route: /huita
             limit_body_size:  20
+            index_file: index.html
         	methods_allowed: GET;POST
 server
 	host: 127.0.0.1
-	port: 80
+	port: 8000
 	server_name: kek
 	cgi_ext: .php
     cgi_path: /resources/cgi_tester

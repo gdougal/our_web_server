@@ -10,7 +10,7 @@
 
 using namespace std;
 
-static const string PATH_TO_ROOT = "/Users/lmallado/Desktop/our_web_server";
+static const string PATH_TO_ROOT = "/Users/gdougal/Desktop/our_web_server";
 
 class ResponseUtils {
 public:

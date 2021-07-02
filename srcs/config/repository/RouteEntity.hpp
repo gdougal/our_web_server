@@ -24,13 +24,12 @@ struct route {
   std::list<methods> methods_allowed;
 
   route() = default;
-  explicit route(const ConfigParser::Section& ref, int idx)
-      :
+  explicit route(const ConfigParser::Section& ref, int idx):
 				autoindex(false),
       	location( ref.getStrValue("route", idx) ),
       	directory( ref.getStrValue("directory", idx) ), // TODO: разобраться, почему при копировании объекта класса меняется
         index_file(ref.getStrValue("index_file", idx) ),
-        redirect_path(ref.getStrValue("directory", idx) ), // TODO: Какой path
+        redirect_path(ref.getStrValue("redirection", idx) ), // TODO: Какой path
         save_path(ref.getStrValue("save_path", idx) ),
         body_size(std::stoi(ref.getStrValue("limit_body_size", idx, "-1") )) {
 		if (ref.getStrValue("autoindex", idx) == "on")
