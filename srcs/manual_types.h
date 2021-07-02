@@ -28,7 +28,7 @@ typedef std::pair<std::string, std::string> pair_str;
 
 struct types : public Itypes {
   typedef http::Handler protocol;  // handler
-  typedef server_config datatypes; // type of data
+  typedef std::shared_ptr<server_config> datatypes; // type of data
 };
 } // namespace http
 
