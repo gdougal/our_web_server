@@ -21,8 +21,6 @@ class ResponseBuilder {
 
 private:
   server_config serverConfig;
-  string search_file(const route& r) const;
-  string build_headers();
   const t_request_data& request_data;
 public:
   ResponseBuilder(const server_config &serverConfig, const t_request_data& data);

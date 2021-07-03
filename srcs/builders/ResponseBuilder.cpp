@@ -4,37 +4,26 @@
 
 #include "ResponseBuilder.hpp"
 #include "RoutingUtils.hpp"
+#include "CommonUtils.hpp"
 
 ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
 																 const t_request_data &data)
 				: serverConfig(serverConfig), request_data(data) {}
 
-string ResponseBuilder::search_file(const route &r) const {
-	string path_res;
-	path_res = r.directory + r.location +
-						 request_data.path.substr(r.location.length(),
-																			request_data.path.length() -
-																			r.location.length());
-
-	if (ResponseUtils::is_directory(path_res))
-		path_res += r.index_file;
-	return path_res;
-}
 
 string ResponseBuilder::build_response(methods qurey_type) {
-	string path_res = search_file(request_data.request_route);
-	std::string body;
+	std::string response_body;
 
 	switch (qurey_type) {
 		case methods::GET: {
-			if (ResponseUtils::is_directory(path_res) &&
+			if (is_directory(request_data.path) &&
 					request_data.request_route.autoindex)
-				body = AutoindexResonseBuilder().build(
-								serverConfig, PATH_TO_ROOT + path_res,
+				response_body = AutoindexResonseBuilder().build(
+								serverConfig, PATH_TO_ROOT + request_data.path,
 								request_data.path);
 			else {
-				body = ResponseUtils::read_from_file(path_res);
-				if (body.empty())
+				response_body = ResponseUtils::read_from_file(request_data.path);
+				if (response_body.empty())
 					return ErrorBuilder::build(404, serverConfig);
 			}
 			break;
@@ -66,11 +55,8 @@ string ResponseBuilder::build_response(methods qurey_type) {
 	}
 
 	return HeadersBuilder::build(200, connection(KEEP_ALIVE), content_type(HTML),
-															 body.length()) +
-				 body;
+															 response_body.length()) +
+				 response_body;
 }
-
-string ResponseBuilder::build_headers() { return std::string(); }
-
 
 ResponseBuilder::~ResponseBuilder() {}

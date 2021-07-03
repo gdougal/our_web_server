@@ -14,6 +14,7 @@ class Handler : public BaseClientHandler<server_config, handl_ret_codes> {
   size_t									next_line(const std::string &, size_t pos) const;
   size_t									end_line(const std::string &, size_t pos) const;
   size_t									end_block(const std::string &) const;
+	std::string							search_file() const;
 	handl_ret_codes					is_recvest_rly_end(const std::string &);
   static handl_ret_codes	parse_body_length(Handler &, const std::string &);  // length
   static handl_ret_codes	parse_body_chunked(Handler &, const std::string &); // chunk

@@ -2,9 +2,7 @@
 // Created by Gilberto Dougal on 6/29/21.
 //
 
-#ifndef WEB_SERVER_REQUEST_DATA_HPP
-#define WEB_SERVER_REQUEST_DATA_HPP
-
+#pragma once
 #include <map>
 #include <string>
 
@@ -18,4 +16,3 @@ typedef struct request_data {
 	const handl_ret_codes code;
 }							t_request_data;
 
-#endif //WEB_SERVER_REQUEST_DATA_HPP

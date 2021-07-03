@@ -6,16 +6,13 @@
 #define WEB_SERVER_RESPONSEUTILS_HPP
 
 #include <string>
-//#include <filesystem>
+
 
 using namespace std;
 
-static const string PATH_TO_ROOT = "/Users/gdougal/Desktop/our_web_server";
+namespace ResponseUtils {
 
-class ResponseUtils {
-public:
-  static bool is_directory(const string &path);
-  static string read_from_file(string path_res);
-};
+	string read_from_file(const string& path_res);
 
+}
 #endif // WEB_SERVER_RESPONSEUTILS_HPP

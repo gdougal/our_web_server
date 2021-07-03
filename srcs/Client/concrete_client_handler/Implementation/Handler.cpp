@@ -6,8 +6,8 @@
 #include "ResponseBuilder.hpp"
 #include "RoutingUtils.hpp"
 #include <unistd.h>
-#include <iostream>
 #include "request_data.hpp"
+#include "CommonUtils.hpp"
 
 namespace http {
 
@@ -69,18 +69,36 @@ namespace http {
 		position_ = first_block + strlen(parse_utils::query_end);
 	}
 
+	std::string Handler::search_file() const {
+		std::string path_res;
+		path_res = cur_route_.directory + cur_route_.location +
+							 methos_and_path_.second.substr(cur_route_.location.length(),
+																							methos_and_path_.second.length() -
+																								cur_route_.location.length());
+		if (is_directory(path_res))
+			path_res += cur_route_.index_file;
+		return path_res;
+	}
+
 	handl_ret_codes	Handler::query_parsing(const std::string &fo_pars) {
 		if (body_parse)
 			return body_parse(*this, fo_pars);
 		header_part(fo_pars);
 		Optional_simple<route> opt_route = routing_utils::get_route(methos_and_path_.second, config);
 		if (!opt_route.is_val()) {
-//			if ()
-			return ( req_status_ = handl_ret_codes::ER404 );
+			req_file_status  status = is_directory(methos_and_path_.second);
+			if (status == IS_DIRECTORY)
+				return (req_status_ = ER403);
+			else if (status == NOT_FOUND) {
+				return ( req_status_ = ER404 );
+			}
 		}
 		cur_route_ = opt_route.get();
 		if (find_some(cur_route_.methods_allowed, parse_utils::get_enum_methods(methos_and_path_.first)))
-			return ( req_status_ = handl_ret_codes::ER405 );
+			return ( req_status_ = ER405 );
+		methos_and_path_.second = search_file();
+		if (methos_and_path_.second.empty() && !cur_route_.autoindex)
+			return ( req_status_ = ER404 );
 		max_body_ = cur_route_.body_size;
 		return is_recvest_rly_end(fo_pars);
 	}
@@ -98,31 +116,31 @@ namespace http {
 		if (body_parse != nullptr) {
 			return (*body_parse)(*this, fo_pars);
 		}
-		return ( req_status_ = handl_ret_codes::END );
+		return ( req_status_ = END );
 	}
 
 	handl_ret_codes	Handler::parse_body_length(Handler &obj, const std::string &src) {
 		if (src.size() - obj.position_ != obj.body_length_)
-			return ( obj.req_status_ = handl_ret_codes::CONTINUE );
+			return ( obj.req_status_ = CONTINUE );
 		obj.body_.append(src.substr(obj.position_, obj.body_length_));
 		if (obj.body_.size() > obj.max_body_) {
 			obj.body_.resize(obj.max_body_);
-			return ( obj.req_status_ = handl_ret_codes::ER413 );
+			return ( obj.req_status_ = ER413 );
 		}
 		if (obj.body_.size() == obj.body_length_)
-			return ( obj.req_status_ = handl_ret_codes::END );
-		return ( obj.req_status_ = handl_ret_codes::CONTINUE );
+			return ( obj.req_status_ = END );
+		return ( obj.req_status_ = CONTINUE );
 	};
 
 	handl_ret_codes	Handler::parse_body_chunked(Handler &obj, const std::string &src) {
 		if (src.substr(src.size() - strlen(parse_utils::query_end)) !=
 				parse_utils::query_end)
-			return ( obj.req_status_ = handl_ret_codes::CONTINUE );
+			return ( obj.req_status_ = CONTINUE );
 		size_t tmp = obj.end_line(src, obj.position_);
 		std::string number(src.substr(obj.position_, tmp - obj.position_));
 		obj.body_length_ = std::stoi(number, nullptr, 16);
 		if (obj.body_length_ == 0)
-			return ( obj.req_status_ = handl_ret_codes::END );
+			return ( obj.req_status_ = END );
 		obj.position_ = obj.next_line(src, obj.position_);
 		obj.body_.append(src.substr(obj.position_, obj.body_length_));
 		obj.position_ = obj.next_line(src, obj.position_);

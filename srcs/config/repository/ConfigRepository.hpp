@@ -2,8 +2,7 @@
 // Created by Lonmouth Mallador on 6/19/21.
 //
 
-#ifndef WEB_SERVER_CONFIGREPOSITORY_HPP
-#define WEB_SERVER_CONFIGREPOSITORY_HPP
+#pragma once
 
 #include "RouteEntity.hpp"
 #include "list"
@@ -57,5 +56,3 @@ struct server_config {
 
   ~server_config() {}
 };
-
-#endif // WEB_SERVER_CONFIGREPOSITORY_HPP

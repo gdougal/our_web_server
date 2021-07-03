@@ -2,9 +2,7 @@
 // Created by Gilberto Dougal on 5/10/21.
 //
 
-#ifndef PROXY_SERVER_BRIDGE_HPP
-#define PROXY_SERVER_BRIDGE_HPP
-
+#pragma once
 #include "Handler.hpp"
 #include "cstring"
 #include <netinet/in.h>
@@ -43,14 +41,14 @@ public:
 		static size_t buffer_len;
 		buffer_len = recv(fd_, g_recv_buffer, PORTION_SIZE, 0);
 		if (buffer_len <= 0 || buffer_len > PORTION_SIZE) {
-			cur_state_ = state::FINALL;
+			cur_state_ = FINALL;
 			return;
 		}
 		buffer_.append(g_recv_buffer);
 		if ( handler_->is_recvest_end(buffer_) ) {
 			if ( handler_->query_parsing(buffer_) != handle_status::CONTINUE ) {
 				handler_->logger(buffer_, outfile_);
-				cur_state_ = state::SEND_TO_CLIENT;
+				cur_state_ = SEND_TO_CLIENT;
 			}
 		}
 	}
@@ -58,11 +56,9 @@ public:
 		std::string http(handler_->create_response());
 		buffer_.clear();
 		if (send(fd_, http.c_str(), http.size(), 0)/*;*/ <= 0) {
-			cur_state_ = state::FINALL;
+			cur_state_ = FINALL;
 			return ;
 		}
-		cur_state_ = state::READ_FROM_CLIENT;
+		cur_state_ = READ_FROM_CLIENT;
 	}
 };
-
-#endif // PROXY_SERVER_BRIDGE_HPP

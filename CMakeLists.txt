@@ -29,6 +29,9 @@ set(My_SRCS
         srcs/config/Parser/Implementation/Section_impl.cpp
         srcs/utils/implementation/ParserUtils.cpp
         srcs/utils/implementation/RoutingUtils.cpp
+        srcs/utils/implementation/CommonUtils.cpp
+        srcs/config/repository/Implementation/ConfigRepository.cpp
+        srcs/config/repository/Implementation/RouteEntity.cpp
         )
 
 add_executable(web_server
