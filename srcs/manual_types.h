@@ -8,9 +8,7 @@
 #include <list>
 #include <map>
 #include <string>
-//#include <memory>
-//#include "RouteEntity.hpp"
-//#include "ConfigRepository.hpp"
+
 
 class server_config;
 
@@ -40,6 +38,7 @@ struct types {
   typedef http::Handler protocol;  // handler
   typedef server_config datatypes; // type of data
 };
+
 } // namespace http
 
 template<typename T>

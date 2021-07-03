@@ -1,10 +1,8 @@
-//
-// Created by Gilberto Dougal on 6/6/21.
-//
-
 #pragma once
+
 #include "manual_types.h"
-#include "request_data.hpp"
+
+using t_request_data = struct request_data;
 
 namespace http {
 

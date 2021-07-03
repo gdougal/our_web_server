@@ -1,11 +1,8 @@
-#include "Server.hpp"
 #include <csignal>
-#include <iostream>
+#include "Server.hpp"
 
-using std::string;
-using std::list;
 
-string configFileName = "config.wsc";
+std::string configFileName = "config.wsc";
 
 void pipe(int l) { sigignore(l); }
 int main() {

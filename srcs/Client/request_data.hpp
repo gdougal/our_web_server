@@ -5,10 +5,10 @@
 #ifndef WEB_SERVER_REQUEST_DATA_HPP
 #define WEB_SERVER_REQUEST_DATA_HPP
 
-#include "map"
-#include "string"
-#include "manual_types.h"
-#include "RouteEntity.hpp"
+#include <map>
+#include <string>
+
+class route;
 
 typedef struct request_data {
 	http::map_str&	header;

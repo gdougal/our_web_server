@@ -5,7 +5,7 @@
 #ifndef PROXY_SERVER_BRIDGE_HPP
 #define PROXY_SERVER_BRIDGE_HPP
 
-#include "Client/concrete_client_handler/Handler.hpp"
+#include "Handler.hpp"
 #include "cstring"
 #include <netinet/in.h>
 #include "ConfigRepository.hpp"

@@ -2,9 +2,7 @@
 // Created by Gilberto Dougal on 6/5/21.
 //
 
-#ifndef WEB_SERVER_FD_CREATOR_HPP
-#define WEB_SERVER_FD_CREATOR_HPP
-
+#pragma once
 #include "string"
 
 namespace fd_creator {
@@ -12,6 +10,3 @@ namespace fd_creator {
 	int create_listen_socket(const std::string& host, const std::string& port);
 	int create_client_fd(int listen_fd);
 }
-
-
-#endif //WEB_SERVER_FD_CREATOR_HPP
