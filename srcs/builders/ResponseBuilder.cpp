@@ -15,6 +15,7 @@ string ResponseBuilder::search_file(const route &r) const {
 						 request_data.path.substr(r.location.length(),
 																			request_data.path.length() -
 																			r.location.length());
+
 	if (ResponseUtils::is_directory(path_res))
 		path_res += r.index_file;
 	return path_res;
@@ -26,7 +27,8 @@ string ResponseBuilder::build_response(methods qurey_type) {
 
 	switch (qurey_type) {
 		case methods::GET: {
-			if (ResponseUtils::is_directory(path_res) && request_data.request_route.autoindex)
+			if (ResponseUtils::is_directory(path_res) &&
+					request_data.request_route.autoindex)
 				body = AutoindexResonseBuilder().build(
 								serverConfig, PATH_TO_ROOT + path_res,
 								request_data.path);

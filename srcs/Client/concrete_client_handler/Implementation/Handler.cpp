@@ -66,24 +66,26 @@ namespace http {
 			if (!insert_pair.first.empty())
 				header_.insert(insert_pair);
 		}
-		Optional_simple<route> opt_route = routing_utils::get_route(
-						methos_and_path_.second, config);
-		if (!opt_route.is_val())
-			std::cout << "404" << std::endl; //TODO: doing zat
-		cur_route_ = opt_route.get();
-		if (find_some(cur_route_.methods_allowed, parse_utils::get_enum_methods(methos_and_path_.first)))
-			std::cout << "405" << std::endl; //TODO: doing zat
 		position_ = first_block + strlen(parse_utils::query_end);
 	}
 
-	bool Handler::query_parsing(const std::string &fo_pars) {
+	handl_ret_codes	Handler::query_parsing(const std::string &fo_pars) {
 		if (body_parse)
 			return body_parse(*this, fo_pars);
 		header_part(fo_pars);
+		Optional_simple<route> opt_route = routing_utils::get_route(methos_and_path_.second, config);
+		if (!opt_route.is_val()) {
+//			if ()
+			return ( req_status_ = handl_ret_codes::ER404 );
+		}
+		cur_route_ = opt_route.get();
+		if (find_some(cur_route_.methods_allowed, parse_utils::get_enum_methods(methos_and_path_.first)))
+			return ( req_status_ = handl_ret_codes::ER405 );
+		max_body_ = cur_route_.body_size;
 		return is_recvest_rly_end(fo_pars);
 	}
 
-	bool Handler::is_recvest_rly_end(const std::string &fo_pars) {
+	handl_ret_codes Handler::is_recvest_rly_end(const std::string &fo_pars) {
 		map_str::const_iterator find;
 		if ((find = header_.find(parse_utils::encoding)) != header_.end()) {
 			if (find->second == parse_utils::chunked) {
@@ -96,27 +98,31 @@ namespace http {
 		if (body_parse != nullptr) {
 			return (*body_parse)(*this, fo_pars);
 		}
-		return true;
+		return ( req_status_ = handl_ret_codes::END );
 	}
 
-	bool Handler::parse_body_length(Handler &obj, const std::string &src) {
+	handl_ret_codes	Handler::parse_body_length(Handler &obj, const std::string &src) {
 		if (src.size() - obj.position_ != obj.body_length_)
-			return false;
+			return ( obj.req_status_ = handl_ret_codes::CONTINUE );
 		obj.body_.append(src.substr(obj.position_, obj.body_length_));
+		if (obj.body_.size() > obj.max_body_) {
+			obj.body_.resize(obj.max_body_);
+			return ( obj.req_status_ = handl_ret_codes::ER413 );
+		}
 		if (obj.body_.size() == obj.body_length_)
-			return true;
-		return false;
+			return ( obj.req_status_ = handl_ret_codes::END );
+		return ( obj.req_status_ = handl_ret_codes::CONTINUE );
 	};
 
-	bool Handler::parse_body_chunked(Handler &obj, const std::string &src) {
+	handl_ret_codes	Handler::parse_body_chunked(Handler &obj, const std::string &src) {
 		if (src.substr(src.size() - strlen(parse_utils::query_end)) !=
 				parse_utils::query_end)
-			return false;
+			return ( obj.req_status_ = handl_ret_codes::CONTINUE );
 		size_t tmp = obj.end_line(src, obj.position_);
 		std::string number(src.substr(obj.position_, tmp - obj.position_));
 		obj.body_length_ = std::stoi(number, nullptr, 16);
 		if (obj.body_length_ == 0)
-			return true;
+			return ( obj.req_status_ = handl_ret_codes::END );
 		obj.position_ = obj.next_line(src, obj.position_);
 		obj.body_.append(src.substr(obj.position_, obj.body_length_));
 		obj.position_ = obj.next_line(src, obj.position_);
@@ -130,10 +136,8 @@ namespace http {
 	}
 
 	const std::string Handler::create_response() {
-		ResponseBuilder builder(config, t_request_data{header_, body_, cur_route_,
-																									 methos_and_path_.second});
-		std::string response(builder.build_response(
-						parse_utils::get_enum_methods(methos_and_path_.first)));
+		ResponseBuilder builder(config, t_request_data{header_, body_, cur_route_, methos_and_path_.second, req_status_});
+		std::string response(builder.build_response(parse_utils::get_enum_methods(methos_and_path_.first)));
 		after_all();
 		return (response);
 	}
@@ -144,7 +148,7 @@ namespace http {
 		body_.clear();
 		body_parse = nullptr;
 		body_length_ = 0;
-
+		max_body_ = -1;
 	}
 
 	void Handler::logger(const string &logs, int fd) const {

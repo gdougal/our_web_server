@@ -12,11 +12,11 @@
 
 class server_config;
 
-template <typename data_type> class BaseClientHandler {
+template <typename data_type, typename query_status> class BaseClientHandler {
 public:
 	BaseClientHandler() {};
 	BaseClientHandler(const data_type&) {};
-  virtual bool query_parsing(const std::string &) = 0;
+  virtual query_status	query_parsing(const std::string &) = 0;
   virtual bool is_recvest_end(const std::string &) const = 0;
   virtual const std::string create_response() = 0;
   virtual ~BaseClientHandler() = default;
@@ -28,6 +28,7 @@ public:
 enum methods: int { GET, POST, DELETE, HEAD, PUT, LAST_METH };
 enum connection {KEEP_ALIVE, CLOSE};
 enum content_type { HTML, CSS, JS, JPEG, PNG, BMP, UNDEFINED };
+enum handl_ret_codes: int { ER400 = 400, ER404 = 404, ER403 = 403, ER405 = 405, ER413 = 413, CONTINUE = 1, END = 0 };
 
 namespace http {
 class Handler;
@@ -35,8 +36,9 @@ typedef std::map<std::string, std::string> map_str;
 typedef std::pair<std::string, std::string> pair_str;
 
 struct types {
-  typedef http::Handler protocol;  // handler
-  typedef server_config datatypes; // type of data
+  typedef	http::Handler	protocol;  // handler
+  typedef	server_config	datatypes; // type of data
+  typedef	handl_ret_codes ret_codes;
 };
 
 } // namespace http

@@ -15,6 +15,7 @@ typedef struct request_data {
 	const std::string&		body;
 	const route&					request_route;
 	const std::string&		path;
+	const handl_ret_codes code;
 }							t_request_data;
 
 #endif //WEB_SERVER_REQUEST_DATA_HPP

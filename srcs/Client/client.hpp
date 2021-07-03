@@ -15,14 +15,14 @@
 
 enum state { READ_FROM_CLIENT, SEND_TO_CLIENT, FINALL };
 
-template <typename types, typename protocol_handler = typename types::protocol, typename data_type = typename types::datatypes>
+template <typename types, typename protocol_handler = typename types::protocol, typename data_type = typename types::datatypes, typename handle_status = typename types::ret_codes>
 class Client {
-	enum state										cur_state_;
-	int														fd_;
-	std::string										buffer_;
-	BaseClientHandler<data_type>*	handler_;
-	int														outfile_;
-	char*													g_recv_buffer;
+	enum state																		cur_state_;
+	int																						fd_;
+	std::string																		buffer_;
+	BaseClientHandler<data_type, handle_status>*	handler_;
+	int																						outfile_;
+	char*																					g_recv_buffer;
 public:
 	Client(int client_fd, int file, const data_type& data)  :
 					fd_(client_fd),
@@ -48,7 +48,7 @@ public:
 		}
 		buffer_.append(g_recv_buffer);
 		if ( handler_->is_recvest_end(buffer_) ) {
-			if ( handler_->query_parsing(buffer_) ) {
+			if ( handler_->query_parsing(buffer_) != handle_status::CONTINUE ) {
 				handler_->logger(buffer_, outfile_);
 				cur_state_ = state::SEND_TO_CLIENT;
 			}
