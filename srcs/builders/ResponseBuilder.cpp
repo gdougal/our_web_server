@@ -30,7 +30,11 @@ string ResponseBuilder::build_response(methods qurey_type) {
       break;
     }
     case methods::HEAD: {
-
+      response_body = ResponseUtils::read_from_file(request_data.path);
+      if (response_body.empty())
+        return ErrorBuilder::build(404, serverConfig);
+      return HeadersBuilder::build(200, connection(KEEP_ALIVE), content_type(HTML),
+                            0);
       break;
     }
     case methods::PUT: {
