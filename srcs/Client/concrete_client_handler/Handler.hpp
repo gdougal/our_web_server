@@ -34,7 +34,7 @@ private:
   pair_str methos_and_path_;
   size_t body_length_;
   std::string body_;
-	std::shared_ptr<t_request_data>	data_;
+
 	const server_config& config;
   bool (*body_parse)(Handler &obj, const std::string &);
 };
