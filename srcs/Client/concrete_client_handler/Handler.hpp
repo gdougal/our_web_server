@@ -1,5 +1,6 @@
 #pragma once
 
+#include <RouteEntity.hpp>
 #include "manual_types.h"
 
 using t_request_data = struct request_data;
@@ -29,13 +30,14 @@ public:
   virtual void logger(const std::string &logs, int fd) const;
 
 private:
-  size_t position_; // always start from end-line;
-  map_str header_;
-  pair_str methos_and_path_;
-  size_t body_length_;
-  std::string body_;
-
-	const server_config& config;
+  size_t								position_; // always start from end-line;
+  int										body_length_;
+  int										max_body_;
+  map_str								header_;
+  pair_str							methos_and_path_;
+  std::string						body_;
+	route									cur_route_;
+	const server_config&	config;
   bool (*body_parse)(Handler &obj, const std::string &);
 };
 } // namespace http

@@ -51,6 +51,10 @@ struct Optional_simple {
 		return alt_ret;
 	};
 
+	const T& get() const {
+		return value_;
+	};
+
 	void set_value(const T& value) {
 		value_ = value;
 		is_val_ = true;

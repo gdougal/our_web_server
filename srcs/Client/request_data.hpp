@@ -11,10 +11,10 @@
 class route;
 
 typedef struct request_data {
-	http::map_str&	header;
-	std::string&		body;
-	route&					request_route;
-	std::string&		path;
+	const http::map_str&	header;
+	const std::string&		body;
+	const route&					request_route;
+	const std::string&		path;
 }							t_request_data;
 
 #endif //WEB_SERVER_REQUEST_DATA_HPP

@@ -4,15 +4,14 @@
 #include "RoutingUtils.hpp"
 #include "ParseUtils.hpp"
 #include "ConfigRepository.hpp"
-#include "manual_types.h"
 #include "CommonUtils.hpp"
 
 
 namespace routing_utils {
 
-	route *get_route(const std::string &url, const server_config &serverConfig) {
+	Optional_simple<route> get_route(const std::string &url, const server_config &serverConfig) {
 		std::list<std::string> request_directories = parse_utils::getDirectoryList(url);
-		route *result = nullptr;
+		Optional_simple<route> result;
 
 		auto first_server_routes = serverConfig.routes.begin();
 		auto last_server_routes = serverConfig.routes.end();
@@ -42,7 +41,7 @@ namespace routing_utils {
 			}
 			if (match_words > max_match_words_count) {
 				max_match_words_count = match_words;
-				result = first_server_routes->get();
+				result.set_value(*(first_server_routes->get()));
 			}
 			first_server_routes++;
 		}
