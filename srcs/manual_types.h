@@ -28,7 +28,7 @@ public:
 enum methods: int { GET, POST, DELETE, HEAD, PUT, LAST_METH };
 enum connection {KEEP_ALIVE, CLOSE};
 enum content_type { HTML, CSS, JS, JPEG, PNG, BMP, UNDEFINED };
-enum handl_ret_codes: int { ER400 = 400, ER404 = 404, ER403 = 403, ER405 = 405, ER413 = 413, CONTINUE = 1, END = 0 };
+enum handl_ret_codes: int { ER400 = 400, ER404 = 404, ER403 = 403, ER405 = 405, ER413 = 413, CONTINUE = 1, SUCCESSFUL = 0 };
 
 namespace http {
 

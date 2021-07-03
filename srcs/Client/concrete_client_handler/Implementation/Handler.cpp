@@ -116,7 +116,7 @@ namespace http {
 		if (body_parse != nullptr) {
 			return (*body_parse)(*this, fo_pars);
 		}
-		return ( req_status_ = END );
+		return ( req_status_ = SUCCESSFUL );
 	}
 
 	handl_ret_codes	Handler::parse_body_length(Handler &obj, const std::string &src) {
@@ -128,7 +128,7 @@ namespace http {
 			return ( obj.req_status_ = ER413 );
 		}
 		if (obj.body_.size() == obj.body_length_)
-			return ( obj.req_status_ = END );
+			return ( obj.req_status_ = SUCCESSFUL );
 		return ( obj.req_status_ = CONTINUE );
 	};
 
@@ -140,7 +140,7 @@ namespace http {
 		std::string number(src.substr(obj.position_, tmp - obj.position_));
 		obj.body_length_ = std::stoi(number, nullptr, 16);
 		if (obj.body_length_ == 0)
-			return ( obj.req_status_ = END );
+			return ( obj.req_status_ = SUCCESSFUL );
 		obj.position_ = obj.next_line(src, obj.position_);
 		obj.body_.append(src.substr(obj.position_, obj.body_length_));
 		obj.position_ = obj.next_line(src, obj.position_);
