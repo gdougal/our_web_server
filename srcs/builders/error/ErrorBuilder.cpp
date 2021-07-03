@@ -3,6 +3,7 @@
 //
 
 #include "ErrorBuilder.hpp"
+#include <CommonUtils.hpp>
 #include <HeadersBuilder.hpp>
 #include <iostream>
 
@@ -11,7 +12,8 @@ string ErrorBuilder::build(const int &error_code, server_config serverConfig) {
       serverConfig.error_pages_paths.find(error_code);
   string path_to_error_page = "";
   if (it == serverConfig.error_pages_paths.end()) {
-    path_to_error_page = default_error_pages.find(error_code)->second;
+    path_to_error_page = default_error_pages.find(error_code)
+                             ->second;
   } else {
     path_to_error_page = it->second;
   }

@@ -5,9 +5,8 @@ server
     cgi_ext: “.php”
     cgi_path: /resources/cgi_tester
 	error_pages
-	        404 : /error_pages_404.html
-            402 : /error_pages_402.html
-            500 : /error_pages_500.html
+	        404 : /pages_root/error_pages/404_error.html
+            403 : /pages_root/error_pages/403_error.html
 	routes
             route: /pages
             limit_body_size:  20

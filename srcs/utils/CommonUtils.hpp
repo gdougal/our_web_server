@@ -4,7 +4,8 @@
 #include <filesystem>
 #include <sys/stat.h>
 
-static const std::string PATH_TO_ROOT = "/Users/gdougal/Desktop/our_web_server";
+static const std::string PATH_TO_ROOT =
+    "/Users/lmallado/our_web_server";
 
 template<class Container, typename t_element>
 bool find_some(const Container& cont, const t_element& elem) {
