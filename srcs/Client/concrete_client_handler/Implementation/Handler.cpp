@@ -98,11 +98,12 @@ namespace http {
 
 		methos_and_path_.second = search_file();
 		handl_ret_codes cur_status = file_checker();
-		if (cur_status != CONTINUE)
-			return cur_status;
+		if (cur_status == ER404) {
+                  return (req_status_ = cur_status);
+                }
+              if (methos_and_path_.second.empty() && !cur_route_.autoindex)
+                return (req_status_ = ER404);
 
-		if (methos_and_path_.second.empty() && !cur_route_.autoindex)
-			return ER404;
 		return CONTINUE;
 	}
 

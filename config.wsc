@@ -8,9 +8,10 @@ server
 	        404 : /pages_root/error_pages/404_error.html
             403 : /pages_root/error_pages/403_error.html
 	routes
-            route: /pages
+            route: /error_pages/
+            directory: /pages
+            autoindex: on
             limit_body_size:  20
-            index_file: index.html
         	methods_allowed: GET;POST
 server
 	host: 127.0.0.1
