@@ -12,6 +12,46 @@
 
 class server_config;
 
+enum methods: int {
+	GET,
+	POST,
+	DELETE,
+	HEAD,
+	PUT,
+	LAST_METH
+};
+
+
+enum connection: bool {
+	KEEP_ALIVE = true,
+	CLOSE = false
+};
+
+enum content_type: int {
+	HTML,
+	CSS,
+	JS,
+	JPEG,
+	PNG,
+	BMP,
+	UNDEFINED
+};
+
+enum handl_ret_codes: int {
+	R100 = 100,
+	R200 = 200,
+	R201 = 201,
+	ER204 = 204,
+	ER400 = 400,
+	ER403 = 403,
+	ER404 = 404,
+	ER405 = 405,
+	ER413 = 413,
+	ER500 = 500,
+	CONTINUE = 1,
+	SUCCESSFUL = 0
+};
+
 template <typename data_type, typename query_status> class BaseClientHandler {
 public:
 	BaseClientHandler() {};
@@ -24,11 +64,6 @@ public:
   // отладочная
   virtual void logger(const std::string &logs, int fd) const = 0;
 };
-
-enum methods: int { GET, POST, DELETE, HEAD, PUT, LAST_METH };
-enum connection {KEEP_ALIVE, CLOSE};
-enum content_type { HTML, CSS, JS, JPEG, PNG, BMP, UNDEFINED };
-enum handl_ret_codes: int { ER400 = 400, ER404 = 404, ER403 = 403, ER405 = 405, ER413 = 413, CONTINUE = 1, SUCCESSFUL = 0 };
 
 namespace http {
 

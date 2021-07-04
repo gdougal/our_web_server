@@ -20,7 +20,10 @@ public:
 		outfile.open( filename.c_str() );
 		if (outfile.is_open()) {
 			outfile.write(data.body.c_str(), data.body.size());
-			return 204; // TODO: will call headerBuildr and
+			return HeadersBuilder::build(204,
+																	 (data.header.find("CONNECTION-TYPE")->second == KEEP_ALIVE_STR),
+																	 (),
+																	 data.body.size() ); //204; // TODO: will call headerBuildr and
                                     // return std::string
 		}
 		else {

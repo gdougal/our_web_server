@@ -9,39 +9,37 @@
 #include "ParseUtils.hpp"
 #include <string>
 
-using namespace std;
 
-static const string PROTOCOL = "HTTP/1.1 ";
-static const string PROTOCOL_VERSION = "Version: HTTP/1.1";
-static const string CONNECTION = "Connection: ";
-static const string CONTENT_TYPE = "Content-Type: ";
-static const string CONTENT_LENGHT = "Content-Length: ";
+static const std::string PROTOCOL = "HTTP/1.1 ";
+static const std::string PROTOCOL_VERSION = "VERSION: HTTP/1.1";
+static const std::string CONNECTION = "CONNECTION: ";
+static const std::string CONTENT_TYPE = "CONTENT-TYPE: ";
+static const std::string CONTENT_LENGHT = "CONTENT-LENGTH: ";
 
-static const string KEEP_ALIVE_STR = "keep-alive";
-static const string CLOSE_STR = "close";
+static const std::string KEEP_ALIVE_STR = "keep-alive";
+static const std::string CLOSE_STR = "close";
 
-static const string HTML_STR = "text/html";
-static const string CSS_STR = "text/css";
-static const string JS_STR = "image/javascript";
-static const string JPG_STR = "image/jpeg";
-static const string PNG_STR = "image/png";
-static const string BMP_STR = "image/bmp";
-static const string UNDEFINED_STR = "UNDEFINED";
 
-static const map<int, string> response_code_description = {
-    {100, "Continue"},          {200, "OK"},
-    {201, "Created"},           {204, "No Content"},
-    {400, "Bad Request"},       {403, "Forbidden"},
-    {404, "Not Found"},         {405, "Method Not Allowed"},
-    {413, "Payload Too Large"}, {500, "Internal Server Error"}};
+//static const std::map<content_type, std::string> content_type_map = {
+//				{HTML, "text/html"},						{JS, "image/javascript"},
+//				{CSS, "text/css"},							{JPEG, "image/jpeg"},
+//				{UNDEFINED, "UNDEFINED"},			{PNG, "image/png"},
+//				{BMP, "image/bmp"}																						};
+//
+//static const std::map<handl_ret_codes, std::string> response_code_description = {
+//    {R100, "Continue"},          {R200, "OK"},
+//    {R201, "Created"},           {ER204, "No Content"},
+//    {ER400, "Bad Request"},       {ER403, "Forbidden"},
+//    {ER404, "Not Found"},         {ER405, "Method Not Allowed"},
+//    {ER413, "Payload Too Large"}, {ER500, "Internal Server Error"} };
 
 class HeadersBuilder {
 private:
-  static string get_connection_type(connection conn);
-  static string get_content_type(content_type type);
+  static std::string get_connection_type(connection conn);
+  static std::string get_content_type(content_type type);
 
 public:
-  static string build(int response_code, connection connectionType,
+  static std::string build(handl_ret_codes response_code, connection connectionType,
                       content_type contentType, int contentLength);
 };
 

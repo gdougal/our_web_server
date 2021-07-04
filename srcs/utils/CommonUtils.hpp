@@ -14,5 +14,10 @@ bool find_some(const Container& cont, const t_element& elem) {
 	return false;
 }
 
+template<typename type, typename e_type>
+inline e_type to_enum(type val) {
+	return static_cast<e_type>(val);
+}
+
 enum req_file_status { IS_FILE, IS_DIRECTORY, NOT_FOUND };
 req_file_status			is_directory(const std::string &path);

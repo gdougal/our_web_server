@@ -110,9 +110,11 @@ namespace http {
 		if (body_parse)
 			return body_parse(*this, fo_pars);
 		header_part(fo_pars);
+
 		handl_ret_codes tmp = route_searcher();
 		if (tmp != CONTINUE)
 			return (req_status_ = tmp);
+
 		max_body_ = cur_route_.body_size;
 		return is_recvest_rly_end(fo_pars);
 	}

@@ -30,7 +30,7 @@ route::route(const ConfigParser::Section &ref, int idx) :
 		if (end == meth.size())
 			break;
 	}
-	directory_word_list = (parse_utils::getDirectoryList(directory));
+	directory_word_list = (parse_utils::getDirectoryList(location));
 }
 
 route &route::operator=(const route &route) {
