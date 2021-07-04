@@ -8,11 +8,10 @@
 #include <string>
 
 
-using namespace std;
-
 namespace ResponseUtils {
 
-	string read_from_file(const string& path_res);
+	std::string read_from_file(const std::string& path_res);
+	std::string get_content_type(const std::string& filename);
 
 }
 #endif // WEB_SERVER_RESPONSEUTILS_HPP

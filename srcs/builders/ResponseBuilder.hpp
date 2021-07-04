@@ -15,7 +15,6 @@
 #include "ParseUtils.hpp"
 #include "HeadersBuilder.hpp"
 
-using namespace std;
 
 class ResponseBuilder {
 

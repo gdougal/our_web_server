@@ -7,7 +7,6 @@
 #include "ResponseBuilder.hpp"
 #include "fstream"
 
-
 class Post {
 private:
 
@@ -15,21 +14,26 @@ private:
 	Post(const Post &ref) = delete;
 	Post &operator=(const Post &ref) = delete;
 public:
-	static const int	put(const std::string& filename, const t_request_data& data) {
+	static std::string	put(const std::string& filename, const t_request_data& data) {
 		std::ofstream	outfile;
 		outfile.open( filename.c_str() );
+		std::string content_type(ResponseUtils::get_content_type(filename));
+		bool he = (data.header.find("CONNECTION-TYPE")->second == KEEP_ALIVE_STR);
+
 		if (outfile.is_open()) {
 			outfile.write(data.body.c_str(), data.body.size());
-//			return HeadersBuilder::build(204,
-//																	 (data.header.find("CONNECTION-TYPE")->second == KEEP_ALIVE_STR),
-//																	 (),
-//																	 data.body.size() ); //204; // TODO: will call headerBuildr and
-//                                    // return std::string
+			return HeadersBuilder::build(ER204,
+																	 static_cast<connection>(he),
+																	 content_type,
+																	 data.body.size() );
 		}
 		else {
 			outfile.open(filename.c_str());
 			outfile.write(data.body.c_str(), data.body.size());
-			return 201;
+			return HeadersBuilder::build(R201,
+                            static_cast<connection>(he),
+                            content_type,
+                            data.body.size() );
 		}
 	};
 
