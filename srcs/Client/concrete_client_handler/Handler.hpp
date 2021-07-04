@@ -18,6 +18,8 @@ class Handler : public BaseClientHandler<server_config, handl_ret_codes> {
 	handl_ret_codes					is_recvest_rly_end(const std::string &);
   static handl_ret_codes	parse_body_length(Handler &, const std::string &);  // length
   static handl_ret_codes	parse_body_chunked(Handler &, const std::string &); // chunk
+	handl_ret_codes					file_checker();
+	handl_ret_codes					route_searcher();
   void after_all();
 
 public:
