@@ -32,7 +32,7 @@ set(My_SRCS
         srcs/utils/implementation/CommonUtils.cpp
         srcs/config/repository/Implementation/ConfigRepository.cpp
         srcs/config/repository/Implementation/RouteEntity.cpp
-        )
+        srcs/builders/methods/Get.cpp srcs/builders/methods/Get.hpp srcs/builders/methods/Head.cpp srcs/builders/methods/Head.hpp)
 
 add_executable(web_server
         main.cpp

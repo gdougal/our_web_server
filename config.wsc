@@ -8,9 +8,8 @@ server
 	        404 : /pages_root/error_pages/404_error.html
             403 : /pages_root/error_pages/403_error.html
 	routes
-            route: /pages
-            limit_body_size: 20
-            index_file: index.html
+            route: /pages/
+            index_file: photo1.jpg
         	methods_allowed: GET;POST
 server
 	host: 127.0.0.1

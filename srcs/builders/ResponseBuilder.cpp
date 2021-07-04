@@ -11,48 +11,27 @@ ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
     : serverConfig(serverConfig), request_data(data) {}
 
 string ResponseBuilder::build_response(methods qurey_type) {
-  std::string response_body;
 
   if (request_data.code != SUCCESSFUL)
-    return ErrorBuilder::build(request_data.code,
-                               serverConfig);
-    switch (qurey_type) {
-    case methods::GET: {
-      if (is_directory(request_data.path) &&
-          request_data.request_route.autoindex)
-        response_body = AutoindexResonseBuilder().build(
-            serverConfig, PATH_TO_ROOT + request_data.path, request_data.path);
-      else {
-        response_body = ResponseUtils::read_from_file(request_data.path);
-        if (response_body.empty())
-          return ErrorBuilder::build(ER404, serverConfig);
-      }
-      break;
-    }
-    case methods::HEAD: {
-      response_body = ResponseUtils::read_from_file(request_data.path);
-      if (response_body.empty())
-        return ErrorBuilder::build(ER404, serverConfig);
-      return HeadersBuilder::build(R200, connection(KEEP_ALIVE), content_type(HTML),
-                            0);
-      break;
-    }
-    case methods::PUT: {
+    return ErrorBuilder::build(request_data.code, serverConfig);
+  switch (qurey_type) {
+  case methods::GET:
+    return Get::build_response(serverConfig, request_data);
+  case methods::HEAD:
+    return Head::build_response(serverConfig, request_data);
+  case methods::PUT: {
+    break;
+  }
+  case methods::POST: {
 
-      break;
-    }
-    case methods::POST: {
+    break;
+  }
+  case methods::DELETE: {
 
-      break;
-    }
-    case methods::DELETE: {
-
-      break;
-    }
-    }
-
-  return HeadersBuilder::build(R200, connection(KEEP_ALIVE), content_type(HTML),
-                               response_body.length()) + response_body;
+    break;
+  }
+  }
+  return ErrorBuilder::build(ER400, serverConfig);
 }
 
 ResponseBuilder::~ResponseBuilder() {}
