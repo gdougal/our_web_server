@@ -14,7 +14,7 @@ string ResponseBuilder::build_response(methods qurey_type) {
   std::string response_body;
 
   if (request_data.code != SUCCESSFUL)
-    return ErrorBuilder::build(static_cast<int>(request_data.code),
+    return ErrorBuilder::build(request_data.code,
                                serverConfig);
     switch (qurey_type) {
     case methods::GET: {
@@ -25,15 +25,15 @@ string ResponseBuilder::build_response(methods qurey_type) {
       else {
         response_body = ResponseUtils::read_from_file(request_data.path);
         if (response_body.empty())
-          return ErrorBuilder::build(404, serverConfig);
+          return ErrorBuilder::build(ER404, serverConfig);
       }
       break;
     }
     case methods::HEAD: {
       response_body = ResponseUtils::read_from_file(request_data.path);
       if (response_body.empty())
-        return ErrorBuilder::build(404, serverConfig);
-      return HeadersBuilder::build(200, connection(KEEP_ALIVE), content_type(HTML),
+        return ErrorBuilder::build(ER404, serverConfig);
+      return HeadersBuilder::build(R200, connection(KEEP_ALIVE), content_type(HTML),
                             0);
       break;
     }
@@ -51,7 +51,7 @@ string ResponseBuilder::build_response(methods qurey_type) {
     }
     }
 
-  return HeadersBuilder::build(200, connection(KEEP_ALIVE), content_type(HTML),
+  return HeadersBuilder::build(R200, connection(KEEP_ALIVE), content_type(HTML),
                                response_body.length()) + response_body;
 }
 

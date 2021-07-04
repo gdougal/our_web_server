@@ -7,7 +7,7 @@
 #include <HeadersBuilder.hpp>
 #include <iostream>
 
-string ErrorBuilder::build(const int &error_code, server_config serverConfig) {
+string ErrorBuilder::build(handl_ret_codes error_code, server_config serverConfig) {
   map<int, string>::iterator it =
       serverConfig.error_pages_paths.find(error_code);
   string path_to_error_page = "";

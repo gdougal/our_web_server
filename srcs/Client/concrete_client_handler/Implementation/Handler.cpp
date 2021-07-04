@@ -72,7 +72,7 @@ namespace http {
 							 methos_and_path_.second.substr(cur_route_.location.length(),
 																							methos_and_path_.second.length() -
 																							cur_route_.location.length());
-		if (is_directory(path_res))
+		if (is_directory(path_res) == IS_DIRECTORY)
 			path_res += cur_route_.index_file;
 		return path_res;
 	}
