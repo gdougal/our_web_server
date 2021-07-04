@@ -9,7 +9,6 @@
 
 class Post {
 private:
-
 	Post() = delete;
 	Post(const Post &ref) = delete;
 	Post &operator=(const Post &ref) = delete;

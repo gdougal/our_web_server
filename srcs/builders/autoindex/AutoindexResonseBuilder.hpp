@@ -7,18 +7,21 @@
 
 #include <string>
 #include "ResponseBuilder.hpp"
+#include "ConfigRepository.hpp"
 
-using namespace std;
 
 class AutoindexResonseBuilder {
 private:
-    string generateDirLink(string dir_name, string path, server_config
+    std::string generateDirLink(const std::string& dir_name,std::string&
+                                                          index_dir,
+                         const server_config&
                                                            serverConfig);
-    string generateHead(string path);
-    string generateEnd();
+   std::string generateHead(const std::string& path);
+   std::string generateEnd();
 
 public:
-  string build(server_config serverConfig, string path, string index_directory);
+  std::string build(const server_config& serverConfig, const std::string& path,
+               const std::string& index_directory);
 };
 
 #endif // WEB_SERVER_AUTOINDEXRESONSEBUILDER_HPP

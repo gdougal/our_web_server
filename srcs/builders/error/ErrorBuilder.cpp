@@ -17,6 +17,7 @@ string ErrorBuilder::build(handl_ret_codes error_code, server_config serverConfi
   }
   string body = ResponseUtils::read_from_file(path_to_error_page);
   return HeadersBuilder::build(error_code, connection(CLOSE),
-                               content_type(HTML), body.length()) +
+                               ResponseUtils::get_content_type(".html"), body
+                                                                         .length()) +
          body;
 }
