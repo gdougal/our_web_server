@@ -10,15 +10,15 @@ ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
                                  const t_request_data &data)
     : serverConfig(serverConfig), request_data(data) {}
 
-string ResponseBuilder::build_response(methods qurey_type) {
+void ResponseBuilder::build_response(methods qurey_type, std::list<std::vector<uint8_t> >& resp) {
 
   if (request_data.code != SUCCESSFUL)
-    return ErrorBuilder::build(request_data.code, serverConfig);
+    return ErrorBuilder::build(request_data.code, serverConfig, resp);
   switch (qurey_type) {
   case methods::GET:
-    return Get::build_response(serverConfig, request_data);
+    return Get::build_response(serverConfig, request_data, resp);
   case methods::HEAD:
-    return Head::build_response(serverConfig, request_data);
+    return Head::build_response(serverConfig, request_data, resp);
   case methods::PUT: {
     break;
   }
@@ -31,7 +31,7 @@ string ResponseBuilder::build_response(methods qurey_type) {
     break;
   }
   }
-  return ErrorBuilder::build(ER400, serverConfig);
+  ErrorBuilder::build(ER400, serverConfig, resp);
 }
 
 ResponseBuilder::~ResponseBuilder() {}

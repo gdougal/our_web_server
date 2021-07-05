@@ -7,6 +7,7 @@
 #include "map"
 #include <fstream>
 #include "unistd.h"
+#include "vector"
 
 namespace ResponseUtils {
 
@@ -15,19 +16,15 @@ static const std::map<std::string, std::string> class_of_content = {
     {"jpeg", "image/jpeg"}, {"jpg", "image/jpg"},      {"png", "image/png"},
     {"bmp", "image/bmp"}};
 
-std::string read_from_file(const std::string &path_res) {
-  std::string hehe(PATH_TO_ROOT + path_res);
+void read_from_file(const std::string &path_res, std::list<std::vector<uint8_t> >& body) {
   std::ifstream page(PATH_TO_ROOT + path_res, std::ios::binary);
-
   page.seekg(0, page.end);
-  int length = page.tellg();
+  ssize_t length = page.tellg();
   page.seekg(0, page.beg);
-  char *buffer = new char[length]; //TODO: перепридумать
-  page.read(buffer, length);
+  char he[length]; //TODO: huita
+  page.read(he, length);
+  body.emplace_back(std::vector<uint8_t>(he, he + length));
   page.close();
-  std::string body(buffer, buffer + length);
-
-  return body;
 }
 
 std::string get_content_type(const std::string &filename) {

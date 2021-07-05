@@ -16,7 +16,7 @@
 #include <repository/ConfigRepository.hpp>
 #include "Get.hpp"
 #include "Head.hpp"
-
+#include "vector"
 class ResponseBuilder {
 
 private:
@@ -27,7 +27,7 @@ private:
 public:
   ResponseBuilder(const server_config &serverConfig,
                   const t_request_data &data);
-  string build_response(methods qurey_type);
+  void build_response(methods qurey_type, std::list<std::vector<uint8_t> >&);
   virtual ~ResponseBuilder();
 };
 

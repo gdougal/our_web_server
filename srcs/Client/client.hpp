@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include "ConfigRepository.hpp"
 #include <unistd.h>
+#include <stack>
 
 #define PORTION_SIZE 65000
 
@@ -53,12 +54,15 @@ public:
 		}
 	}
   void	send_to_client() {
-		std::string http(handler_->create_response());
+    std::list<std::vector<uint8_t>>  resp;
+		handler_->create_response(resp);
 		buffer_.clear();
-		if (send(fd_, http.c_str(), http.size(), 0)/*;*/ <= 0) {
-			cur_state_ = FINALL;
-			return ;
-		}
+		for (auto& message: resp) {
+      if (send(fd_, message.data(), message.size(), 0)/*;*/ <= 0) {
+        cur_state_ = FINALL;
+        return;
+      }
+    }
 		cur_state_ = READ_FROM_CLIENT;
 	}
 };

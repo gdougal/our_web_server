@@ -4,14 +4,13 @@
 
 #include "Head.hpp"
 
-std::string Head::build_response(const server_config &serverConfig,
-                                 const t_request_data &request_data) {
-  std::string response_body;
+void Head::build_response(const server_config &serverConfig,
+                                 const t_request_data &request_data, std::list<std::vector<uint8_t> >& resp) {
 
-  response_body = ResponseUtils::read_from_file(request_data.path);
-  if (response_body.empty())
-    return ErrorBuilder::build(ER404, serverConfig);
-  return HeadersBuilder::build(
+  ResponseUtils::read_from_file(request_data.path, resp);
+  if ((*resp.begin()).empty())
+    ErrorBuilder::build(ER404, serverConfig, resp);
+  HeadersBuilder::build(
       R200, connection(KEEP_ALIVE),
-      ResponseUtils::get_content_type(request_data.path), 0);
+      ResponseUtils::get_content_type(request_data.path), 0, resp);
 }

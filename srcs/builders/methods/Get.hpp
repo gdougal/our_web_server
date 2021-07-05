@@ -10,8 +10,8 @@
 
 class Get {
 public:
-  static std::string build_response(const server_config &serverConfig,
-                                    const t_request_data &request_data);
+  static void build_response(const server_config &serverConfig,
+                                    const t_request_data &request_datam, std::list<std::vector<uint8_t> >&);
 };
 
 #endif // WEB_SERVER_GET_HPP

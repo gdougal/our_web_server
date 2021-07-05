@@ -25,8 +25,8 @@ private:
   static std::string get_connection_type(connection conn);
 
 public:
-  static std::string build(handl_ret_codes response_code, connection connectionType,
-                      const std::string& contentType, int contentLength);
+  static void build(handl_ret_codes response_code, connection connectionType,
+                      const std::string& contentType, int contentLength, std::list<std::vector<uint8_t> >& );
 };
 
 #endif // WEB_SERVER_HEADERSBUILDER_HPP

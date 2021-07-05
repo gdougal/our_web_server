@@ -12,16 +12,14 @@
 
 class AutoindexResonseBuilder {
 private:
-    std::string generateDirLink(const std::string& dir_name,std::string&
-                                                          index_dir,
-                         const server_config&
-                                                           serverConfig);
-   std::string generateHead(const std::string& path);
-   std::string generateEnd();
+  std::string generateDirLink(const std::string &dir_name,
+                                std::string &index_dir, const server_config &serverConfig);
+  std::string generateHead(const std::string &path);
+  std::string generateEnd();
 
 public:
-  std::string build(const server_config& serverConfig, const std::string& path,
-               const std::string& index_directory);
+  void build(const server_config &serverConfig, const std::string &path,
+                    const std::string &index_directory, std::list<std::vector<uint8_t> >& resp);
 };
 
 #endif // WEB_SERVER_AUTOINDEXRESONSEBUILDER_HPP

@@ -7,20 +7,20 @@
 #include <iostream>
 #include <sstream>
 
-std::string AutoindexResonseBuilder::build(const server_config &serverConfig,
+void AutoindexResonseBuilder::build(const server_config &serverConfig,
                                       const std::string &path,
-                                      const std::string &index_directory) {
+                                      const std::string &index_directory, std::list<std::vector<uint8_t> >& resp) {
   DIR *current_dir = opendir(path.c_str());
   std::string page = "";
   std::string index_dir_mutable = index_directory;
   page += generateHead(index_directory);
   for (struct dirent *dir = readdir(current_dir); dir;
        dir = readdir(current_dir)) {
-    page += generateDirLink(string(dir->d_name), index_dir_mutable, serverConfig);
+    page += generateDirLink(std::string(dir->d_name), index_dir_mutable, serverConfig);
   }
   page += generateEnd();
   closedir(current_dir);
-  return page;
+  resp.emplace_back(std::vector<uint8_t>(page.begin(), page.end()));
 }
 
 std::string AutoindexResonseBuilder::generateHead(const std::string &path) {
@@ -42,7 +42,7 @@ std::string
 AutoindexResonseBuilder::generateDirLink(const std::string &dir_name,
                                          std::string &index_directory,
                                          const server_config &serverConfig) {
-  stringstream ss;
+  std::stringstream ss;
   if (index_directory.c_str()[index_directory.length() - 1] != '/')
     index_directory += "/";
   ss << "<br><a href=\"http://" + serverConfig.host + ":" << serverConfig.port

@@ -6,18 +6,19 @@
 #include <HeadersBuilder.hpp>
 #include <iostream>
 
-string ErrorBuilder::build(handl_ret_codes error_code, server_config serverConfig) {
-  map<int, string>::iterator it =
-      serverConfig.error_pages_paths.find(error_code);
-  string path_to_error_page = "";
+void ErrorBuilder::build(handl_ret_codes error_code, server_config serverConfig,
+                         std::list<std::vector<uint8_t> > &resp) {
+  std::map<int, std::string>::iterator it =
+          serverConfig.error_pages_paths.find(error_code);
+  std::string path_to_error_page = "";
   if (it == serverConfig.error_pages_paths.end()) {
     path_to_error_page = default_error_pages.find(error_code)->second;
-  } else {
+  }
+  else {
     path_to_error_page = it->second;
   }
-  string body = ResponseUtils::read_from_file(path_to_error_page);
+  ResponseUtils::read_from_file(path_to_error_page, resp);
   return HeadersBuilder::build(error_code, connection(CLOSE),
-                               ResponseUtils::get_content_type(".html"), body
-                                                                         .length()) +
-         body;
+                               ResponseUtils::get_content_type(".html"),
+                               (*resp.begin()).size(), resp);
 }

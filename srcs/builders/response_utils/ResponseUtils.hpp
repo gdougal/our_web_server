@@ -6,11 +6,11 @@
 #define WEB_SERVER_RESPONSEUTILS_HPP
 
 #include <string>
-
+#include "list"
 
 namespace ResponseUtils {
 
-	std::string read_from_file(const std::string& path_res);
+	void read_from_file(const std::string& path_res, std::list<std::vector<uint8_t> >&);
 	std::string get_content_type(const std::string& filename);
 
 }

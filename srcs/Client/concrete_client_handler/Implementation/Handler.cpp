@@ -172,15 +172,13 @@ namespace http {
 		return false;
 	}
 
-	const std::string Handler::create_response() {
+	const void Handler::create_response(std::list<std::vector<uint8_t>>& resp) {
 		ResponseBuilder builder(config,
 														t_request_data{header_, body_, cur_route_,
 																					 methos_and_path_.second,
 																					 req_status_});
-		std::string response(builder.build_response(
-						parse_utils::get_enum_methods(methos_and_path_.first)));
+		builder.build_response(parse_utils::get_enum_methods(methos_and_path_.first), resp);
 		after_all();
-		return (response);
 	}
 
 	void Handler::after_all() {
@@ -192,7 +190,7 @@ namespace http {
 		max_body_ = -1;
 	}
 
-	void Handler::logger(const string &logs, int fd) const {
+	void Handler::logger(const std::string &logs, int fd) const {
 		{
 			write(fd, logs.data(), logs.size());
 			write(fd, "\n", 1);

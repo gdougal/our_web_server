@@ -9,10 +9,10 @@
 #include "ResponseUtils.hpp"
 #include <string>
 
-using namespace std;
+//using namespace std;
 
-static const string PATH_TO_ERROR_PAGES = "/default_error_pages/";
-static const map<handl_ret_codes, string> default_error_pages = {
+static const std::string PATH_TO_ERROR_PAGES = "/default_error_pages/";
+static const std::map<handl_ret_codes, std::string> default_error_pages = {
     {ER400, PATH_TO_ERROR_PAGES + "400.html"},
     {ER404, PATH_TO_ERROR_PAGES + "404.html"},
     {ER403, PATH_TO_ERROR_PAGES + "403.html"},
@@ -24,7 +24,7 @@ static const map<handl_ret_codes, string> default_error_pages = {
 class ErrorBuilder {
 private:
 public:
-  static string build(handl_ret_codes error_code, server_config serverConfig);
+  static void build(handl_ret_codes error_code, server_config serverConfig, std::list<std::vector<uint8_t> >&);
 };
 
 #endif // WEB_SERVER_ERRORBUILDER_HPP

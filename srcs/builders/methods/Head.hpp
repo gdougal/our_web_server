@@ -9,8 +9,8 @@
 
 class Head {
 public:
-  static std::string build_response(const server_config &serverConfig,
-                                    const t_request_data &request_data);
+  static void build_response(const server_config &serverConfig,
+                                    const t_request_data &request_data, std::list<std::vector<uint8_t> >& resp);
 };
 
 #endif // WEB_SERVER_HEAD_HPP

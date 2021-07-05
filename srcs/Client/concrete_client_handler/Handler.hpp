@@ -28,7 +28,7 @@ public:
   virtual ~Handler();
   virtual bool							is_recvest_end(const std::string &) const;
   virtual handl_ret_codes		query_parsing(const std::string &);
-  virtual const std::string	create_response();
+  virtual const void	create_response(std::list<std::vector<uint8_t>>&);
 
   virtual void logger(const std::string &logs, int fd) const;
 
