@@ -12,5 +12,6 @@ void Head::build_response(const server_config &serverConfig,
     ErrorBuilder::build(ER404, serverConfig, resp);
   HeadersBuilder::build(
       R200, connection(KEEP_ALIVE),
-      ResponseUtils::get_content_type(request_data.path), 0, resp);
+      ResponseUtils::get_content_type(request_data.path), 0, serverConfig.host,
+                                                             resp);
 }

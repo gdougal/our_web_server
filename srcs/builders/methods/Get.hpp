@@ -7,6 +7,7 @@
 
 #include "CommonUtils.hpp"
 #include "ResponseBuilder.hpp"
+#include "ParseUtils.hpp"
 
 class Get {
 public:

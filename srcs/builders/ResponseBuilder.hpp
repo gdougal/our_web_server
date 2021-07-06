@@ -17,6 +17,9 @@
 #include "Get.hpp"
 #include "Head.hpp"
 #include "vector"
+#include "Put.hpp"
+#include "Post.hpp"
+
 class ResponseBuilder {
 
 private:

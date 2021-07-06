@@ -20,10 +20,10 @@ void ResponseBuilder::build_response(methods qurey_type, std::list<std::vector<u
   case methods::HEAD:
     return Head::build_response(serverConfig, request_data, resp);
   case methods::PUT: {
-    break;
+    return Put::build("test_file.txt", request_data, serverConfig, resp);
   }
   case methods::POST: {
-
+    return Put::build("test_file.txt", request_data, serverConfig, resp);
     break;
   }
   case methods::DELETE: {

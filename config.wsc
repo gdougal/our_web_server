@@ -8,8 +8,9 @@ server
 	        404 : /pages_root/error_pages/404_error.html
             403 : /pages_root/error_pages/403_error.html
 	routes
-            route: /pages/
-            index_file: photo1.jpg
+            route: /
+            directory: /pages
+            index_file: simple.html
         	methods_allowed: GET;POST
 server
 	host: 127.0.0.1

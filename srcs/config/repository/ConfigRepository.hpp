@@ -12,6 +12,7 @@ struct server_config {
   std::string	host;
   std::string	port;
   std::string	server_name;
+
   std::string	cgi_ext;
 	std::string	cgi_path;
   std::map<int, std::string> error_pages_paths;

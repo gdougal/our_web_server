@@ -4,7 +4,6 @@
 
 #include "Get.hpp"
 #include <iostream>
-#include "unistd.h"
 
 void Get::build_response(const server_config &serverConfig,
                                 const t_request_data &request_data, std::list<std::vector<uint8_t> >& resp) {
@@ -21,5 +20,7 @@ void Get::build_response(const server_config &serverConfig,
       ErrorBuilder::build(ER404, serverConfig, resp);
   }
   HeadersBuilder::build(R200, connection(KEEP_ALIVE), content_type,
-                               (*resp.begin()).size(), resp);
+                               (*resp.begin()).size(), serverConfig.host, resp);
+  std::string end_str = parse_utils::query_end;
+  resp.emplace_back(std::vector<uint8_t>(end_str.begin(), end_str.end()));
 }

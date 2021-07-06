@@ -20,5 +20,5 @@ void ErrorBuilder::build(handl_ret_codes error_code, server_config serverConfig,
   ResponseUtils::read_from_file(path_to_error_page, resp);
   return HeadersBuilder::build(error_code, connection(CLOSE),
                                ResponseUtils::get_content_type(".html"),
-                               (*resp.begin()).size(), resp);
+                               (*resp.begin()).size(), serverConfig.host, resp);
 }

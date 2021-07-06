@@ -157,6 +157,7 @@ namespace http {
 			return (obj.req_status_ = CONTINUE);
 		size_t tmp = obj.end_line(src, obj.position_);
 		std::string number(src.substr(obj.position_, tmp - obj.position_));
+                if (!number.empty())
 		obj.body_length_ = std::stoi(number, nullptr, 16);
 		if (obj.body_length_ == 0)
 			return (obj.req_status_ = SUCCESSFUL);
