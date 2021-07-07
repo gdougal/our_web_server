@@ -10,7 +10,7 @@ server
 	routes
             route: /
             directory: /pages
-            index_file: simple.html
+            index_file: photo1.jpg
         	methods_allowed: GET;POST;PUT
 server
 	host: 127.0.0.1

@@ -9,15 +9,16 @@
 #include "fd_creator.hpp"
 #include <sys/fcntl.h>
 #include "unistd.h"
+#include "shared_ptr.hpp"
 
 template <typename types, typename protocol_handler = typename types::protocol,
           typename data_type = typename types::datatypes>
 class Server {
 public:
-  explicit Server(const std::list< std::shared_ptr<data_type> >& cfg) {
-    for (auto &item : cfg) {
-      serv_.emplace_back(std::make_shared<virtual_server>(
-          fd_creator::create_listen_socket(item->host, item->port), item));
+  explicit Server(const std::list< ft::shared_ptr<data_type> >& cfg) {
+    for (typename std::list< ft::shared_ptr<data_type> >::const_iterator item = cfg.begin(); item != cfg.end(); ++item) {
+
+      serv_.push_back( new virtual_server( fd_creator::create_listen_socket((*item)->host, (*item)->port), *item ) );
     }
     logfile_ = open("logfile.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
     if (logfile_ < 0)
@@ -79,16 +80,16 @@ private:
     for (auto &v_serv : serv_) {
       if (FD_ISSET(v_serv->serv_fd_, &read_fds_) &&
           (client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
-        v_serv->clients_.emplace_back(std::make_shared<Client<types> >(client_fd, logfile_, *(v_serv->config_data)) );
+        v_serv->clients_.push_back(ft::shared_ptr<Client<types> >( new Client<types>(client_fd, logfile_, *(v_serv->config_data) ) ) );
       }
     }
   }
   struct virtual_server {
     int serv_fd_;
-    std::shared_ptr<data_type> config_data;
-    std::list<std::shared_ptr<Client<types> > > clients_;
+    ft::shared_ptr<data_type> config_data;
+    std::list<ft::shared_ptr<Client<types> > > clients_;
 
-    virtual_server(int servFd, const std::shared_ptr<data_type>& configData)
+    virtual_server(int servFd, const ft::shared_ptr<data_type>& configData)
         : serv_fd_(servFd), config_data(configData) {}
 
     virtual ~virtual_server() { close(serv_fd_); }
@@ -96,7 +97,7 @@ private:
   int max_fd_;
   fd_set read_fds_;
   fd_set write_fds_;
-  std::list<std::shared_ptr<virtual_server>> serv_;
+  std::list<ft::shared_ptr<virtual_server>> serv_;
   int logfile_;
 };
 

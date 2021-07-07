@@ -1,0 +1,73 @@
+#pragma once
+
+
+namespace ft {
+
+  template<typename t_val>
+  class shared_ptr {
+  public:
+    shared_ptr() throw():
+            value_(nullptr) {
+      memory_();
+      *count_ = 1; };
+
+    shared_ptr(t_val *value) throw():
+            value_(value) {
+      memory_();
+      *count_ = 1; };
+
+    shared_ptr(const shared_ptr &ref) throw() {
+      memory_();
+      copy(ref);
+    };
+
+    shared_ptr &operator=(const shared_ptr &ref) throw() {
+      delete_value();
+      memory_();
+      copy(ref);
+    }
+
+    virtual ~shared_ptr() throw() {
+      --(*count_);
+      if (*count_ == 0) {
+        delete value_;
+        delete count_;
+      }
+    };
+
+    t_val &operator*() throw() { return *value_; }
+
+    const t_val &operator*() const throw() { return *value_; }
+
+    t_val *operator->() throw() { return value_; }
+
+    const t_val *operator->() const throw() { return value_; }
+
+    t_val *get() throw() { return value_; }
+
+    const t_val *get() const throw() { return value_; }
+
+  private:
+    void copy(const shared_ptr &ref) throw() {
+      value_ = ref.value_;
+      ++(*(ref.count_));
+      count_ = ref.count_;
+    }
+
+    void delete_value() throw() {
+      if (value_) {
+        delete value_;
+        --(*count_);
+        count_ = nullptr;
+      }
+    }
+
+    void memory_() {
+      if (count_ == nullptr)
+        count_ = new size_t;
+    }
+    t_val *value_;
+    size_t *count_ = nullptr;
+  };
+
+}

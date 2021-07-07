@@ -4,6 +4,7 @@
 
 #include "config/Parser/ConfigParser.hpp"
 #include "CommonUtils.hpp"
+#include <fstream>
 
 ConfigParser::ConfigParser(const std::string &config_name,
 													 const std::vector<std::string> &main_part_delim,
