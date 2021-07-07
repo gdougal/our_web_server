@@ -21,6 +21,6 @@ void Get::build_response(const server_config &serverConfig,
   }
   HeadersBuilder::build(R200, connection(KEEP_ALIVE), content_type,
                                (*resp.begin()).size(), serverConfig.host, resp);
-  std::string end_str = parse_utils::query_end;
-  resp.emplace_back(std::vector<uint8_t>(end_str.begin(), end_str.end()));
+  resp.emplace_back(std::vector<uint8_t>(parse_utils::query_end,
+                                         parse_utils::query_end + 4));
 }

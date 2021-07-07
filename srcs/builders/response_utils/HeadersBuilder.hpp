@@ -27,7 +27,8 @@ private:
 
 public:
   static void build(handl_ret_codes response_code, connection connectionType,
-                      const std::string& contentType, long contentLength, const std::string &host,
+                      const std::string& contentType, size_t contentLength, const
+                    std::string &host,
                     std::list<std::vector<uint8_t> >& );
 };
 

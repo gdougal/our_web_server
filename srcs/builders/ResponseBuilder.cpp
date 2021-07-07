@@ -24,7 +24,6 @@ void ResponseBuilder::build_response(methods qurey_type, std::list<std::vector<u
   }
   case methods::POST: {
     return Put::build("test_file.txt", request_data, serverConfig, resp);
-    break;
   }
   case methods::DELETE: {
 

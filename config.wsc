@@ -11,7 +11,7 @@ server
             route: /
             directory: /pages
             index_file: simple.html
-        	methods_allowed: GET;POST
+        	methods_allowed: GET;POST;PUT
 server
 	host: 127.0.0.1
 	port: 8000

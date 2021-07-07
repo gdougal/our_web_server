@@ -15,13 +15,13 @@ void Put::build(const std::string &filename, const t_request_data &data,
 
   if (outfile.is_open()) {
     outfile.write(data.body.c_str(), data.body.size());
-    HeadersBuilder::build(R200, static_cast<connection>(b_connection),
+    HeadersBuilder::build(R201, static_cast<connection>(b_connection),
                           content_type, data.body.size(), serverConfig.host,
                           resp);
   } else {
     outfile.open(filename.c_str());
     outfile.write(data.body.c_str(), data.body.size());
-    HeadersBuilder::build(R200, static_cast<connection>(b_connection),
+    HeadersBuilder::build(ER204, static_cast<connection>(b_connection),
                           content_type, data.body.size(), serverConfig.host,
                           resp);
   }

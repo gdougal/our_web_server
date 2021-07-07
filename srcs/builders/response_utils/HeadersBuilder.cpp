@@ -19,7 +19,7 @@ static const std::map<handl_ret_codes, std::string> response_code_description =
 
 void HeadersBuilder::build(handl_ret_codes response_code,
                            connection connectionType,
-                           const std::string &contentType, long contentLength,
+                           const std::string &contentType, size_t contentLength,
                            const std::string &host,
                            std::list<std::vector<uint8_t>> &resp) {
   std::string header = "";
@@ -28,10 +28,10 @@ void HeadersBuilder::build(handl_ret_codes response_code,
             parse_utils::line_end;
   header += PROTOCOL_VERSION + parse_utils::line_end;
   header +=
-      CONTENT_LENGHT + std::to_string(contentLength) + parse_utils::line_end;
-  header +=
       CONNECTION + get_connection_type(connectionType) + parse_utils::line_end;
   header += CONTENT_TYPE + contentType + parse_utils::line_end;
+  header +=
+      CONTENT_LENGHT + std::to_string(contentLength) + parse_utils::line_end;
   header += HOST + "http://localhost:8080";
 
   header += parse_utils::query_end;
