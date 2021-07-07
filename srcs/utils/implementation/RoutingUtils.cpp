@@ -10,10 +10,6 @@ namespace routing_utils {
 
 Optional_simple<route> get_route(std::string &url,
                                  const server_config &serverConfig) {
-  if (url.c_str()[url.length() - 1] != '/' && is_directory(url))
-    url += "/";
-  std::list<std::string> request_directories =
-      parse_utils::getDirectoryList(url);
   Optional_simple<route> result;
 
   auto first_server_routes = serverConfig.routes.begin();
@@ -24,8 +20,15 @@ Optional_simple<route> get_route(std::string &url,
     auto f_word = first_server_routes->get()->directory_word_list.begin();
     auto l_word = first_server_routes->get()->directory_word_list.end();
 
+    std::string tmp_path = url;
+    if (tmp_path.c_str()[tmp_path.length() - 1] != '/' && is_directory(tmp_path) == IS_DIRECTORY)
+      tmp_path += "/";
+    std::list<std::string> request_directories =
+        parse_utils::getDirectoryList(tmp_path);
+
     auto f_request_word = request_directories.begin();
     auto l_request_word = request_directories.end();
+
 
     int match_words = 0;
     while (f_word != l_word) {

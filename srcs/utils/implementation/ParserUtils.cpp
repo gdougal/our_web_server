@@ -20,8 +20,8 @@ methods get_enum_methods(const std::string &method_str) {
 
 std::list<std::string> getDirectoryList(const std::string &src) {
   std::list<std::string> res;
+  res.push_front("/");
   if (src == "/") {
-    res.push_front("/");
     return res;
   }
   for (int first = 0, second = src.find('/', first + 1); first < second;

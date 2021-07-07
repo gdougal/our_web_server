@@ -8,8 +8,13 @@
 #include "ResponseBuilder.hpp"
 
 class Put {
+private:
+  static std::string get_file_name(std::string path, const server_config
+                                                   &serverConfig,
+                            std::list<std::vector<uint8_t>> &);
+
 public:
-  static void build(const std::string &filename, const t_request_data &data,
+  static void build(const t_request_data &data,
                     const server_config &serverConfig,
                     std::list<std::vector<uint8_t>> &);
 };

@@ -7,6 +7,7 @@
 #include "ResponseBuilder.hpp"
 #include "RoutingUtils.hpp"
 #include "request_data.hpp"
+#include <iostream>
 #include <unistd.h>
 
 namespace http {
@@ -75,13 +76,13 @@ std::string Handler::search_file() const {
   return path_res;
 }
 
-handl_ret_codes Handler::file_checker() {
-  req_file_status status = is_directory(methos_and_path_.second);
+handl_ret_codes Handler::file_checker(std::string target_path) {
+  req_file_status status = is_directory(target_path);
   if (status == IS_DIRECTORY)
     return ER403;
   else if (status == NOT_FOUND &&
-           header_.find(parse_utils::POST) == header_.end() &&
-           header_.find(parse_utils::PUT) == header_.end()) {
+           (header_.find(parse_utils::POST) == header_.end() ||
+            header_.find(parse_utils::PUT) == header_.end())) {
     return ER404;
   }
   return CONTINUE;
@@ -91,18 +92,21 @@ handl_ret_codes Handler::route_searcher() {
   Optional_simple<route> opt_route =
       routing_utils::get_route(methos_and_path_.second, config);
   if (!opt_route.is_val()) {
-    return file_checker();
+    return file_checker(methos_and_path_.second);
   }
   cur_route_ = opt_route.get();
   if (!find_some(cur_route_.methods_allowed,
                  parse_utils::get_enum_methods(methos_and_path_.first)))
     return ER405;
 
-  methos_and_path_.second = search_file();
-  handl_ret_codes cur_status = file_checker();
-  if (cur_status == ER404) {
+  std::string target_path = search_file();
+  handl_ret_codes cur_status = file_checker(target_path);
+
+  if (cur_status == ER404 && file_checker(methos_and_path_.second) != CONTINUE)
     return (req_status_ = cur_status);
-  }
+  else
+    methos_and_path_.second = target_path;
+
   if (methos_and_path_.second.empty() && !cur_route_.autoindex)
     return (req_status_ = ER404);
 

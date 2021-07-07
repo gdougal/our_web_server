@@ -9,9 +9,18 @@ server
             403 : /pages_root/error_pages/403_error.html
 	routes
             route: /
-            directory: /pages
-            index_file: simple.html
-        	methods_allowed: GET;POST;PUT
+            index_file: /pages/simple.html
+        	methods_allowed: GET
+        	route: /put_test/
+            save_path: /save_directory
+            methods_allowed: PUT
+            route: /post_body/
+            limit_body_size: 100
+            methods_allowed: POST
+            route: /directory/
+            directory: /YoupiBanane
+            index_file: /youpi.bad_extension
+            methods_allowed: GET
 server
 	host: 127.0.0.1
 	port: 8000

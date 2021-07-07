@@ -4,9 +4,11 @@
 
 #include "Put.hpp"
 
-void Put::build(const std::string &filename, const t_request_data &data,
-                const server_config &serverConfig,
+void Put::build(const t_request_data &data, const server_config &serverConfig,
                 std::list<std::vector<uint8_t>> &resp) {
+  std::string filename = get_file_name(data.path, serverConfig, resp);
+  if (filename.empty())
+    return;
   std::ofstream outfile;
   outfile.open(filename.c_str());
   const std::string content_type(ResponseUtils::get_content_type(filename));
@@ -25,4 +27,13 @@ void Put::build(const std::string &filename, const t_request_data &data,
                           content_type, data.body.size(), serverConfig.host,
                           resp);
   }
+}
+
+std::string Put::get_file_name(std::string path,
+                               const server_config &serverConfig,
+                               std::list<std::vector<uint8_t>> &) {
+  req_file_status status = is_directory(path);
+  if (status == IS_DIRECTORY) {
+  }
+  return std::string();
 }

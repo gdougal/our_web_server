@@ -20,7 +20,7 @@ class Handler : public BaseClientHandler<server_config, handl_ret_codes> {
                                            const std::string &); // length
   static handl_ret_codes parse_body_chunked(Handler &,
                                             const std::string &); // chunk
-  handl_ret_codes file_checker();
+  handl_ret_codes file_checker(std::string target_path);
   handl_ret_codes route_searcher();
   void after_all();
 
