@@ -3,12 +3,16 @@
 //
 
 #include "Put.hpp"
+#include <iostream>
 
 void Put::build(const t_request_data &data, const server_config &serverConfig,
                 std::list<std::vector<uint8_t>> &resp) {
+  std::cout << " Here is " << std::endl;
+
   std::string filename = get_file_name(data.path, serverConfig, resp);
   if (filename.empty())
     return;
+  std::cout << "filename is " << filename << std::endl;
   std::ofstream outfile;
   outfile.open(filename.c_str());
   const std::string content_type(ResponseUtils::get_content_type(filename));
@@ -31,9 +35,11 @@ void Put::build(const t_request_data &data, const server_config &serverConfig,
 
 std::string Put::get_file_name(std::string path,
                                const server_config &serverConfig,
-                               std::list<std::vector<uint8_t>> &) {
+                               std::list<std::vector<uint8_t>> &resp) {
   req_file_status status = is_directory(path);
   if (status == IS_DIRECTORY) {
+    ErrorBuilder::build(ER403, serverConfig, resp);
   }
-  return std::string();
+  size_t delim_pos = path.find_last_of("/", 0);
+  return path.substr(delim_pos, path.size() - delim_pos);
 }

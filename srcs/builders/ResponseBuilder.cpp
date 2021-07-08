@@ -12,7 +12,9 @@ ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
 
 void ResponseBuilder::build_response(methods qurey_type, std::list<std::vector<uint8_t> >& resp) {
 
-  if (request_data.code != SUCCESSFUL)
+  if (request_data.code != SUCCESSFUL && !(request_data.code == ER404 &&
+                                          (qurey_type == methods::POST ||
+                                           qurey_type == methods::PUT)))
     return ErrorBuilder::build(request_data.code, serverConfig, resp);
   switch (qurey_type) {
   case methods::GET:

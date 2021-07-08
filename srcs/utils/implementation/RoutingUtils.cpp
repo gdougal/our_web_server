@@ -22,15 +22,12 @@ Optional_simple<route> get_route(std::string &url,
     auto f_word = first_server_routes->get()->directory_word_list.begin();
     auto l_word = first_server_routes->get()->directory_word_list.end();
     tmp_path = first_server_routes->get()->directory + url;
-    std::cout << "tmp path is " << first_server_routes->get()->directory <<
-        " url is " << url << std::endl;
 
     if (tmp_path.c_str()[tmp_path.size() - 1] != '/' &&
         is_directory(tmp_path) == IS_DIRECTORY)
       tmp_path = url + "/";
     else
       tmp_path = url;
-    std::cout << "tmp path is " << tmp_path << " url is " << url << std::endl;
 
     std::list<std::string> request_directories =
         parse_utils::getDirectoryList(tmp_path);
@@ -53,7 +50,6 @@ Optional_simple<route> get_route(std::string &url,
       f_word++;
     }
     if (match_words > max_match_words_count) {
-      std::cout << "MAtch word is " << match_words << std::endl;
       max_match_words_count = match_words;
       result.set_value(*(first_server_routes->get()));
     }

@@ -115,7 +115,6 @@ handl_ret_codes Handler::route_searcher() {
 
   if (methos_and_path_.second.empty() && !cur_route_.autoindex)
     return (req_status_ = ER404);
-  std::cout << "methods path is " << methos_and_path_.second << std::endl;
   return CONTINUE;
 }
 
