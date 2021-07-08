@@ -8,6 +8,7 @@
 #include "list"
 #include "manual_types.h"
 #include "shared_ptr.hpp"
+#include "optional.hpp"
 
 struct server_config {
   std::string	host;
@@ -28,7 +29,7 @@ struct server_config {
 					cgi_path(data["server"].getStrValue("cgi_path"))
 	{
   	if (data.find("error_pages") != data.end()) {
-			for (std::map<std::string, OptStr>::iterator iter = data["error_pages"].getBeginSectIter();
+			for (std::map<std::string, ft::optional<std::string> >::iterator iter = data["error_pages"].getBeginSectIter();
 					 iter != data["error_pages"].getEndSectIter(); ++iter) {
 				error_pages_paths.insert(std::make_pair(std::stoi(iter->first),
 																								iter->second.get_or("")));

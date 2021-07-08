@@ -8,6 +8,7 @@
 #include "RoutingUtils.hpp"
 #include "request_data.hpp"
 #include <unistd.h>
+#include "optional.hpp"
 
 namespace http {
 
@@ -88,7 +89,7 @@ handl_ret_codes Handler::file_checker() {
 }
 
 handl_ret_codes Handler::route_searcher() {
-  Optional_simple<route> opt_route =
+  ft::optional<route> opt_route =
       routing_utils::get_route(methos_and_path_.second, config);
   if (!opt_route.is_val()) {
     return file_checker();

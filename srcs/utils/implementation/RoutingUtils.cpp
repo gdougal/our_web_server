@@ -5,16 +5,17 @@
 #include "CommonUtils.hpp"
 #include "ConfigRepository.hpp"
 #include "ParseUtils.hpp"
+#include "optional.hpp"
 
 namespace routing_utils {
 
-Optional_simple<route> get_route(std::string &url,
+ft::optional<route> get_route(std::string &url,
                                  const server_config &serverConfig) {
   if (url.c_str()[url.length() - 1] != '/' && is_directory(url))
     url += "/";
   std::list<std::string> request_directories =
       parse_utils::getDirectoryList(url);
-  Optional_simple<route> result;
+  ft::optional<route> result;
 
   auto first_server_routes = serverConfig.routes.begin();
   auto last_server_routes = serverConfig.routes.end();

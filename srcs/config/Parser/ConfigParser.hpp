@@ -8,6 +8,7 @@
 #include <exception>
 #include <vector>
 #include "manual_types.h"
+#include "optional.hpp"
 
 /// Вариант парсера для файла с повторением базовых конструкций имеющие вложенные повторяемые конструкции
 /// list
@@ -27,10 +28,10 @@ public:
 
 	class Section {
     friend ConfigParser;
-		typedef std::map<std::string, Optional_simple<std::string> > t_section;
+		typedef std::map<std::string, ft::optional<std::string> > t_section;
 		typedef std::vector< t_section > t_list_section;
     void setContent(const std::string &key, const std::string &value, bool new_list);
-		Optional_simple<std::string> throw_or_not(const std::string &Key, size_t num = 0) const;
+    ft::optional<std::string> throw_or_not(const std::string &Key, size_t num = 0) const;
 	public:
 		Section() = default;
 		std::string	getStrValue(const std::string &Key, size_t num = 0, const std::string& or_val = "") const;
