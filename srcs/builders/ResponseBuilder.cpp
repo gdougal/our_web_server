@@ -10,13 +10,13 @@ ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
                                  const t_request_data &data)
     : serverConfig(serverConfig), request_data(data) {}
 
-void ResponseBuilder::build_response(methods qurey_type, std::list<std::vector<uint8_t> >& resp) {
+void ResponseBuilder::build_response(std::list<std::vector<uint8_t> >& resp) {
 
   if (request_data.code != SUCCESSFUL && !(request_data.code == ER404 &&
-                                          (qurey_type == methods::POST ||
-                                           qurey_type == methods::PUT)))
+                                          (request_data.cur_method == methods::POST ||
+                                                  request_data.cur_method == methods::PUT)))
     return ErrorBuilder::build(request_data.code, serverConfig, resp);
-  switch (qurey_type) {
+  switch (request_data.cur_method) {
   case methods::GET:
     return Get::build_response(serverConfig, request_data, resp);
   case methods::HEAD:

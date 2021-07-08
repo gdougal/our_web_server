@@ -188,9 +188,8 @@ bool Handler::is_recvest_end(const std::string &fo_pars) const {
 const void Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
   ResponseBuilder builder(config,
                           t_request_data{header_, body_, cur_route_,
-                                         methos_and_path_.second, req_status_});
-  builder.build_response(parse_utils::get_enum_methods(methos_and_path_.first),
-                         resp);
+                                         methos_and_path_.second, req_status_, parse_utils::get_enum_methods(methos_and_path_.first)});
+  builder.build_response(resp);
   after_all();
 }
 

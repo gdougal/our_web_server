@@ -13,13 +13,13 @@ include_directories(
         srcs/builders/response_utils
         srcs/builders/error
         srcs/utils
-        srcs/Client/concrete_client_handler
+        srcs/Client/Handler
         srcs/utils/pure_instruments
 )
 set(My_SRCS
         srcs/config/Parser/Implementation/ConfigParser.cpp
         srcs/utils/implementation/fd_creator.cpp
-        srcs/Client/concrete_client_handler/Implementation/Handler.cpp
+        srcs/Client/Handler/Implementation/Handler.cpp
         srcs/builders/ResponseBuilder.cpp
         srcs/manual_types.h
         srcs/builders/autoindex/AutoindexResonseBuilder.cpp

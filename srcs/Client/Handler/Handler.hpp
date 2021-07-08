@@ -2,6 +2,7 @@
 
 #include "manual_types.h"
 #include <RouteEntity.hpp>
+#include "IHandler.hpp"
 
 using t_request_data = struct request_data;
 

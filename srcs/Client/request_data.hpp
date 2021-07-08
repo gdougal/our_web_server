@@ -15,4 +15,5 @@ typedef struct request_data {
   const route &request_route;
   const std::string &path;
   const handl_ret_codes code;
+  const methods         cur_method;
 } t_request_data;

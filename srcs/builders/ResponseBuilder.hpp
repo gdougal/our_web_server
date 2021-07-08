@@ -30,7 +30,7 @@ private:
 public:
   ResponseBuilder(const server_config &serverConfig,
                   const t_request_data &data);
-  void build_response(methods qurey_type, std::list<std::vector<uint8_t> >&);
+  void build_response(std::list<std::vector<uint8_t> >&);
   virtual ~ResponseBuilder();
 };
 
