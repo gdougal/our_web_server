@@ -4,8 +4,13 @@
 #include "CommonUtils.hpp"
 
 req_file_status is_directory(const std::string &path) {
+        std::string cutted_path;
+        if (path.c_str()[path.size() - 1] == '/')
+          cutted_path = &path.c_str()[path.size() - 1];
+        else
+          cutted_path = path;
 	struct stat s;
-	std::string str = PATH_TO_ROOT + path;
+	std::string str = PATH_TO_ROOT + cutted_path;
 	if (stat(str.c_str(), &s) == 0) {
 		if (s.st_mode & S_IFDIR) {
 			return IS_DIRECTORY;

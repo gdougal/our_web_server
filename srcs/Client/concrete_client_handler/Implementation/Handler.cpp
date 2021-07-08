@@ -66,13 +66,18 @@ void Handler::header_part(const std::string &fo_pars) {
 }
 
 std::string Handler::search_file() const {
-  std::string path_res;
-  path_res = cur_route_.directory + cur_route_.location +
-             methos_and_path_.second.substr(cur_route_.location.length(),
+  std::string path_res = cur_route_.directory + cur_route_.location;
+  if (methos_and_path_.second.length() >
+      cur_route_.location.length())
+  path_res += methos_and_path_.second.substr(cur_route_.location.length(),
                                             methos_and_path_.second.length() -
                                                 cur_route_.location.length());
-  if (is_directory(path_res) == IS_DIRECTORY)
-    path_res += cur_route_.index_file;
+  if (is_directory(path_res) == IS_DIRECTORY) {
+    if (path_res.c_str()[path_res.size() - 1] == '/')
+      path_res = path_res.substr(0, path_res.size() - 1) + cur_route_.index_file;
+    else
+      path_res = path_res + cur_route_.index_file;
+  }
   return path_res;
 }
 
@@ -102,14 +107,15 @@ handl_ret_codes Handler::route_searcher() {
   std::string target_path = search_file();
   handl_ret_codes cur_status = file_checker(target_path);
 
-  if (cur_status == ER404 && file_checker(methos_and_path_.second) != CONTINUE)
-    return (req_status_ = cur_status);
+  if (cur_status == ER404 && file_checker(methos_and_path_.second) !=
+                                 CONTINUE)
+      return (req_status_ = cur_status);
   else
     methos_and_path_.second = target_path;
 
   if (methos_and_path_.second.empty() && !cur_route_.autoindex)
     return (req_status_ = ER404);
-
+  std::cout << "methods path is " << methos_and_path_.second << std::endl;
   return CONTINUE;
 }
 
