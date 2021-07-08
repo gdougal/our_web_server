@@ -6,12 +6,13 @@
 #include "ConfigRepository.hpp"
 #include "ParseUtils.hpp"
 #include <iostream>
+#include "optional.hpp"
 
 namespace routing_utils {
 
-Optional_simple<route> get_route(std::string &url,
+ft::optional<route> get_route(std::string &url,
                                  const server_config &serverConfig) {
-  Optional_simple<route> result;
+  ft::optional<route> result;
   std::string tmp_path;
 
   auto first_server_routes = serverConfig.routes.begin();
