@@ -1,5 +1,6 @@
 #include <csignal>
 #include "Server.hpp"
+#include "shared_ptr.hpp"
 
 
 std::string configFileName = "config.wsc";
@@ -7,10 +8,10 @@ std::string configFileName = "config.wsc";
 void pipe(int l) { sigignore(l); }
 int main() {
   signal(SIGPIPE, pipe);
-	std::list<std::shared_ptr<server_config> > config;
+	std::list<ft::shared_ptr<server_config> > config;
 	ConfigParser parsed_struct(configFileName, {"server"}, {"error_pages", "routes"}, {"route"});
 	for (size_t idx = 0; idx < parsed_struct.getContentCount(); ++ idx) {
-		config.emplace_back(std::make_shared<server_config>(parsed_struct.getVarietyOfSection(idx)));
+		config.push_back(new server_config(parsed_struct.getVarietyOfSection(idx)) );
 	}
 
   Server<http::types> serv(config);

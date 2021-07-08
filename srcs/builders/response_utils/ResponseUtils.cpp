@@ -21,9 +21,10 @@ void read_from_file(const std::string &path_res, std::list<std::vector<uint8_t> 
   page.seekg(0, page.end);
   ssize_t length = page.tellg();
   page.seekg(0, page.beg);
-  char he[length]; //TODO: huita
-  page.read(he, length);
-  body.emplace_back(std::vector<uint8_t>(he, he + length));
+  std::vector<uint8_t> body_tmp;
+  body_tmp.resize(length);
+  page.read((char*)(body_tmp.data()), length);
+  body.emplace_back(body_tmp);
   page.close();
 }
 

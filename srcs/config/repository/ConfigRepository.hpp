@@ -7,6 +7,7 @@
 #include "RouteEntity.hpp"
 #include "list"
 #include "manual_types.h"
+#include "shared_ptr.hpp"
 
 struct server_config {
   std::string	host;
@@ -16,7 +17,7 @@ struct server_config {
   std::string	cgi_ext;
 	std::string	cgi_path;
   std::map<int, std::string> error_pages_paths;
-  std::list<std::shared_ptr<route> > routes; // TODO: сделать на указателях
+  std::list<ft::shared_ptr<route> > routes; // TODO: сделать на указателях
 
   server_config() {}
   server_config(std::map<std::string, ConfigParser::Section>& data):
@@ -34,7 +35,7 @@ struct server_config {
 			}
 		}
   	for (int idx = 0; idx < data["routes"].getContentSize(); ++idx) {
-			routes.emplace_back(std::make_shared<route>(data["routes"], idx ));
+			routes.push_back( new route(data["routes"], idx ));
   	}
   }
   server_config(const server_config&  config)
