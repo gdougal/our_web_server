@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 
+namespace http {
 
 class server_config;
 
@@ -41,8 +42,6 @@ enum handl_ret_codes: int {
 	CONTINUE = 1,   //обязательные поля
 	SUCCESSFUL = 0    //обязательные поля
 };
-
-namespace http {
 
 class Handler;
 typedef std::map<std::string, std::string> map_str;

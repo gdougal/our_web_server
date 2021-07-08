@@ -22,13 +22,13 @@ namespace ft {
 
     shared_ptr &operator=(const shared_ptr &ref) throw() {
       delete_value();
-      memory_();
       copy(ref);
+      return *this;
     }
 
     virtual ~shared_ptr() throw() {
       --(*count_);
-      if (*count_ < 1) {
+      if (*count_ == 0) {
         delete value_;
         delete count_;
       }
@@ -44,18 +44,16 @@ namespace ft {
   private:
     void copy(const shared_ptr &ref) throw() {
       value_ = ref.value_;
-      ++(*(ref.count_));
       count_ = ref.count_;
+      ++(*(ref.count_));
     }
 
     void delete_value() throw() {
-      if (count_) {
-        --(*count_);
-        if (count_ == 0) {
+       --(*count_);
+        if (*count_ == 0) {
           delete count_;
           delete value_;
         }
-      }
     }
 
     void memory_() {
