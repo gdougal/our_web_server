@@ -11,14 +11,18 @@
 #include "unistd.h"
 #include "shared_ptr.hpp"
 
+#define there_can_be_range_based_for\
+          typename std::list< ft::shared_ptr<data_type> >::const_iterator item = cfg.begin(); item != cfg.end(); ++item
+
 template <typename types, typename protocol_handler = typename types::protocol,
           typename data_type = typename types::datatypes>
 class Server {
 public:
   explicit Server(const std::list< ft::shared_ptr<data_type> >& cfg) {
-    for (typename std::list< ft::shared_ptr<data_type> >::const_iterator item = cfg.begin(); item != cfg.end(); ++item) {
-
-      serv_.push_back( new virtual_server( fd_creator::create_listen_socket((*item)->host, (*item)->port), *item ) );
+    for (there_can_be_range_based_for) {
+      serv_.push_back(
+              new virtual_server( fd_creator::create_listen_socket((*item)->host, (*item)->port), *item )
+              );
     }
     logfile_ = open("logfile.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
     if (logfile_ < 0)
@@ -26,6 +30,7 @@ public:
   };
 
   virtual ~Server() {
+    //this is range-based for:
     for (auto &v_serv : serv_) {
       close(v_serv->serv_fd_);
     }
