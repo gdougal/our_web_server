@@ -154,7 +154,7 @@ handl_ret_codes Handler::parse_body_length(Handler &obj,
   if (src.size() - obj.position_ != obj.body_length_)
     return (obj.req_status_ = CONTINUE);
   obj.body_.append(src.substr(obj.position_, obj.body_length_));
-  if (obj.max_body_ != -1 && obj.body_.size() > obj.max_body_) {
+  if (obj.max_body_ != -1 && static_cast<int>(obj.body_.size()) > obj.max_body_) {
     obj.body_.resize(obj.max_body_);
     return (obj.req_status_ = ER413);
   }
