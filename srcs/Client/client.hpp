@@ -21,12 +21,12 @@ class Client {
   typedef ft::shared_ptr<BaseClientHandler<data_type, handle_status> > Handler;
   typedef ft::shared_ptr<char> char_arr;
 
-  enum state cur_state_;
-  int fd_;
+  state       cur_state_;
+  int         fd_;
   std::string buffer_;
-  Handler handler_;
-  int outfile_;
-   char_arr g_recv_buffer;
+  Handler     handler_;
+  int         outfile_;
+  char_arr   g_recv_buffer;
 
 public:
   Client(int client_fd, int file, const data_type &data)
@@ -56,15 +56,16 @@ public:
       if (handler_->query_parsing(buffer_) != handle_status::CONTINUE) {
         handler_->logger(buffer_, outfile_);
         cur_state_ = SEND_TO_CLIENT;
+        buffer_.clear();
       }
     }
   }
   void send_to_client() {
     std::list<std::vector<uint8_t>> resp;
     handler_->create_response(resp);
-    buffer_.clear();
+//    buffer_.clear();
     for (auto &message : resp) {
-      if (send(fd_, message.data(), message.size(), 0) /*;*/ <= 0) {
+      if (send(fd_, message.data(), message.size(), 0) <= 0) {
         cur_state_ = FINALL;
         return;
       }

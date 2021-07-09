@@ -10,9 +10,6 @@
 #include "manual_types.h"
 #include "optional.hpp"
 
-/// Вариант парсера для файла с повторением базовых конструкций имеющие вложенные повторяемые конструкции
-/// list
-
 class ConfigParser {
 public:
   class Section;
