@@ -17,6 +17,7 @@ namespace http {
     const std::string &path;
     const handl_ret_codes code;
     const methods cur_method;
+    const std::string& query_string;
   } t_request_data;
 
 }

@@ -102,6 +102,11 @@ handl_ret_codes Handler::route_searcher() {
     return file_checker(methos_and_path_.second);
   }
   cur_route_ = opt_route.get();
+  size_t pos;
+  if ((pos = methos_and_path_.second.find('?')) != std::string::npos) {
+    query_string_ = methos_and_path_.second.substr(pos + 1);
+    methos_and_path_.second.resize(pos);
+  }
   if (!find_some(cur_route_.methods_allowed,
                  parse_utils::get_enum_methods(methos_and_path_.first)))
     return ER405;
@@ -194,7 +199,8 @@ void Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
                                               cur_route_,
                                               methos_and_path_.second,
                                               req_status_,
-                                              parse_utils::get_enum_methods(methos_and_path_.first)
+                                              parse_utils::get_enum_methods(methos_and_path_.first),
+                                              query_string_
                                               }
                                                 );
   builder.build_response(resp);
@@ -203,11 +209,15 @@ void Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
 
 void Handler::after_all() {
   position_ = 0;
-  header_.clear();
-  body_.clear();
-  body_parse = nullptr;
   body_length_ = 0;
   max_body_ = -1;
+  header_.clear();
+  methos_and_path_.first.clear();
+  methos_and_path_.second.clear();
+  query_string_.clear();
+  body_.clear();
+//  req_status_ = SUCCESSFUL;
+  body_parse = nullptr;
 }
 
 void Handler::logger(const std::string &logs, int fd) const {

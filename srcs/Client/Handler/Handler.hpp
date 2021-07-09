@@ -42,6 +42,7 @@ private:
   map_str header_;
   pair_str methos_and_path_;
   std::string body_;
+  std::string query_string_;
   route cur_route_;
   const server_config &config;
   handl_ret_codes req_status_;
