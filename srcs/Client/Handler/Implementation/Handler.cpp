@@ -15,7 +15,7 @@
 namespace http {
 
 Handler::Handler(const server_config &cfg)
-    : position_(0), body_parse(nullptr), body_length_(0), config(cfg){};
+    : position_(0), body_length_(0), config(cfg), body_parse(nullptr) {};
 
 Handler::~Handler() {}
 
@@ -47,7 +47,7 @@ pair_str Handler::pair_maker(const std::string &fo_pars,
     return pair_str();
   }
   std::string key(fo_pars.data() + position_, end_first - position_);
-  for (int i = 0; i != key.size(); ++i) {
+  for (size_t i = 0; i != key.size(); ++i) {
     key[i] = std::toupper(key[i]);
   }
   std::string value(fo_pars.data() + start_second, end_second - start_second);
@@ -154,7 +154,7 @@ handl_ret_codes Handler::parse_body_length(Handler &obj,
   if (src.size() - obj.position_ != obj.body_length_)
     return (obj.req_status_ = CONTINUE);
   obj.body_.append(src.substr(obj.position_, obj.body_length_));
-  if (obj.body_.size() > obj.max_body_) {
+  if (obj.max_body_ != -1 && obj.body_.size() > obj.max_body_) {
     obj.body_.resize(obj.max_body_);
     return (obj.req_status_ = ER413);
   }
@@ -186,10 +186,17 @@ bool Handler::is_recvest_end(const std::string &fo_pars) const {
   return false;
 }
 
-const void Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
+void Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
   ResponseBuilder builder(config,
-                          t_request_data{header_, body_, cur_route_,
-                                         methos_and_path_.second, req_status_, parse_utils::get_enum_methods(methos_and_path_.first)});
+                          t_request_data{
+                                              header_,
+                                              body_,
+                                              cur_route_,
+                                              methos_and_path_.second,
+                                              req_status_,
+                                              parse_utils::get_enum_methods(methos_and_path_.first)
+                                              }
+                                                );
   builder.build_response(resp);
   after_all();
 }

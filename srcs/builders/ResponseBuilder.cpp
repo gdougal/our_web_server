@@ -46,6 +46,8 @@ namespace http {
 
         break;
       }
+      case methods::LAST_METH:
+        break;
     }
     ErrorBuilder::build(ER400, serverConfig, resp);
   }

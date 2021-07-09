@@ -11,7 +11,7 @@
 
 namespace http {
 
-class server_config;
+struct server_config;
 
 enum methods: int {
 	GET,

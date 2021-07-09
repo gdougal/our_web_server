@@ -7,16 +7,13 @@
 namespace http {
 
   route::route(const ConfigParser::Section &ref, int idx)
-          : autoindex(false), location(ref.getStrValue("route", idx)),
-            directory(ref.getStrValue("directory",
-                                      idx)), // TODO: разобраться, почему при
-          // копировании объекта класса меняется
+          : location(ref.getStrValue("route", idx)),
+            directory(ref.getStrValue("directory", idx)),
             index_file(ref.getStrValue("index_file", idx)),
-            redirect_path(
-                    ref.getStrValue("redirection", idx)), // TODO: Какой path
+            redirect_path(ref.getStrValue("redirection", idx)),
             save_path(ref.getStrValue("save_path", idx)),
-            body_size(
-                    std::stoi(ref.getStrValue("limit_body_size", idx, "-1"))) {
+            body_size(std::stoi(ref.getStrValue("limit_body_size", idx, "-1"))),
+            autoindex(false) {
     if (ref.getStrValue("autoindex", idx) == "on")
       autoindex = true;
     std::string meth(ref.getStrValue("methods_allowed", idx));
@@ -25,10 +22,9 @@ namespace http {
       if (end == std::string::npos)
         end = meth.size();
       auto part = meth.substr(pos, end);
-      for (int idx = 0;
-           static_cast<methods>(idx) != methods::LAST_METH; ++idx) {
-        if (enum_str[idx] == part) {
-          methods_allowed.push_back(static_cast<methods>(idx));
+      for (int idx_ = 0; static_cast<methods>(idx_) != methods::LAST_METH; ++idx_) {
+        if (enum_str[idx_] == part) {
+          methods_allowed.push_back(static_cast<methods>(idx_));
           break;
         }
       }

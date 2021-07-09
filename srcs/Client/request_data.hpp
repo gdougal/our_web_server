@@ -6,10 +6,9 @@
 #include "manual_types.h"
 #include <map>
 #include <string>
+#include "RouteEntity.hpp"
 
 namespace http {
-
-  class route;
 
   typedef struct request_data {
     const http::map_str &header;

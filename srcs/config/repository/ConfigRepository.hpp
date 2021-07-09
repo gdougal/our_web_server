@@ -37,8 +37,8 @@ namespace http {
                                                   iter->second.get_or("")));
         }
       }
-      for (int idx = 0; idx < data["routes"].getContentSize(); ++idx) {
-        routes.push_back(new route(data["routes"], idx));
+      for (size_t idx_ = 0; idx_ < data["routes"].getContentSize(); ++idx_) {
+        routes.push_back(new route(data["routes"], idx_));
       }
     }
 
@@ -57,8 +57,6 @@ namespace http {
       this->routes = config.routes;
       return *this;
     };
-
-    server_config(server_config &&config) = default;
 
     ~server_config() {}
   };

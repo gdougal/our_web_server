@@ -5,7 +5,7 @@
 class server_config;
 
 namespace http {
-class route;
+struct route;
 
   namespace routing_utils {
     ft::optional<route> get_route(std::string &url,

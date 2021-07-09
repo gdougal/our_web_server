@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 project(web_server)
 
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -Wno-unused-parameter -Wno-sign-compare")
 set(CMAKE_CXX_STANDARD 14)
 include_directories(
         srcs

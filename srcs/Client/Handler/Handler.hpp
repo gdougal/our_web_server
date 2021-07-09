@@ -31,13 +31,13 @@ public:
   virtual ~Handler();
   virtual bool is_recvest_end(const std::string &) const;
   virtual handl_ret_codes query_parsing(const std::string &);
-  virtual const void create_response(std::list<std::vector<uint8_t>> &);
+  virtual void create_response(std::list<std::vector<uint8_t>> &);
 
   virtual void logger(const std::string &logs, int fd) const;
 
 private:
   size_t position_; // always start from end-line;
-  int body_length_;
+  size_t body_length_;
   int max_body_;
   map_str header_;
   pair_str methos_and_path_;
