@@ -72,13 +72,11 @@ public:
     }
     while ( cur_pos_.first != resp_.end() ) {
       int tmp;
-      std::cout <<cur_pos_.second << std::endl;
       if ((tmp = send(fd_, &(cur_pos_.first->data()[cur_pos_.second]),
                       cur_pos_.first->size() - cur_pos_.second, 0)) /*;*/ < 0) {
         cur_state_ = FINALL;
         return;
       }
-      std::cout <<"Position : " << cur_pos_.second << " Sended : " << tmp << std::endl;
       cur_pos_.second += tmp;
       if (cur_pos_.second == cur_pos_.first->size()) {
         cur_pos_.second = 0;

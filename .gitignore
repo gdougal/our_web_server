@@ -5,3 +5,7 @@ tester
 venv
 *.py
 *.pyi
+file_should_exist_after
+file
+name
+save_directory/file_should_exist_after

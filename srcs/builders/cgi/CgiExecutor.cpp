@@ -127,7 +127,7 @@ parse_utils::query_end + 4));
   close(fd);
   for (int i = 0; env[i]; ++i)
     delete env[i];
-//  delete env;
+  delete env;
 }
 
 } // namespace http

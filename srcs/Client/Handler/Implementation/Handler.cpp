@@ -10,11 +10,13 @@
 #include "optional.hpp"
 #include "request_data.hpp"
 #include <unistd.h>
+#include <iostream>
 
 namespace http {
 
 Handler::Handler(const server_config &cfg)
-    : position_(0), body_length_(0), config(cfg), body_parse(nullptr){};
+    : position_(0), body_length_(0),max_body_(-1), config(cfg), body_parse(nullptr)
+    {};
 
 Handler::~Handler() {}
 
@@ -101,6 +103,7 @@ handl_ret_codes Handler::route_searcher() {
     return file_checker(methos_and_path_.second);
   }
   cur_route_ = opt_route.get();
+  max_body_ = cur_route_.body_size;
   size_t pos;
   if ((pos = methos_and_path_.second.find('?')) != std::string::npos) {
     query_string_ = methos_and_path_.second.substr(pos + 1);
@@ -133,8 +136,6 @@ handl_ret_codes Handler::query_parsing(const std::string &fo_pars) {
   handl_ret_codes tmp = route_searcher();
   if (tmp != CONTINUE)
     return (req_status_ = tmp);
-
-  max_body_ = cur_route_.body_size;
   return is_recvest_rly_end(fo_pars);
 }
 
