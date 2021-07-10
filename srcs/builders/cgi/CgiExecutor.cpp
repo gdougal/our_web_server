@@ -109,12 +109,13 @@ void CgiExecutor::build(const t_request_data &data,
   lseek(fd, 58, SEEK_SET);
   struct stat s;
   fstat(fd, &s);
-  std::vector<uint8_t> l;
-  l.resize(s.st_size - 58);
-  close(fd1);
-  read(fd, l.data(), s.st_size -58);
-  close(fd);
+  std::string poluchenie;
 
+//  poluchenie.resize(s.st_size); -58
+
+  std::vector<uint8_t> l;
+  l.resize(s.st_size);
+  read(fd, l.data(), s.st_size);
 
   resp.push_back(l);
   std::cout << "here" << std::endl;
@@ -125,6 +126,8 @@ void CgiExecutor::build(const t_request_data &data,
                         resp);
   resp.push_back(std::vector<uint8_t>(parse_utils::query_end,
 parse_utils::query_end + 4));
+  close(fd1);
+  close(fd);
 }
 
 } // namespace http

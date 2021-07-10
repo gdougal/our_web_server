@@ -47,7 +47,8 @@ public:
           if (FD_ISSET((*it)->getFd(), &read_fds_) &&
               (*it)->getCurState() == state::READ_FROM_CLIENT) {
             (*it)->read_from_client();
-          } else if (FD_ISSET((*it)->getFd(), &write_fds_) &&
+          }
+          if (FD_ISSET((*it)->getFd(), &write_fds_) &&
                      (*it)->getCurState() == state::SEND_TO_CLIENT) {
             (*it)->send_to_client();
           }

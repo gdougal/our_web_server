@@ -71,23 +71,26 @@ public:
       buffer_.clear();
     }
     while ( cur_pos_.first != resp_.end() ) {
-      size_t chunk = PORTION_SIZE < cur_pos_.first->size() ? PORTION_SIZE : cur_pos_.first->size();
       int tmp;
       std::cout <<cur_pos_.second << std::endl;
-      if ((tmp = send(fd_, &(cur_pos_.first->data()[cur_pos_.second]), chunk, 0)) /*;*/ <= 0) {
-        std::cout << tmp << std::endl;
+      if ((tmp = send(fd_, &(cur_pos_.first->data()[cur_pos_.second]),
+                      cur_pos_.first->size() - cur_pos_.second, 0)) /*;*/ <= 0) {
         cur_state_ = FINALL;
         return;
       }
+      std::cout <<"Position : " << cur_pos_.second << " Sended : " << tmp << std::endl;
       cur_pos_.second += tmp;
       if (cur_pos_.second == cur_pos_.first->size()) {
         cur_pos_.second = 0;
         ++(cur_pos_.first);
       }
+      else
+        return;
     }
     if (cur_pos_.first == resp_.end()) {
       cur_state_ = READ_FROM_CLIENT;
       cur_pos_.second = 0;
+
     }
   }
 };
