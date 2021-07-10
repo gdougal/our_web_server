@@ -21,11 +21,13 @@ void read_from_file(const std::string &path_res, std::list<std::vector<uint8_t> 
   page.seekg(0, page.end);
   ssize_t length = page.tellg();
   page.seekg(0, page.beg);
-  std::vector<uint8_t> body_tmp;
-  body_tmp.resize(length);
-  page.read((char*)(body_tmp.data()), length);
-  body.emplace_back(body_tmp);
-  page.close();
+  if (length > 0) {
+    std::vector<uint8_t> body_tmp;
+    body_tmp.resize(length);
+    page.read((char *)(body_tmp.data()), length);
+    body.emplace_back(body_tmp);
+    page.close();
+  }
 }
 
 std::string get_content_type(const std::string &filename) {
