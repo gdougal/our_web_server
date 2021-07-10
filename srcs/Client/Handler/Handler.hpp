@@ -33,8 +33,6 @@ public:
   virtual handl_ret_codes query_parsing(const std::string &);
   virtual void create_response(std::list<std::vector<uint8_t>> &);
 
-  virtual void logger(const std::string &logs, int fd) const;
-
 private:
   size_t position_; // always start from end-line;
   size_t body_length_;

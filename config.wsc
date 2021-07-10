@@ -2,7 +2,7 @@ server
 	host: 127.0.0.1
 	port: 8080
 	server_name: lol
-    cgi_ext: “.php”
+    cgi_ext: “.bla”
     cgi_path: /cgi_tester
 	error_pages
 	        404 : /pages_root/error_pages/404_error.html

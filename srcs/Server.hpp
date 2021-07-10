@@ -24,9 +24,6 @@ public:
               new virtual_server( fd_creator::create_listen_socket((*item)->host, (*item)->port), *item )
               );
     }
-    logfile_ = open("logfile.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
-    if (logfile_ < 0)
-      throw std::runtime_error("Can't create file");
   };
 
   virtual ~Server() {
@@ -34,7 +31,6 @@ public:
     for (auto &v_serv : serv_) {
       close(v_serv->serv_fd_);
     }
-    close(logfile_);
   };
   [[noreturn]] void run_server() {
     while (true) {
@@ -86,7 +82,7 @@ private:
     for (auto &v_serv : serv_) {
       if (FD_ISSET(v_serv->serv_fd_, &read_fds_) &&
           (client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
-        v_serv->clients_.push_back(ft::shared_ptr<Client<types> >( new Client<types>(client_fd, logfile_, *(v_serv->config_data) ) ) );
+        v_serv->clients_.push_back(ft::shared_ptr<Client<types> >( new Client<types>(client_fd, *(v_serv->config_data) ) ) );
       }
     }
   }
@@ -104,7 +100,6 @@ private:
   fd_set read_fds_;
   fd_set write_fds_;
   std::list<ft::shared_ptr<virtual_server>> serv_;
-  int logfile_;
 };
 
 #endif // PROXY_SERVER_SERVER_HPP

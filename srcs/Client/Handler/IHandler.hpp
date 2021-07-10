@@ -13,6 +13,6 @@ public:
   virtual ~BaseClientHandler() = default;
 
   // отладочная
-  virtual void logger(const std::string &logs, int fd) const = 0;
+  virtual void logger(const std::string &logs, int fd) const {};
 };
 

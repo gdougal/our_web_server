@@ -27,17 +27,15 @@ class Client {
   std::string buffer_;
   Handler handler_;
   t_resp  resp_;
-  std::pair<t_resp::iterator, size_t> cur_pos_;
-  int outfile_;
-   char_arr g_recv_buffer;
+  size_t cur_pos_;
+char_arr g_recv_buffer;
 
 public:
-  Client(int client_fd, int file, const data_type &data)
+  Client(int client_fd, const data_type &data)
       : fd_(client_fd),
-      outfile_(file),
       g_recv_buffer(new char[PORTION_SIZE + 1])
       {
-    cur_pos_.second = 0;
+    cur_pos_ = 0;
     cur_state_ = state::READ_FROM_CLIENT;
     handler_ = new protocol_handler(data);
   }
@@ -58,7 +56,6 @@ public:
     buffer_.insert(buffer_.end(), &(*g_recv_buffer), &(*g_recv_buffer) + buffer_len);
     if (handler_->is_recvest_end(buffer_)) {
       if (handler_->query_parsing(buffer_) != handle_status::CONTINUE) {
-        handler_->logger(buffer_, outfile_);
         buffer_.clear();
         cur_state_ = SEND_TO_CLIENT;
       }
@@ -66,28 +63,27 @@ public:
   }
 
   void send_to_client() {
-    if (cur_pos_.second == 0) {
+    if (cur_pos_ == 0) {
       handler_->create_response(resp_);
-      cur_pos_.first = resp_.begin();
     }
-    while ( cur_pos_.first != resp_.end() ) {
+    while ( !resp_.empty() ) {
       int tmp;
-      if ((tmp = send(fd_, &(cur_pos_.first->data()[cur_pos_.second]),
-                      cur_pos_.first->size() - cur_pos_.second, 0)) /*;*/ < 0) {
+      if ((tmp = send(fd_, &(resp_.begin()->data()[cur_pos_]),
+                      resp_.begin()->size() - cur_pos_, 0)) /*;*/ < 0) {
         cur_state_ = FINALL;
         return;
       }
-      cur_pos_.second += tmp;
-      if (cur_pos_.second == cur_pos_.first->size()) {
-        cur_pos_.second = 0;
-        ++(cur_pos_.first);
+      cur_pos_ += tmp;
+      if (cur_pos_ == (resp_.begin())->size()) {
+        cur_pos_ = 0;
+        resp_.pop_front();
       }
       else
         return;
     }
-    if (cur_pos_.first == resp_.end()) {
+    if (resp_.empty()) {
       cur_state_ = READ_FROM_CLIENT;
-      cur_pos_.second = 0;
+      cur_pos_ = 0;
       resp_.clear();
 
     }
