@@ -37,7 +37,7 @@ namespace http {
       case methods::HEAD:
         return Head::build_response(serverConfig, request_data, resp);
       case methods::PUT: {
-        return Put::build(request_data, serverConfig, resp);
+        return Put::build(request_data, serverConfig,  resp);
       }
       case methods::POST: {
         return Post::build(request_data, serverConfig, resp);

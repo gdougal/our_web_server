@@ -74,7 +74,7 @@ public:
       int tmp;
       std::cout <<cur_pos_.second << std::endl;
       if ((tmp = send(fd_, &(cur_pos_.first->data()[cur_pos_.second]),
-                      cur_pos_.first->size() - cur_pos_.second, 0)) /*;*/ <= 0) {
+                      cur_pos_.first->size() - cur_pos_.second, 0)) /*;*/ < 0) {
         cur_state_ = FINALL;
         return;
       }

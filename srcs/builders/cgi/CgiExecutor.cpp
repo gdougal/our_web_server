@@ -87,10 +87,7 @@ void CgiExecutor::build(const t_request_data &data,
   int fd = open("name", O_RDWR | O_TRUNC | O_CREAT, 0677);
   int fd1 = open("file", O_RDWR | O_TRUNC | O_CREAT, 0677);
   char **env = get_env(data, serverConfig);
-  for (int j = 0; env[j]; ++j)
-    std::cout << env[j] << std::endl;
   int pid;
-//  int ret;
   write(fd1, data.body.c_str(), data.body.size());
   lseek(fd1, 0, SEEK_SET);
   if ((pid = fork()) == -1)
@@ -106,28 +103,31 @@ void CgiExecutor::build(const t_request_data &data,
     exit(execve(argv[0], argv, env) );
   }
   wait(NULL);
-  lseek(fd, 58, SEEK_SET);
+  lseek(fd, 0, SEEK_SET);
   struct stat s;
   fstat(fd, &s);
   std::string poluchenie;
+  poluchenie.resize(s.st_size);
+  read(fd, (void *)poluchenie.c_str(), s.st_size);
+  size_t pos_var;
+  if ((pos_var = poluchenie.find(parse_utils::query_end)) != std::string::npos)
+    poluchenie = poluchenie.substr(pos_var + strlen(parse_utils::query_end));
 
-//  poluchenie.resize(s.st_size); -58
-
-  std::vector<uint8_t> l;
-  l.resize(s.st_size);
-  read(fd, l.data(), s.st_size);
-
-  resp.push_back(l);
-  std::cout << "here" << std::endl;
+  resp.push_back(std::vector<uint8_t>(poluchenie.begin(), poluchenie.end()));
   HeadersBuilder::build(R200, connection::KEEP_ALIVE, "text/html; "
-                                                      "charset=utf-8", l.size(),
+                                                      "charset=utf-8",
+                        poluchenie.size(),
                         serverConfig
                             .host,
+                        serverConfig.port,
                         resp);
   resp.push_back(std::vector<uint8_t>(parse_utils::query_end,
 parse_utils::query_end + 4));
   close(fd1);
   close(fd);
+  for (int i = 0; env[i]; ++i)
+    delete env[i];
+//  delete env;
 }
 
 } // namespace http

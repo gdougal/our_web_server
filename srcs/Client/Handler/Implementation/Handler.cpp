@@ -4,18 +4,17 @@
 
 #include "Handler.hpp"
 #include "CommonUtils.hpp"
+#include "ParseUtils.hpp"
 #include "ResponseBuilder.hpp"
 #include "RoutingUtils.hpp"
+#include "optional.hpp"
 #include "request_data.hpp"
 #include <unistd.h>
-#include "optional.hpp"
-#include "ParseUtils.hpp"
-#include "RoutingUtils.hpp"
 
 namespace http {
 
 Handler::Handler(const server_config &cfg)
-    : position_(0), body_length_(0), config(cfg), body_parse(nullptr) {};
+    : position_(0), body_length_(0), config(cfg), body_parse(nullptr){};
 
 Handler::~Handler() {}
 
@@ -69,14 +68,14 @@ void Handler::header_part(const std::string &fo_pars) {
 
 std::string Handler::search_file() const {
   std::string path_res = cur_route_.directory + cur_route_.location;
-  if (methos_and_path_.second.length() >
-      cur_route_.location.length())
-  path_res += methos_and_path_.second.substr(cur_route_.location.length(),
-                                            methos_and_path_.second.length() -
-                                                cur_route_.location.length());
+  if (methos_and_path_.second.length() > cur_route_.location.length())
+    path_res += methos_and_path_.second.substr(
+        cur_route_.location.length(),
+        methos_and_path_.second.length() - cur_route_.location.length());
   if (is_directory(path_res) == IS_DIRECTORY) {
     if (path_res.c_str()[path_res.size() - 1] == '/')
-      path_res = path_res.substr(0, path_res.size() - 1) + cur_route_.index_file;
+      path_res =
+          path_res.substr(0, path_res.size() - 1) + cur_route_.index_file;
     else
       path_res = path_res + cur_route_.index_file;
   }
@@ -114,9 +113,10 @@ handl_ret_codes Handler::route_searcher() {
   std::string target_path = search_file();
   handl_ret_codes cur_status = file_checker(target_path);
 
-  if (cur_status == ER404 && file_checker(methos_and_path_.second) !=
-                                 CONTINUE)
-      return (req_status_ = cur_status);
+  if (cur_status == ER404 &&
+      file_checker(methos_and_path_.second) != CONTINUE &&
+      methos_and_path_.first != "PUT" && methos_and_path_.first != "POST")
+    return (req_status_ = cur_status);
   else
     methos_and_path_.second = target_path;
 
@@ -159,7 +159,8 @@ handl_ret_codes Handler::parse_body_length(Handler &obj,
   if (src.size() - obj.position_ != obj.body_length_)
     return (obj.req_status_ = CONTINUE);
   obj.body_.append(src.substr(obj.position_, obj.body_length_));
-  if (obj.max_body_ != -1 && static_cast<int>(obj.body_.size()) > obj.max_body_) {
+  if (obj.max_body_ != -1 &&
+      static_cast<int>(obj.body_.size()) > obj.max_body_) {
     obj.body_.resize(obj.max_body_);
     return (obj.req_status_ = ER413);
   }
@@ -196,17 +197,12 @@ bool Handler::is_recvest_end(const std::string &fo_pars) const {
 }
 
 void Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
-  ResponseBuilder builder(config,
-                          t_request_data{
-                                              header_,
-                                              body_,
-                                              cur_route_,
-                                              methos_and_path_.second,
-                                              req_status_,
-                                              parse_utils::get_enum_methods(methos_and_path_.first),
-                                              query_string_
-                                              }
-                                                );
+  ResponseBuilder builder(
+      config,
+      t_request_data{header_, body_, cur_route_, methos_and_path_.second,
+                     req_status_,
+                     parse_utils::get_enum_methods(methos_and_path_.first),
+                     query_string_});
   builder.build_response(resp);
   after_all();
 }
@@ -220,7 +216,7 @@ void Handler::after_all() {
   methos_and_path_.second.clear();
   query_string_.clear();
   body_.clear();
-//  req_status_ = SUCCESSFUL;
+  //  req_status_ = SUCCESSFUL;
   body_parse = nullptr;
 }
 

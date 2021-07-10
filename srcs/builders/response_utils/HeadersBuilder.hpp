@@ -28,6 +28,7 @@ namespace http {
                       const std::string &contentType, size_t contentLength,
                       const
                       std::string &host,
+                      const std::string &port,
                       std::list<std::vector<uint8_t> > &);
   };
 

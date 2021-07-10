@@ -28,7 +28,8 @@ namespace http {
         ErrorBuilder::build(ER404, serverConfig, resp);
     }
     HeadersBuilder::build(R200, connection(KEEP_ALIVE), content_type,
-                          (*resp.begin()).size(), serverConfig.host, resp);
+                          (*resp.begin()).size(), serverConfig.host,
+                          serverConfig.port, resp);
     resp.emplace_back(std::vector<uint8_t>(parse_utils::query_end,
                                            parse_utils::query_end + 4));
   }

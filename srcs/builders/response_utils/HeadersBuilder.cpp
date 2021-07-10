@@ -23,6 +23,7 @@ namespace http {
                              const std::string &contentType,
                              size_t contentLength,
                              const std::string &host,
+                             const std::string &port,
                              std::list<std::vector<uint8_t>> &resp) {
     std::string header = "";
     header += PROTOCOL + std::to_string(response_code) + " " +
@@ -34,9 +35,9 @@ namespace http {
             parse_utils::line_end;
     header += CONTENT_TYPE + contentType + parse_utils::line_end;
     header +=
-            CONTENT_LENGHT + std::to_string(contentLength) +
-            parse_utils::line_end;
-    header += HOST + "http://localhost:8080";
+            CONTENT_LENGHT + std::to_string(contentLength);// +
+      //      parse_utils::line_end;
+//    header += HOST + "http://" + host + ":" + port;
 
     header += parse_utils::query_end;
 

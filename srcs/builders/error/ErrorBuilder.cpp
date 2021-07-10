@@ -24,6 +24,7 @@ namespace http {
     return HeadersBuilder::build(error_code, connection(CLOSE),
                                  ResponseUtils::get_content_type(".html"),
                                  (*resp.begin()).size(), serverConfig.host,
+                                 serverConfig.port,
                                  resp);
   }
 

@@ -3,11 +3,10 @@
 //
 
 #include "Put.hpp"
-#include <iostream>
+#include "CommonUtils.hpp"
+#include "ErrorBuilder.hpp"
 #include "HeadersBuilder.hpp"
 #include "ResponseUtils.hpp"
-#include "ErrorBuilder.hpp"
-#include "CommonUtils.hpp"
 #include <fstream>
 
 namespace http {
@@ -19,7 +18,7 @@ void Put::build(const t_request_data &data, const server_config &serverConfig,
   if (filename.empty())
     return;
   std::ofstream outfile;
-  outfile.open(filename.c_str());
+  outfile.open(PATH_TO_ROOT + data.request_route.save_path + "/" + filename);
   const std::string content_type(ResponseUtils::get_content_type(filename));
   const bool b_connection =
       (data.header.find("CONNECTION")->second == KEEP_ALIVE_STR);
@@ -27,14 +26,16 @@ void Put::build(const t_request_data &data, const server_config &serverConfig,
   if (outfile.is_open()) {
     outfile.write(data.body.c_str(), data.body.size());
     HeadersBuilder::build(R201, static_cast<connection>(b_connection),
-                          content_type, data.body.size(), serverConfig.host,
-                          resp);
+                          content_type, 0, serverConfig.host,
+                          serverConfig.port, resp);
+    outfile.close();
   } else {
-    outfile.open(filename.c_str());
+    outfile.open(PATH_TO_ROOT + data.request_route.save_path + "/" + filename);
     outfile.write(data.body.c_str(), data.body.size());
     HeadersBuilder::build(ER204, static_cast<connection>(b_connection),
-                          content_type, data.body.size(), serverConfig.host,
-                          resp);
+                          content_type, 0, serverConfig.host,
+                          serverConfig.port, resp);
+    outfile.close();
   }
 }
 
@@ -49,4 +50,4 @@ std::string Put::get_file_name(std::string path,
   return path.substr(path.find_last_of("/\\") + 1);
 }
 
-}
+} // namespace http
