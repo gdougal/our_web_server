@@ -9,6 +9,7 @@
 #include "ResponseUtils.hpp"
 #include "ErrorBuilder.hpp"
 #include "HeadersBuilder.hpp"
+#include "iostream"
 
 namespace http {
 
@@ -24,14 +25,15 @@ namespace http {
     } else {
       ResponseUtils::read_from_file(request_data.path, resp);
       content_type = ResponseUtils::get_content_type(request_data.path);
-      if (resp.empty())
+      if ( resp.empty() || (!resp.empty() &&  (*resp.begin()).empty() ) ) {
         ErrorBuilder::build(ER404, serverConfig, resp);
+        return;
+      }
     }
+    size_t zise = (*resp.begin()).size();
     HeadersBuilder::build(R200, connection(KEEP_ALIVE), content_type,
-                          (*resp.begin()).size(), serverConfig.host,
+                          zise, serverConfig.host,
                           serverConfig.port, resp);
-    resp.emplace_back(std::vector<uint8_t>(parse_utils::query_end,
-                                           parse_utils::query_end + 4));
   }
 
 }

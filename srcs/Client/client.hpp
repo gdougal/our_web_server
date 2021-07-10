@@ -59,6 +59,7 @@ public:
     if (handler_->is_recvest_end(buffer_)) {
       if (handler_->query_parsing(buffer_) != handle_status::CONTINUE) {
         handler_->logger(buffer_, outfile_);
+        buffer_.clear();
         cur_state_ = SEND_TO_CLIENT;
       }
     }
@@ -68,7 +69,6 @@ public:
     if (cur_pos_.second == 0) {
       handler_->create_response(resp_);
       cur_pos_.first = resp_.begin();
-      buffer_.clear();
     }
     while ( cur_pos_.first != resp_.end() ) {
       int tmp;
@@ -88,6 +88,7 @@ public:
     if (cur_pos_.first == resp_.end()) {
       cur_state_ = READ_FROM_CLIENT;
       cur_pos_.second = 0;
+      resp_.clear();
 
     }
   }

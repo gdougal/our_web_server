@@ -35,9 +35,9 @@ namespace http {
             parse_utils::line_end;
     header += CONTENT_TYPE + contentType + parse_utils::line_end;
     header +=
-            CONTENT_LENGHT + std::to_string(contentLength);// +
-      //      parse_utils::line_end;
-//    header += HOST + "http://" + host + ":" + port;
+            CONTENT_LENGHT + std::to_string(contentLength) +
+                             parse_utils::line_end;
+    header += HOST + "http://" + host + ":" + port;
 
     header += parse_utils::query_end;
 

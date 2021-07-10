@@ -97,8 +97,8 @@ void CgiExecutor::build(const t_request_data &data,
     dup2(fd1, 0);
     dup2(fd, 1);
     char* argv[3];
-    argv[0] = strdup("/Users/lmallado/our_web_server/cgi_tester");
-    argv[1] = strdup("/Users/lmallado/our_web_server/cgi_tester");
+    argv[0] = strdup((PATH_TO_ROOT + "/cgi_tester").c_str());
+    argv[1] = strdup((PATH_TO_ROOT + "/cgi_tester").c_str());
     argv[2] = NULL;
     exit(execve(argv[0], argv, env) );
   }
@@ -116,13 +116,11 @@ void CgiExecutor::build(const t_request_data &data,
   resp.push_back(std::vector<uint8_t>(poluchenie.begin(), poluchenie.end()));
   HeadersBuilder::build(R200, connection::KEEP_ALIVE, "text/html; "
                                                       "charset=utf-8",
-                        poluchenie.size(),
+                        resp.begin()->size(),
                         serverConfig
                             .host,
                         serverConfig.port,
                         resp);
-  resp.push_back(std::vector<uint8_t>(parse_utils::query_end,
-parse_utils::query_end + 4));
   close(fd1);
   close(fd);
   for (int i = 0; env[i]; ++i)
