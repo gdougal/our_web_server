@@ -40,7 +40,7 @@ namespace http {
         return Put::build(request_data, serverConfig, resp);
       }
       case methods::POST: {
-        return Put::build(request_data, serverConfig, resp);
+        return Post::build(request_data, serverConfig, resp);
       }
       case methods::DELETE: {
 

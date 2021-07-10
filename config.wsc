@@ -3,7 +3,7 @@ server
 	port: 8080
 	server_name: lol
     cgi_ext: “.php”
-    cgi_path: /resources/cgi_tester
+    cgi_path: /cgi_tester
 	error_pages
 	        404 : /pages_root/error_pages/404_error.html
             403 : /pages_root/error_pages/403_error.html
@@ -20,7 +20,7 @@ server
             route: /directory/
             directory: /YoupiBanane
             index_file: /youpi.bad_extension
-            methods_allowed: GET
+            methods_allowed: GET;POST
 server
 	host: 127.0.0.1
 	port: 8000

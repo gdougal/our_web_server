@@ -174,11 +174,15 @@ handl_ret_codes Handler::parse_body_chunked(Handler &obj,
       parse_utils::query_end)
     return (obj.req_status_ = CONTINUE);
   size_t tmp = obj.end_line(src, obj.position_);
+  if (tmp == std::string::npos)
+    return (obj.req_status_ = CONTINUE);
   std::string number(src.substr(obj.position_, tmp - obj.position_));
   if (!number.empty())
     obj.body_length_ = std::stoi(number, nullptr, 16);
-  if (obj.body_length_ == 0)
+  if (obj.body_length_ == 0) {
+    obj.header_["CONTENT-LENGTH"] = std::to_string(obj.body_.size());
     return (obj.req_status_ = SUCCESSFUL);
+  }
   obj.position_ = obj.next_line(src, obj.position_);
   obj.body_.append(src.substr(obj.position_, obj.body_length_));
   obj.position_ = obj.next_line(src, obj.position_);

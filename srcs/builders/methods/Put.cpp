@@ -14,7 +14,6 @@ namespace http {
 
 void Put::build(const t_request_data &data, const server_config &serverConfig,
                 std::list<std::vector<uint8_t>> &resp) {
-  std::cout << " Here is " << std::endl;
 
   std::string filename = get_file_name(data.path, serverConfig, resp);
   if (filename.empty())

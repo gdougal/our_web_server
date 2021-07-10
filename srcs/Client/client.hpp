@@ -9,8 +9,8 @@
 #include <netinet/in.h>
 #include <stack>
 #include <unistd.h>
-
-#define PORTION_SIZE 65000
+#include "iostream"
+#define PORTION_SIZE 60000
 
 enum state { READ_FROM_CLIENT, SEND_TO_CLIENT, FINALL };
 
@@ -20,13 +20,16 @@ template <typename types, typename protocol_handler = typename types::protocol,
 class Client {
   typedef ft::shared_ptr<BaseClientHandler<data_type, handle_status> > Handler;
   typedef ft::shared_ptr<char> char_arr;
+  typedef std::list<std::vector<uint8_t>> t_resp;
 
-  state       cur_state_;
-  int         fd_;
+  enum state cur_state_;
+  int fd_;
   std::string buffer_;
-  Handler     handler_;
-  int         outfile_;
-  char_arr   g_recv_buffer;
+  Handler handler_;
+  t_resp  resp_;
+  std::pair<t_resp::iterator, size_t> cur_pos_;
+  int outfile_;
+   char_arr g_recv_buffer;
 
 public:
   Client(int client_fd, int file, const data_type &data)
@@ -34,6 +37,7 @@ public:
       outfile_(file),
       g_recv_buffer(new char[PORTION_SIZE + 1])
       {
+    cur_pos_.second = 0;
     cur_state_ = state::READ_FROM_CLIENT;
     handler_ = new protocol_handler(data);
   }
@@ -56,20 +60,34 @@ public:
       if (handler_->query_parsing(buffer_) != handle_status::CONTINUE) {
         handler_->logger(buffer_, outfile_);
         cur_state_ = SEND_TO_CLIENT;
-        buffer_.clear();
       }
     }
   }
+
   void send_to_client() {
-    std::list<std::vector<uint8_t>> resp;
-    handler_->create_response(resp);
-//    buffer_.clear();
-    for (auto &message : resp) {
-      if (send(fd_, message.data(), message.size(), 0) <= 0) {
+    if (cur_pos_.second == 0) {
+      handler_->create_response(resp_);
+      cur_pos_.first = resp_.begin();
+      buffer_.clear();
+    }
+    while ( cur_pos_.first != resp_.end() ) {
+      size_t chunk = PORTION_SIZE < cur_pos_.first->size() ? PORTION_SIZE : cur_pos_.first->size();
+      int tmp;
+      std::cout <<cur_pos_.second << std::endl;
+      if ((tmp = send(fd_, &(cur_pos_.first->data()[cur_pos_.second]), chunk, 0)) /*;*/ <= 0) {
+        std::cout << tmp << std::endl;
         cur_state_ = FINALL;
         return;
       }
+      cur_pos_.second += tmp;
+      if (cur_pos_.second == cur_pos_.first->size()) {
+        cur_pos_.second = 0;
+        ++(cur_pos_.first);
+      }
     }
-    cur_state_ = READ_FROM_CLIENT;
+    if (cur_pos_.first == resp_.end()) {
+      cur_state_ = READ_FROM_CLIENT;
+      cur_pos_.second = 0;
+    }
   }
 };

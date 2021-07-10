@@ -3,11 +3,14 @@
 //
 
 #include "Post.hpp"
+#include "CgiExecutor.hpp"
 
 namespace http {
 
-  void Post::post(const std::string &filename, const t_request_data &data,
+  void Post::build(const t_request_data &data,
                   const server_config &serverConfig,
-                  std::list<std::vector<uint8_t>> &) {}
+                  std::list<std::vector<uint8_t>> &resp) {
+    CgiExecutor::build(data, serverConfig, resp);
+  }
 
 }

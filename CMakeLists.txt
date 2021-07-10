@@ -16,6 +16,7 @@ include_directories(
         srcs/utils
         srcs/Client/Handler
         srcs/utils/pure_instruments
+        srcs/builders/cgi
 )
 set(My_SRCS
         srcs/config/Parser/Implementation/ConfigParser.cpp

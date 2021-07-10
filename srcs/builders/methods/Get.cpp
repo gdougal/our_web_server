@@ -3,7 +3,6 @@
 //
 
 #include "Get.hpp"
-#include <iostream>
 #include "ParseUtils.hpp"
 #include "CommonUtils.hpp"
 #include "AutoindexResonseBuilder.hpp"
