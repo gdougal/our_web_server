@@ -7,7 +7,9 @@
 #include "ParseUtils.hpp"
 #include <string>
 
+
 namespace http {
+
   static const std::string PROTOCOL = "HTTP/1.1 ";
   static const std::string PROTOCOL_VERSION = "VERSION: HTTP/1.1";
   static const std::string CONNECTION = "CONNECTION: ";

@@ -27,7 +27,6 @@ public:
   };
 
   virtual ~Server() {
-    //this is range-based for:
     for (auto &v_serv : serv_) {
       close(v_serv->serv_fd_);
     }
@@ -35,7 +34,7 @@ public:
   [[noreturn]] void run_server() {
     while (true) {
       manage_client_fd();
-      select(max_fd_ + 1, &read_fds_, &write_fds_, nullptr, nullptr);
+      select(max_fd_, &read_fds_, &write_fds_, nullptr, nullptr);
       create_client();
       for (auto &v_serv : serv_) {
         auto it = v_serv->clients_.begin();
@@ -50,7 +49,8 @@ public:
           }
           if ((*it)->getCurState() == state::FINALL) {
             it = v_serv->clients_.erase(it);
-          } else {
+          }
+          else {
             ++it;
           }
         }
@@ -66,13 +66,13 @@ private:
     for (auto &v_serv : serv_) {
       FD_SET(v_serv->serv_fd_, &read_fds_);
       if (max_fd_ < v_serv->serv_fd_)
-        max_fd_ = v_serv->serv_fd_;
+        max_fd_ = v_serv->serv_fd_ + 1;
       for (auto &item : v_serv->clients_) {
         if (item->getCurState() == state::READ_FROM_CLIENT)
           FD_SET(item->getFd(), &read_fds_);
         if (item->getCurState() == state::SEND_TO_CLIENT)
           FD_SET(item->getFd(), &write_fds_);
-        max_fd_ = max_fd_ > item->getFd() ? max_fd_ : item->getFd();
+        max_fd_ = (max_fd_ > item->getFd() ? max_fd_ : item->getFd()) + 1;
       }
     }
   };

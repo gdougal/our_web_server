@@ -10,7 +10,7 @@
 #include <stack>
 #include <unistd.h>
 #include "iostream"
-#define PORTION_SIZE 60000
+#define PORTION_SIZE 20000
 
 enum state { READ_FROM_CLIENT, SEND_TO_CLIENT, FINALL };
 
@@ -28,7 +28,7 @@ class Client {
   Handler handler_;
   t_resp  resp_;
   size_t cur_pos_;
-char_arr g_recv_buffer;
+  char_arr g_recv_buffer;
 
 public:
   Client(int client_fd, const data_type &data)
@@ -49,7 +49,7 @@ public:
     bzero(&(*g_recv_buffer), PORTION_SIZE + 1);
     static size_t buffer_len;
     buffer_len = recv(fd_, &(*g_recv_buffer), PORTION_SIZE, 0);
-    if (buffer_len <= 0 || buffer_len > PORTION_SIZE) {
+    if (buffer_len > PORTION_SIZE) {
       cur_state_ = FINALL;
       return;
     }
@@ -67,9 +67,9 @@ public:
       handler_->create_response(resp_);
     }
     while ( !resp_.empty() ) {
-      int tmp;
-      if ((tmp = send(fd_, &(resp_.begin()->data()[cur_pos_]),
-                      resp_.begin()->size() - cur_pos_, 0)) /*;*/ < 0) {
+      int tmp = send(fd_, &(resp_.begin()->data()[cur_pos_]),
+                 resp_.begin()->size() - cur_pos_, 0);
+      if (tmp < 0) {
         cur_state_ = FINALL;
         return;
       }

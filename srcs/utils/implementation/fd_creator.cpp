@@ -48,7 +48,7 @@ namespace fd_creator {
 		if (fcntl(listen_fd_, F_SETFL, O_NONBLOCK) < 0) {
 			close_fd_error("fcntl error", listen_fd_);
 		}
-		if (listen(listen_fd_, 15) < 0) {
+		if (listen(listen_fd_, 100) < 0) {
 			close_fd_error("listen error!", listen_fd_);
 		}
 		return listen_fd_;

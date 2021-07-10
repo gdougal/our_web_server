@@ -35,7 +35,7 @@ set(My_SRCS
         srcs/utils/implementation/CommonUtils.cpp
         srcs/config/repository/Implementation/ConfigRepository.cpp
         srcs/config/repository/Implementation/RouteEntity.cpp
-        srcs/builders/methods/Get.cpp srcs/builders/methods/Get.hpp srcs/builders/methods/Head.cpp srcs/builders/methods/Head.hpp srcs/builders/methods/Delete.cpp srcs/builders/methods/Delete.hpp srcs/builders/cgi/CgiExecutor.cpp srcs/builders/cgi/CgiExecutor.hpp srcs/builders/methods/Put.cpp srcs/builders/methods/Put.hpp)
+        srcs/builders/methods/Get.cpp srcs/builders/methods/Get.hpp srcs/builders/methods/Head.cpp srcs/builders/methods/Head.hpp srcs/builders/methods/Delete.cpp srcs/builders/methods/Delete.hpp srcs/builders/cgi/CgiExecutor.cpp srcs/builders/cgi/CgiExecutor.hpp srcs/builders/methods/Put.cpp srcs/builders/methods/Put.hpp srcs/utils/FUCKEN_SUCKEN_GLOBALSHIT.hpp)
 
 add_executable(web_server
         main.cpp

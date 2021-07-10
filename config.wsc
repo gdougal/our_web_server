@@ -21,6 +21,10 @@ server
             directory: /YoupiBanane
             index_file: /youpi.bad_extension
             methods_allowed: GET;POST
+            route: /directory/nop/
+            directory: /YoupiBanane
+            index_file: /simple.html
+            methods_allowed: GET
 server
 	host: 127.0.0.1
 	port: 8000

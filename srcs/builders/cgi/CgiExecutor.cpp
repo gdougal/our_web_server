@@ -5,11 +5,9 @@
 #include "CgiExecutor.hpp"
 #include <CommonUtils.hpp>
 #include "unistd.h"
-#include "shared_ptr.hpp"
-#include "iostream"
-#include "fstream"
 #include "ErrorBuilder.hpp"
 #include "HeadersBuilder.hpp"
+#include <fcntl.h>
 
 namespace {
 const std::string SOFTWARE = "SERVER_SOFTWARE=GdougalLmalladoGdogeWebserv/1.0";
@@ -28,6 +26,8 @@ const std::string WTF_STRING = "HTTP_X_SECRET_HEADER_FOR_TEST=1";
 } // namespace
 
 namespace http {
+
+size_t CgiExecutor::cnt_ = 0;
 
 std::list<std::string>
 CgiExecutor::init_env(const t_request_data &data,
@@ -65,6 +65,7 @@ CgiExecutor::init_env(const t_request_data &data,
 
 char **CgiExecutor::get_env(const t_request_data &data,
                             const server_config &serverConfig) {
+
   std::list<std::string> dirty_env = init_env(data, serverConfig);
   char** env(new char*[dirty_env.size() + 1]);
   std::list<std::string>::iterator first = dirty_env.begin();
@@ -79,23 +80,28 @@ char **CgiExecutor::get_env(const t_request_data &data,
   return env;
 }
 
-#include <fcntl.h>
+namespace {
+const std::string save_dir = "save_directory/";
+}
 
 void CgiExecutor::build(const t_request_data &data,
                         const server_config &serverConfig,
                             std::list<std::vector<uint8_t>> &resp) {
-  int fd = open("name", O_RDWR | O_TRUNC | O_CREAT, 0677);
-  int fd1 = open("file", O_RDWR | O_TRUNC | O_CREAT, 0677);
+  std::string file_in = ( save_dir + "file_in" + std::to_string(CgiExecutor::cnt_) );
+  std::string file_out = ( save_dir + "file_out" + std::to_string(CgiExecutor::cnt_) );
+  ++CgiExecutor::cnt_;
+  int fd_in_out = open( file_in.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
+  int fd_out_in = open(file_out.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
   char **env = get_env(data, serverConfig);
   int pid;
-  write(fd1, data.body.c_str(), data.body.size());
-  lseek(fd1, 0, SEEK_SET);
+  write(fd_out_in, data.body.c_str(), data.body.size());
+  lseek(fd_out_in, 0, SEEK_SET);
   if ((pid = fork()) == -1)
     return /**/;
   if (!pid)
   {
-    dup2(fd1, 0);
-    dup2(fd, 1);
+    dup2(fd_out_in, 0);
+    dup2(fd_in_out, 1);
     char* argv[3];
     argv[0] = strdup((PATH_TO_ROOT + "/cgi_tester").c_str());
     argv[1] = strdup((PATH_TO_ROOT + "/cgi_tester").c_str());
@@ -103,12 +109,12 @@ void CgiExecutor::build(const t_request_data &data,
     exit(execve(argv[0], argv, env) );
   }
   wait(NULL);
-  lseek(fd, 0, SEEK_SET);
+  lseek(fd_in_out, 0, SEEK_SET);
   struct stat s;
-  fstat(fd, &s);
+  fstat(fd_in_out, &s);
   std::string poluchenie;
   poluchenie.resize(s.st_size);
-  read(fd, (void *)poluchenie.c_str(), s.st_size);
+  read(fd_in_out, (void *)poluchenie.c_str(), s.st_size);
   size_t pos_var;
   if ((pos_var = poluchenie.find(parse_utils::query_end)) != std::string::npos)
     poluchenie = poluchenie.substr(pos_var + strlen(parse_utils::query_end));
@@ -121,11 +127,13 @@ void CgiExecutor::build(const t_request_data &data,
                             .host,
                         serverConfig.port,
                         resp);
-  close(fd1);
-  close(fd);
+  close(fd_out_in);
+  close(fd_in_out);
   for (int i = 0; env[i]; ++i)
     delete env[i];
   delete env;
+  std::remove(file_out.c_str());
+  std::remove(file_in.c_str());
 }
 
 } // namespace http
