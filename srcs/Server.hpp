@@ -56,7 +56,7 @@ public:
 
   [[noreturn]] void run_server() throw() {
     while (true) {
-      manage_v_server_fd();
+      manage_client_fd();
       select(max_fd_, &read_fds_, &write_fds_, nullptr, nullptr);
       create_client();
       AUTO_FOR(iter_v_serv, v_serv, serv_) {
@@ -86,7 +86,8 @@ public:
   }
 
 private:
-  void manage_v_server_fd() throw() {
+
+  void manage_client_fd() throw() {
     max_fd_ = 0;
     FD_ZERO(&read_fds_);
     FD_ZERO(&write_fds_);
@@ -94,12 +95,6 @@ private:
       FD_SET((*v_serv)->serv_fd_, &read_fds_);
       if (max_fd_ <= (*v_serv)->serv_fd_)
         max_fd_ = (*v_serv)->serv_fd_ + 1;
-    }
-    manage_client_fd();
-  }
-
-  void manage_client_fd() throw() {
-    AUTO_FOR(iter_v_serv, v_serv, serv_) {
       AUTO_FOR(iter_client, client, (*v_serv)->clients_) {
         if (!FD_ISSET((*client)->getFd(), &read_fds_)
             && (*client)->getCurState() ==state::READ_FROM_CLIENT) {
