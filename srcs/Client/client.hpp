@@ -82,7 +82,7 @@ public:
       else
         return;
     }
-    else  {
+    if ( cur_pos_ == 0 && resp_.empty() )  {
       cur_state_ = READ_FROM_CLIENT;
       cur_pos_ = 0;
       resp_.clear();

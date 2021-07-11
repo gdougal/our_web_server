@@ -105,22 +105,19 @@ private:
           FD_SET((*client)->getFd(), &write_fds_);
         }
         max_fd_ = (max_fd_ >= (*client)->getFd() ?
-                    max_fd_ : (*client)->getFd()) + 1;
+                   max_fd_ : (*client)->getFd()) + 1;
       }
     }
   };
 
-  bool create_client() {
+  void create_client() {
     int client_fd;
     AUTO_FOR(iter_v_serv, v_serv, serv_) {
       if (FD_ISSET((*v_serv)->serv_fd_, &read_fds_) &&
           (client_fd = fd_creator::create_client_fd((*v_serv)->serv_fd_)) > 0) {
         (*v_serv)->clients_.push_back(new Client_t(client_fd, *((*v_serv)->config_data) ) );
       }
-      else
-        return false;
     }
-    return true;
   }
   int max_fd_;
   fd_set read_fds_;
