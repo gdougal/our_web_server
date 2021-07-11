@@ -44,9 +44,10 @@ public:
 private:
 	std::string trim_str(const std::string &str_with);
 	void create_config(std::ifstream &ifs);
+  typedef std::map<size_t, std::map<std::string, Section> > big_data;
 
 	const std::vector<std::string>& main_part_delim_;
 	const std::vector<std::string>& sub_part_delim_;
 	const std::vector<std::string>& sub_section_delim_;
-	std::map<size_t, std::map<std::string, Section> >	all_sections;
+	big_data                        all_sections;
 };
