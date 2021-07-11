@@ -28,6 +28,7 @@ void read_from_file(const std::string &path_res, std::list<std::vector<uint8_t> 
     body.emplace_back(body_tmp);
     page.close();
   }
+  page.close();
 }
 
 std::string get_content_type(const std::string &filename) {

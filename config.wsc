@@ -10,7 +10,7 @@ server
             403 : /pages_root/error_pages/400_error.html
 	routes
             route: /
-            index_file: /pages/simple.html
+            autoindex: on
         	methods_allowed: GET
         	route: /put_test/
             save_path: /save_directory
@@ -29,18 +29,3 @@ server
             route: /redirect/
             redirection: http://google.com
             methods_allowed: GET
-server
-	host: 127.0.0.1
-	port: 8000
-	server_name: kek
-	cgi_ext: .php
-    cgi_path: /resources/cgi_tester
-	routes
-		    route: /
-			directory: /laladir/dirlala
-			methods_allowed: GET
-            autoindex: off
-            index_file: index.html
-            route: /huita
-        	save_path: /some/path
-        	methods_allowed: GET;POST
