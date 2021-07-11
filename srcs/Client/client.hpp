@@ -78,14 +78,11 @@ public:
       if (cur_pos_ == (resp_.begin())->size()) {
         cur_pos_ = 0;
         resp_.pop_front();
+        if (resp_.empty()) {
+          cur_state_ = READ_FROM_CLIENT;
+          cur_pos_ = 0;
+        }
       }
-      else
-        return;
-    }
-    else  {
-      cur_state_ = READ_FROM_CLIENT;
-      cur_pos_ = 0;
-      resp_.clear();
     }
   }
 };
