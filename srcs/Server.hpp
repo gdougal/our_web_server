@@ -53,16 +53,15 @@ public:
       close((*v_serv)->serv_fd_);
     }
   };
-  void run_server() throw() {
-    int		          ret_select;
-    timeval  timeout = {15000, 0};
 
+  [[noreturn]] void run_server() throw() {
     while (true) {
       manage_v_server_fd();
-      ret_select = select(max_fd_, &read_fds_, &write_fds_, nullptr, &timeout);
-      if (!create_client() || ret_select == -1)
-        continue;
       manage_client_fd();
+      select(max_fd_, &read_fds_, &write_fds_, nullptr, nullptr);
+//      if (!create_client())
+//        continue;
+      create_client();
       AUTO_FOR(iter_v_serv, v_serv, serv_) {
         iter_client it = (*v_serv)->clients_.begin();
         while (it != (*v_serv)->clients_.end()) {
@@ -91,6 +90,7 @@ public:
 
 private:
   void manage_v_server_fd() throw() {
+    max_fd_ = 0;
     FD_ZERO(&read_fds_);
     FD_ZERO(&write_fds_);
     AUTO_FOR(iter_v_serv, v_serv, serv_) {
@@ -101,7 +101,6 @@ private:
   }
 
   void manage_client_fd() throw() {
-    max_fd_ = 0;
     AUTO_FOR(iter_v_serv, v_serv, serv_) {
       AUTO_FOR(iter_client, client, (*v_serv)->clients_) {
         if (!FD_ISSET((*client)->getFd(), &read_fds_)

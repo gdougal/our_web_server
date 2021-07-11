@@ -10,7 +10,7 @@
 #include <stack>
 #include <unistd.h>
 #include "iostream"
-#define PORTION_SIZE 60000
+#define PORTION_SIZE 20000
 
 enum state { READ_FROM_CLIENT, SEND_TO_CLIENT, FINALL };
 
