@@ -11,7 +11,7 @@ static const std::map<handl_ret_codes, std::string> response_code_description =
      {R200, "OK"},
      {R201, "Created"},
      {R301, "Moved Permanently"},
-     {ER204, "No Content"},
+     {R204, "No Content"},
      {ER400, "Bad Request"},
      {ER403, "Forbidden"},
      {ER404, "Not Found"},

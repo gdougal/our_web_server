@@ -11,7 +11,7 @@ namespace http {
   void Post::build(const t_request_data &data,
                   const server_config &serverConfig,
                   std::list<std::vector<uint8_t>> &resp) {
- //   if (serverConfig.cgi_ext == data.path.substr(data.path.find_last_of('.')))
+   // if (serverConfig.cgi_ext == data.path.substr(data.path.find_last_of('.')))
       CgiExecutor::build(data, serverConfig, resp);
 //    else
 //      Put::build(data, serverConfig, resp);

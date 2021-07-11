@@ -58,9 +58,6 @@ public:
     while (true) {
       manage_v_server_fd();
       select(max_fd_, &read_fds_, &write_fds_, nullptr, nullptr);
-      manage_client_fd();
-//      if (!create_client())
-//        continue;
       create_client();
       AUTO_FOR(iter_v_serv, v_serv, serv_) {
         iter_client it = (*v_serv)->clients_.begin();

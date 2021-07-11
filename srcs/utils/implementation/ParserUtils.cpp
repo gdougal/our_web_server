@@ -16,8 +16,9 @@ namespace http {
         return methods::POST;
       if (method_str == HEAD)
         return methods::HEAD;
-      //  if (method_str == DELETE)
-      return methods::DELETE;
+      if (method_str == DELETE)
+          return methods::DELETE;
+      return methods::LAST_METH;
     }
 
     std::list<std::string> getDirectoryList(const std::string &src) {

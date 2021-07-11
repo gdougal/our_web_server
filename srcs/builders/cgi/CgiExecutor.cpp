@@ -81,33 +81,37 @@ char **CgiExecutor::get_env(const t_request_data &data,
   return env;
 }
 
-namespace {
-const std::string save_dir = "save_directory/";
-}
 
 void CgiExecutor::build(const t_request_data &data,
                         const server_config &serverConfig,
                             std::list<std::vector<uint8_t>> &resp) {
-  std::string file_in = ( save_dir + "file_in" + std::to_string(CgiExecutor::cnt_) );
-  std::string file_out = ( save_dir + "file_out" + std::to_string(CgiExecutor::cnt_) );
+  int fork_resp;
+  std::string file_in = ("save_directory/file_in" + std::to_string(CgiExecutor::cnt_) );
+  std::string file_out = ("save_directory/file_out" + std::to_string(CgiExecutor::cnt_) );
   ++CgiExecutor::cnt_;
+  char **env = get_env(data, serverConfig);
+  int pid;
   int fd_in_out = open( file_in.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
   if (fd_in_out < 0) {
+    ErrorBuilder::build(ER500, serverConfig, resp);
     std::cerr << "Post failed" << std::endl;
     return;
   }
   int fd_out_in = open(file_out.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
   if (fd_out_in < 0) {
+    ErrorBuilder::build(ER500, serverConfig, resp);
     std::cerr << "Post failed" << std::endl;
     close(fd_in_out);
+    std::remove(file_in.c_str());
     return;
   }
-  char **env = get_env(data, serverConfig);
-  int pid;
   write(fd_out_in, data.body.c_str(), data.body.size());
   lseek(fd_out_in, 0, SEEK_SET);
-  if ((pid = fork()) == -1)
-    return /**/;
+
+  if ((pid = fork()) == -1) {
+    ErrorBuilder::build(ER500, serverConfig, resp);
+    return ;
+  }
   if (!pid)
   {
     dup2(fd_out_in, 0);
@@ -118,7 +122,11 @@ void CgiExecutor::build(const t_request_data &data,
     argv[2] = NULL;
     exit(execve(argv[0], argv, env) );
   }
-  wait(NULL);
+  wait(&fork_resp);
+  if (fork_resp < 0) {
+    ErrorBuilder::build(ER500, serverConfig, resp);
+    return ;
+  }
   lseek(fd_in_out, 0, SEEK_SET);
   struct stat s;
   fstat(fd_in_out, &s);

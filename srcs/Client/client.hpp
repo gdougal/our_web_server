@@ -63,13 +63,14 @@ public:
   }
 
   void send_to_client() {
-    if (cur_pos_ == 0) {
+    if (resp_.empty()) {
       handler_->create_response(resp_);
     }
-    while ( !resp_.empty() ) {
+    if ( !resp_.empty() ) {
       int tmp = send(fd_, &(resp_.begin()->data()[cur_pos_]),
                  resp_.begin()->size() - cur_pos_, 0);
-      if (tmp <= 0) {
+      if (tmp < 0) {
+        resp_.clear();
         cur_state_ = FINALL;
         return;
       }
@@ -81,7 +82,7 @@ public:
       else
         return;
     }
-    if (resp_.empty()) {
+    else  {
       cur_state_ = READ_FROM_CLIENT;
       cur_pos_ = 0;
       resp_.clear();

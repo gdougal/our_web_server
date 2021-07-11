@@ -3,8 +3,7 @@
 //
 
 #include "ResponseBuilder.hpp"
-#include "AutoindexResonseBuilder.hpp"
-#include "CommonUtils.hpp"
+#include "Delete.hpp"
 #include "ErrorBuilder.hpp"
 #include "Get.hpp"
 #include "Head.hpp"
@@ -13,7 +12,6 @@
 #include "Post.hpp"
 #include "Put.hpp"
 #include "ResponseUtils.hpp"
-#include "RoutingUtils.hpp"
 #include <map>
 #include <repository/ConfigRepository.hpp>
 
@@ -24,6 +22,7 @@ ResponseBuilder::ResponseBuilder(const server_config &serverConfig,
     : serverConfig(serverConfig), request_data(data) {}
 
 void ResponseBuilder::build_response(std::list<std::vector<uint8_t>> &resp) {
+
 
   if (!request_data.request_route.redirect_path.empty())
     return HeadersBuilder::build(R301, connection::CLOSE, "text/plain", 0,
@@ -36,24 +35,20 @@ void ResponseBuilder::build_response(std::list<std::vector<uint8_t>> &resp) {
     return ErrorBuilder::build(request_data.code, serverConfig, resp);
 
   switch (request_data.cur_method) {
-  case methods::GET:
-    return Get::build_response(serverConfig, request_data, resp);
-  case methods::HEAD:
-    return Head::build_response(serverConfig, request_data, resp);
-  case methods::PUT: {
-    return Put::build(request_data, serverConfig, resp);
-  }
-  case methods::POST: {
-    return Post::build(request_data, serverConfig, resp);
-  }
-  case methods::DELETE: {
-
-    break;
-  }
+    case methods::GET:
+     return Get::build_response(serverConfig, request_data, resp);
+    case methods::HEAD:
+     return Head::build_response(serverConfig, request_data, resp);
+    case methods::PUT:
+     return Put::build(request_data, serverConfig, resp);
+    case methods::POST:
+     return Post::build(request_data, serverConfig, resp);
+  case methods::DELETE:
+    return Delete::build_response(serverConfig, request_data, resp);
   case methods::LAST_METH:
-    break;
+    return;
   }
-  ErrorBuilder::build(ER400, serverConfig, resp);
+    ErrorBuilder::build(ER400, serverConfig, resp);
 }
 
 ResponseBuilder::~ResponseBuilder() {}

@@ -1,17 +1,20 @@
 server
 	host: 127.0.0.1
 	port: 8080
-	path_to_root: /goinfre/gdougal/our_web_server
+	path_to_root: /goinfre/lmallado/our_web_server
 	server_name: lol
     cgi_ext: “.bla”
     cgi_path: /cgi_tester
 	error_pages
-	        404 : /pages_root/error_pages/400_error.html
-            403 : /pages_root/error_pages/400_error.html
+	        404 : /pages_root/error_pages/404_error.html
+            403 : /pages_root/error_pages/403_error.html
 	routes
             route: /
-            autoindex: on
-        	methods_allowed: GET
+            index_file: /pages_root/simple.html
+        	methods_allowed: GET;DELETE
+        	route: /redirect/
+            redirection: http://google.com
+            methods_allowed: GET
         	route: /put_test/
             save_path: /save_directory
             methods_allowed: PUT
@@ -22,10 +25,3 @@ server
             directory: /YoupiBanane
             index_file: /youpi.bad_extension
             methods_allowed: GET;POST
-            route: /directory/nop/
-            directory: /YoupiBanane
-            index_file: /simple.html
-            methods_allowed: GET
-            route: /redirect/
-            redirection: http://google.com
-            methods_allowed: GET

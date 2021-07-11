@@ -27,7 +27,9 @@ namespace http {
         tmp_path = first_server_routes->get()->directory + url;
 
         if (tmp_path.c_str()[tmp_path.size() - 1] != '/' &&
-            is_directory(serverConfig.path_to_root + tmp_path) == IS_DIRECTORY)
+            (is_directory(serverConfig.path_to_root + tmp_path) ==
+             IS_DIRECTORY || !first_server_routes->get()->redirect_path.empty
+              ()))
           tmp_path = url + "/";
         else
           tmp_path = url;
