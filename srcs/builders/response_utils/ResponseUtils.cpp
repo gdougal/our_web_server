@@ -26,7 +26,10 @@ void read_from_file(const std::string &path_res, std::list<std::vector<uint8_t> 
     body_tmp.resize(length);
     page.read((char *)(body_tmp.data()), length);
     body.emplace_back(body_tmp);
+    page.close();
   }
+  else
+    page.close();
 }
 
 std::string get_content_type(const std::string &filename) {

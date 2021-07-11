@@ -110,6 +110,8 @@ void CgiExecutor::build(const t_request_data &data,
 
   if ((pid = fork()) == -1) {
     ErrorBuilder::build(ER500, serverConfig, resp);
+    close(fd_out_in);
+    close(fd_in_out);
     return ;
   }
   if (!pid)
@@ -124,6 +126,8 @@ void CgiExecutor::build(const t_request_data &data,
   }
   wait(&fork_resp);
   if (fork_resp < 0) {
+    close(fd_out_in);
+    close(fd_in_out);
     ErrorBuilder::build(ER500, serverConfig, resp);
     return ;
   }

@@ -57,10 +57,10 @@ public:
   [[noreturn]] void run_server() throw() {
     while (true) {
       manage_client_fd();
-      select(max_fd_, &read_fds_, &write_fds_, nullptr, nullptr);
+      select(max_fd_ + 1, &read_fds_, &write_fds_, nullptr, nullptr);
       AUTO_FOR(iter_v_serv, v_serv, serv_) {
         if (FD_ISSET((*v_serv)->serv_fd_, &read_fds_))
-          create_client();
+          create_client(*v_serv);
         iter_client it = (*v_serv)->clients_.begin();
         while (it != (*v_serv)->clients_.end()) {
           if (FD_ISSET((*it)->getFd(), &read_fds_) &&
@@ -90,32 +90,27 @@ private:
     FD_ZERO(&write_fds_);
     AUTO_FOR(iter_v_serv, v_serv, serv_) {
       FD_SET((*v_serv)->serv_fd_, &read_fds_);
-      if (max_fd_ <= (*v_serv)->serv_fd_)
-        max_fd_ = (*v_serv)->serv_fd_ + 1;
+      max_fd_ = std::max(max_fd_, (*v_serv)->serv_fd_);
+//      if((*v_serv)->clients_.size() > HOW_MANY_CLIENTS_WE_CAN) //TODO: Костыль
+//        (*v_serv)->clients_.clear();
       AUTO_FOR(iter_client, client, (*v_serv)->clients_) {
-        if (!FD_ISSET((*client)->getFd(), &read_fds_)
-            && (*client)->getCurState() ==state::READ_FROM_CLIENT) {
+        if ((*client)->getCurState() ==state::READ_FROM_CLIENT) {
           FD_SET((*client)->getFd(), &read_fds_);
         }
-        if (!FD_ISSET((*client)->getFd(), &write_fds_)
-            && (*client)->getCurState() == state::SEND_TO_CLIENT) {
+        else if ((*client)->getCurState() == state::SEND_TO_CLIENT) {
           FD_SET((*client)->getFd(), &write_fds_);
         }
-        max_fd_ = (max_fd_ > (*client)->getFd() ?
-                    max_fd_ : (*client)->getFd()) + 1;
+        max_fd_ = std::max(max_fd_, (*client)->getFd());
       }
     }
   };
 
-  void create_client() {
+  void create_client(v_serv_ptr v_serv) {
     int client_fd;
-    AUTO_FOR(iter_v_serv, v_serv, serv_) {
-      if (FD_ISSET((*v_serv)->serv_fd_, &read_fds_) &&
-          (client_fd = fd_creator::create_client_fd((*v_serv)->serv_fd_)) > 0) {
-        (*v_serv)->clients_.push_back(new Client_t(client_fd, *((*v_serv)->config_data) ) );
+      if ( (client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
+        v_serv->clients_.push_back(new Client_t(client_fd, *(v_serv->config_data) ) );
       }
     }
-  }
   int max_fd_;
   fd_set read_fds_;
   fd_set write_fds_;

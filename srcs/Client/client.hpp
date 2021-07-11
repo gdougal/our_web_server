@@ -47,9 +47,9 @@ public:
 
   void read_from_client() {
     bzero(&(*g_recv_buffer), PORTION_SIZE + 1);
-    static size_t buffer_len;
+    int buffer_len;
     buffer_len = recv(fd_, &(*g_recv_buffer), PORTION_SIZE, 0);
-    if (buffer_len == 0 || buffer_len > PORTION_SIZE) {
+    if (buffer_len < 0) {
       cur_state_ = FINALL;
       return;
     }
@@ -69,17 +69,12 @@ public:
     if ( !resp_.empty() ) {
       int tmp = send(fd_, &(resp_.begin()->data()[cur_pos_]),
                  resp_.begin()->size() - cur_pos_, 0);
-      if (tmp < 0) {
-        resp_.clear();
-        cur_state_ = FINALL;
-        return;
-      }
       cur_pos_ += tmp;
       if (cur_pos_ == (resp_.begin())->size()) {
         cur_pos_ = 0;
         resp_.pop_front();
         if (resp_.empty()) {
-          cur_state_ = READ_FROM_CLIENT;
+          cur_state_ = FINALL;
           cur_pos_ = 0;
         }
       }
