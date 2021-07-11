@@ -19,7 +19,7 @@ namespace http {
     HeadersBuilder::build(
             R200, connection(KEEP_ALIVE),
             ResponseUtils::get_content_type(request_data.path), 0,
-            serverConfig.host, serverConfig.port,
+            serverConfig.host, serverConfig.port, "",
             resp);
   }
 

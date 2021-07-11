@@ -33,7 +33,7 @@ namespace http {
     size_t zise = (*resp.begin()).size();
     HeadersBuilder::build(R200, connection(KEEP_ALIVE), content_type,
                           zise, serverConfig.host,
-                          serverConfig.port, resp);
+                          serverConfig.port, "", resp);
   }
 
 }

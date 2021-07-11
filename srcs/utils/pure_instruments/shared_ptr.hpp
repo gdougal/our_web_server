@@ -34,6 +34,11 @@ namespace ft {
       }
     };
 
+    bool is_val() throw() {
+      if (value_)
+        return true;
+      return false;
+    }
     t_val &operator*() throw() { return *value_; }
     const t_val &operator*() const throw() { return *value_; }
     t_val *operator->() throw() { return value_; }

@@ -26,6 +26,9 @@ server
             directory: /YoupiBanane
             index_file: /simple.html
             methods_allowed: GET
+            route: /redirect/
+            redirection: http://google.com
+            methods_allowed: GET
 server
 	host: 127.0.0.1
 	port: 8000
@@ -36,7 +39,6 @@ server
 		    route: /
 			directory: /laladir/dirlala
 			methods_allowed: GET
-			redirection: on
             autoindex: off
             index_file: index.html
             route: /huita

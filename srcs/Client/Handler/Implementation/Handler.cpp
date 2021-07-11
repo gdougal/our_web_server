@@ -9,14 +9,12 @@
 #include "RoutingUtils.hpp"
 #include "optional.hpp"
 #include "request_data.hpp"
-#include <unistd.h>
-#include <iostream>
 
 namespace http {
 
 Handler::Handler(const server_config &cfg)
-    : position_(0), body_length_(0),max_body_(-1), config(cfg), body_parse(nullptr)
-    {};
+    : position_(0), body_length_(0), max_body_(-1), config(cfg),
+      body_parse(nullptr){};
 
 Handler::~Handler() {}
 
@@ -104,6 +102,8 @@ handl_ret_codes Handler::route_searcher() {
   }
   cur_route_ = opt_route.get();
   max_body_ = cur_route_.body_size;
+  if (!opt_route.get().redirect_path.empty())
+    return CONTINUE;
   size_t pos;
   if ((pos = methos_and_path_.second.find('?')) != std::string::npos) {
     query_string_ = methos_and_path_.second.substr(pos + 1);
@@ -132,7 +132,6 @@ handl_ret_codes Handler::query_parsing(const std::string &fo_pars) {
   if (body_parse)
     return body_parse(*this, fo_pars);
   header_part(fo_pars);
-
   handl_ret_codes tmp = route_searcher();
   if (tmp != CONTINUE)
     return (req_status_ = tmp);
@@ -160,7 +159,8 @@ handl_ret_codes Handler::parse_body_length(Handler &obj,
   if (src.size() - obj.position_ != obj.body_length_)
     return (obj.req_status_ = CONTINUE);
   obj.body_.append(src.substr(obj.position_, obj.body_length_));
-  if (obj.max_body_ != -1 && static_cast<int>(obj.body_.size()) > obj.max_body_) {
+  if (obj.max_body_ != -1 &&
+      static_cast<int>(obj.body_.size()) > obj.max_body_) {
     obj.body_.resize(obj.max_body_);
     return (obj.req_status_ = ER413);
   }
@@ -186,7 +186,8 @@ handl_ret_codes Handler::parse_body_chunked(Handler &obj,
   }
   obj.position_ = obj.next_line(src, obj.position_);
   obj.body_.append(src.substr(obj.position_, obj.body_length_));
-  if (obj.max_body_ != -1 && static_cast<int>(obj.body_.size()) > obj.max_body_) {
+  if (obj.max_body_ != -1 &&
+      static_cast<int>(obj.body_.size()) > obj.max_body_) {
     obj.body_.resize(obj.max_body_);
     return (obj.req_status_ = ER413);
   }

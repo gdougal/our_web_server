@@ -126,6 +126,7 @@ void CgiExecutor::build(const t_request_data &data,
                         serverConfig
                             .host,
                         serverConfig.port,
+                        "",
                         resp);
   close(fd_out_in);
   close(fd_in_out);
