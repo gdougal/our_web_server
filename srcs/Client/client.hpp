@@ -68,8 +68,9 @@ public:
     }
     if ( !resp_.empty() ) {
       int tmp = send(fd_, &(resp_.begin()->data()[cur_pos_]), resp_.begin()->size() - cur_pos_, 0);
-      if (tmp <= 0) {
+      if (tmp < 0) {
         resp_.clear();
+        cur_pos_ = 0;
         cur_state_ = FINALL;
         return;
       }
