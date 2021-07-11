@@ -23,7 +23,7 @@ namespace http {
               serverConfig, serverConfig.path_to_root + request_data.path, request_data.path,
               resp);
     } else {
-      ResponseUtils::read_from_file(request_data.path, resp);
+      ResponseUtils::read_from_file(serverConfig.path_to_root + request_data.path, resp);
       content_type = ResponseUtils::get_content_type(request_data.path);
       if ( resp.empty() || (!resp.empty() &&  (*resp.begin()).empty() ) ) {
         ErrorBuilder::build(ER404, serverConfig, resp);

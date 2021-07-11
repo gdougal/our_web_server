@@ -82,7 +82,7 @@ std::string Handler::search_file() const {
   return path_res;
 }
 
-handl_ret_codes Handler::file_checker(std::string target_path) {
+handl_ret_codes Handler::file_checker(const std::string& target_path) const {
   req_file_status status = is_directory(config.path_to_root + target_path);
   if (status == IS_DIRECTORY)
     return ER403;
