@@ -57,8 +57,8 @@ public:
   [[noreturn]] void run_server() throw() {
     while (true) {
       manage_v_server_fd();
-      manage_client_fd();
       select(max_fd_, &read_fds_, &write_fds_, nullptr, nullptr);
+      manage_client_fd();
 //      if (!create_client())
 //        continue;
       create_client();
@@ -98,6 +98,7 @@ private:
       if (max_fd_ <= (*v_serv)->serv_fd_)
         max_fd_ = (*v_serv)->serv_fd_ + 1;
     }
+    manage_client_fd();
   }
 
   void manage_client_fd() throw() {
