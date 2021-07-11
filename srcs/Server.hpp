@@ -54,10 +54,12 @@ public:
     }
   };
   void run_server() throw() {
-    int		ret_select;
+    int		          ret_select;
+    timeval  timeout = {15000, 0};
+
     while (true) {
       manage_v_server_fd();
-      ret_select = select(max_fd_, &read_fds_, &write_fds_, nullptr, nullptr);
+      ret_select = select(max_fd_, &read_fds_, &write_fds_, nullptr, &timeout);
       if (!create_client() || ret_select == -1)
         continue;
       manage_client_fd();
