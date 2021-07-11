@@ -58,7 +58,10 @@ public:
     while (true) {
       manage_client_fd();
       select(max_fd_, &read_fds_, &write_fds_, nullptr, nullptr);
-      create_client();
+      AUTO_FOR(iter_v_serv, v_serv, serv_) {
+        if (FD_ISSET((*v_serv)->serv_fd_, &read_fds_))
+          create_client();
+      }
       AUTO_FOR(iter_v_serv, v_serv, serv_) {
         iter_client it = (*v_serv)->clients_.begin();
         while (it != (*v_serv)->clients_.end()) {
@@ -71,10 +74,6 @@ public:
             (*it)->send_to_client();
           }
           if ((*it)->getCurState() == state::FINALL) {
-            if (FD_ISSET((*it)->getFd(), &read_fds_))
-              FD_CLR((*it)->getFd(), &read_fds_);
-            if (FD_ISSET((*it)->getFd(), &write_fds_))
-              FD_CLR((*it)->getFd(), &write_fds_);
             it = (*v_serv)->clients_.erase(it);
           }
           else {
@@ -96,16 +95,13 @@ private:
       if (max_fd_ <= (*v_serv)->serv_fd_)
         max_fd_ = (*v_serv)->serv_fd_ + 1;
       AUTO_FOR(iter_client, client, (*v_serv)->clients_) {
-        if (!FD_ISSET((*client)->getFd(), &read_fds_)
-            && (*client)->getCurState() ==state::READ_FROM_CLIENT) {
+        if ( (*client)->getCurState() ==state::READ_FROM_CLIENT ) {
           FD_SET((*client)->getFd(), &read_fds_);
         }
-        if (!FD_ISSET((*client)->getFd(), &write_fds_)
-            && (*client)->getCurState() == state::SEND_TO_CLIENT) {
+        if ( (*client)->getCurState() == state::SEND_TO_CLIENT ) {
           FD_SET((*client)->getFd(), &write_fds_);
         }
-        max_fd_ = (max_fd_ >= (*client)->getFd() ?
-                   max_fd_ : (*client)->getFd()) + 1;
+        max_fd_ = (max_fd_ > (*client)->getFd() ? max_fd_ : (*client)->getFd()) + 1;
       }
     }
   };

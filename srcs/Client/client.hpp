@@ -67,9 +67,8 @@ public:
       handler_->create_response(resp_);
     }
     if ( !resp_.empty() ) {
-      int tmp = send(fd_, &(resp_.begin()->data()[cur_pos_]),
-                 resp_.begin()->size() - cur_pos_, 0);
-      if (tmp < 0) {
+      int tmp = send(fd_, &(resp_.begin()->data()[cur_pos_]), resp_.begin()->size() - cur_pos_, 0);
+      if (tmp <= 0) {
         resp_.clear();
         cur_state_ = FINALL;
         return;
@@ -78,14 +77,11 @@ public:
       if (cur_pos_ == (resp_.begin())->size()) {
         cur_pos_ = 0;
         resp_.pop_front();
+        if (resp_.empty()) {
+          cur_state_ = READ_FROM_CLIENT;
+          cur_pos_ = 0;
+        }
       }
-      else
-        return;
-    }
-    if ( cur_pos_ == 0 && resp_.empty() )  {
-      cur_state_ = READ_FROM_CLIENT;
-      cur_pos_ = 0;
-      resp_.clear();
     }
   }
 };
