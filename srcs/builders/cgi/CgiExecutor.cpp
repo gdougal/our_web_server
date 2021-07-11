@@ -8,6 +8,7 @@
 #include "ErrorBuilder.hpp"
 #include "HeadersBuilder.hpp"
 #include <fcntl.h>
+#include "iostream"
 
 namespace {
 const std::string SOFTWARE = "SERVER_SOFTWARE=GdougalLmalladoGdogeWebserv/1.0";
@@ -91,7 +92,16 @@ void CgiExecutor::build(const t_request_data &data,
   std::string file_out = ( save_dir + "file_out" + std::to_string(CgiExecutor::cnt_) );
   ++CgiExecutor::cnt_;
   int fd_in_out = open( file_in.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
+  if (fd_in_out < 0) {
+    std::cerr << "Post failed" << std::endl;
+    return;
+  }
   int fd_out_in = open(file_out.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
+  if (fd_out_in < 0) {
+    std::cerr << "Post failed" << std::endl;
+    close(fd_in_out);
+    return;
+  }
   char **env = get_env(data, serverConfig);
   int pid;
   write(fd_out_in, data.body.c_str(), data.body.size());

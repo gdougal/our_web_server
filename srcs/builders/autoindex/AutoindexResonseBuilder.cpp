@@ -14,6 +14,11 @@ namespace http {
                                       const std::string &index_directory,
                                       std::list<std::vector<uint8_t> > &resp) {
     DIR *current_dir = opendir(path.c_str());
+    if (dirfd(current_dir) < 0)
+    {
+      std::cerr << "Bad autoindex file" << std::endl;
+      return;
+    }
     std::string page = "";
     std::string index_dir_mutable = index_directory;
     page += generateHead(index_directory);

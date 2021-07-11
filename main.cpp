@@ -2,6 +2,7 @@
 #include "Server.hpp"
 #include "shared_ptr.hpp"
 #include "set"
+#include "i_wanna_range_based_for.hpp"
 
 
 std::string configFileName = "config.wsc";
@@ -9,19 +10,27 @@ std::string configFileName = "config.wsc";
 void pipe(int l) { sigignore(l); }
 
 std::list<ft::shared_ptr<http::server_config> > init() {
-  std::list<ft::shared_ptr<http::server_config> > config;
+  typedef std::list<ft::shared_ptr<http::server_config> > serv_cfgs;
+  serv_cfgs config;
   ConfigParser parsed_struct(configFileName, {"server"}, {"error_pages", "routes"}, {"route"});
-  std::set<std::string> port_checker;
   for (size_t idx = 0; idx < parsed_struct.getContentCount(); ++ idx) {
-    std::string val = (parsed_struct.getVarietyOfSection(idx))["server"].getStrValue("port");
-    if ( parsed_struct.getVarietyOfSection(idx).find("routes") == parsed_struct.getVarietyOfSection(idx).end() )
-      throw std::logic_error("Need to routes field");
-    if (val.empty())
-      throw std::logic_error("Need to port value in config-file");
+    config.push_back(new http::server_config(parsed_struct.getVarietyOfSection(idx)) );
+  }
+
+  if (config.empty())
+    throw std::logic_error("Config empty!");
+  std::set<std::string> port_checker;
+  AUTO_FOR(serv_cfgs::iterator, iter, config) {
+    std::string val = iter->get()->port;
+    if (val.empty() || iter->get()->host.empty())
+      throw std::logic_error("Need to port and host value in config-file");
     if(port_checker.find(val) != port_checker.end())
       throw std::logic_error("Duplicate port value in config-file");
+    if (iter->get()->path_to_root.empty())
+      throw std::logic_error("Path to the root needed");
+    if (iter->get()->routes.empty())
+      throw std::logic_error("Haven`t route");
     port_checker.insert(val);
-    config.push_back(new http::server_config(parsed_struct.getVarietyOfSection(idx)) );
   }
   signal(SIGPIPE, pipe);
   return config;

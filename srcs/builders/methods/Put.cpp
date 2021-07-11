@@ -29,7 +29,8 @@ void Put::build(const t_request_data &data, const server_config &serverConfig,
                           content_type, 0, serverConfig.host,
                           serverConfig.port, "", resp);
     outfile.close();
-  } else {
+  }
+  else {
     outfile.open(serverConfig.path_to_root + data.request_route.save_path + "/" + filename);
     outfile.write(data.body.c_str(), data.body.size());
     HeadersBuilder::build(ER204, static_cast<connection>(b_connection),
