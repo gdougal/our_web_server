@@ -13,7 +13,7 @@ namespace http {
                             const t_request_data &request_data,
                             std::list<std::vector<uint8_t> > &resp) {
 
-    ResponseUtils::read_from_file(request_data.path, resp);
+    ResponseUtils::read_from_file(serverConfig.path_to_root + request_data.path, resp);
     if ((*resp.begin()).empty())
       ErrorBuilder::build(ER404, serverConfig, resp);
     HeadersBuilder::build(

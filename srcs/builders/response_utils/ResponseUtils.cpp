@@ -17,7 +17,7 @@ static const std::map<std::string, std::string> class_of_content = {
     {"bmp", "image/bmp"}};
 
 void read_from_file(const std::string &path_res, std::list<std::vector<uint8_t> >& body) {
-  std::ifstream page(PATH_TO_ROOT + path_res, std::ios::binary);
+  std::ifstream page(path_res, std::ios::binary);
   page.seekg(0, page.end);
   ssize_t length = page.tellg();
   page.seekg(0, page.beg);

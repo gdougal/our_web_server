@@ -10,7 +10,7 @@ req_file_status is_directory(const std::string &path) {
         else
           cutted_path = path;
 	struct stat s;
-	std::string str = PATH_TO_ROOT + cutted_path;
+	std::string str = cutted_path;
 	if (stat(str.c_str(), &s) == 0) {
 		if (s.st_mode & S_IFDIR) {
 			return IS_DIRECTORY;

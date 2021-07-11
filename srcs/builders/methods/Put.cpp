@@ -18,7 +18,7 @@ void Put::build(const t_request_data &data, const server_config &serverConfig,
   if (filename.empty())
     return;
   std::ofstream outfile;
-  outfile.open(PATH_TO_ROOT + data.request_route.save_path + "/" + filename);
+  outfile.open(serverConfig.path_to_root + data.request_route.save_path + "/" + filename);
   const std::string content_type(ResponseUtils::get_content_type(filename));
   const bool b_connection =
       (data.header.find("CONNECTION")->second == KEEP_ALIVE_STR);
@@ -30,7 +30,7 @@ void Put::build(const t_request_data &data, const server_config &serverConfig,
                           serverConfig.port, "", resp);
     outfile.close();
   } else {
-    outfile.open(PATH_TO_ROOT + data.request_route.save_path + "/" + filename);
+    outfile.open(serverConfig.path_to_root + data.request_route.save_path + "/" + filename);
     outfile.write(data.body.c_str(), data.body.size());
     HeadersBuilder::build(ER204, static_cast<connection>(b_connection),
                           content_type, 0, serverConfig.host,
@@ -42,7 +42,7 @@ void Put::build(const t_request_data &data, const server_config &serverConfig,
 std::string Put::get_file_name(std::string path,
                                const server_config &serverConfig,
                                std::list<std::vector<uint8_t>> &resp) {
-  req_file_status status = is_directory(path);
+  req_file_status status = is_directory(serverConfig.path_to_root + path);
   if (status == IS_DIRECTORY) {
     ErrorBuilder::build(ER403, serverConfig, resp);
     return "";

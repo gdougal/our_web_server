@@ -16,6 +16,7 @@ namespace http {
     std::string host;
     std::string port;
     std::string server_name;
+    std::string path_to_root;
 
     std::string cgi_ext;
     std::string cgi_path;
@@ -28,6 +29,7 @@ namespace http {
             host(data["server"].getStrValue("host")),
             port(data["server"].getStrValue("port")),
             server_name(data["server"].getStrValue("server_name")),
+            path_to_root(data["server"].getStrValue("path_to_root")),
             cgi_ext(data["server"].getStrValue("cgi_ext")),
             cgi_path(data["server"].getStrValue("cgi_path")) {
       if (data.find("error_pages") != data.end()) {
@@ -51,6 +53,7 @@ namespace http {
       this->host = config.host;
       this->port = config.port;
       this->server_name = config.server_name;
+      this->path_to_root = config.path_to_root;
       this->cgi_ext = config.cgi_ext;
       this->cgi_path = config.cgi_path;
       this->error_pages_paths = config.error_pages_paths;

@@ -17,10 +17,10 @@ namespace http {
                            const t_request_data &request_data,
                            std::list<std::vector<uint8_t> > &resp) {
     std::string content_type = ".html";
-    if (is_directory(request_data.path) &&
+    if (is_directory(serverConfig.path_to_root + request_data.path) &&
         request_data.request_route.autoindex) {
       AutoindexResonseBuilder().build(
-              serverConfig, PATH_TO_ROOT + request_data.path, request_data.path,
+              serverConfig, serverConfig.path_to_root + request_data.path, request_data.path,
               resp);
     } else {
       ResponseUtils::read_from_file(request_data.path, resp);

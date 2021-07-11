@@ -45,7 +45,7 @@ CgiExecutor::init_env(const t_request_data &data,
   else if (data.cur_method == methods::DELETE)
     env.push_back(REQUEST_METHOD + "DELETE");
   env.push_back(PATH_INFO + "/directory/youpi.bla");
-  env.push_back(PATH_TRANSLATED + PATH_TO_ROOT + "/cgi_tester");
+  env.push_back(PATH_TRANSLATED + serverConfig.path_to_root + "/cgi_tester");
   env.push_back(SCRIPT_NAME + "/directory/youpi.bla");
   env.push_back("SCRIPT_FILENAME=" + serverConfig.cgi_path);
   env.push_back(QUERY_STRING + data.query_string);
@@ -103,8 +103,8 @@ void CgiExecutor::build(const t_request_data &data,
     dup2(fd_out_in, 0);
     dup2(fd_in_out, 1);
     char* argv[3];
-    argv[0] = strdup((PATH_TO_ROOT + "/cgi_tester").c_str());
-    argv[1] = strdup((PATH_TO_ROOT + "/cgi_tester").c_str());
+    argv[0] = strdup((serverConfig.path_to_root + "/cgi_tester").c_str());
+    argv[1] = strdup((serverConfig.path_to_root + "/cgi_tester").c_str());
     argv[2] = NULL;
     exit(execve(argv[0], argv, env) );
   }

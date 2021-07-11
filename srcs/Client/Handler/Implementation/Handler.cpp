@@ -72,7 +72,7 @@ std::string Handler::search_file() const {
     path_res += methos_and_path_.second.substr(
         cur_route_.location.length(),
         methos_and_path_.second.length() - cur_route_.location.length());
-  if (is_directory(path_res) == IS_DIRECTORY) {
+  if (is_directory(config.path_to_root + path_res) == IS_DIRECTORY) {
     if (path_res.c_str()[path_res.size() - 1] == '/')
       path_res =
           path_res.substr(0, path_res.size() - 1) + cur_route_.index_file;
@@ -83,7 +83,7 @@ std::string Handler::search_file() const {
 }
 
 handl_ret_codes Handler::file_checker(std::string target_path) {
-  req_file_status status = is_directory(target_path);
+  req_file_status status = is_directory(config.path_to_root + target_path);
   if (status == IS_DIRECTORY)
     return ER403;
   else if (status == NOT_FOUND &&
