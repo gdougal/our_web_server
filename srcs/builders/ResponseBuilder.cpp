@@ -32,7 +32,8 @@ ResponseBuilder::build_response(std::list<std::vector<uint8_t>> &resp) {
       !(request_data.code == ER404 &&
         (request_data.cur_method == methods::POST ||
          request_data.cur_method == methods::PUT)))
-    return ErrorBuilder::build(request_data.code, serverConfig, resp);
+    return ErrorBuilder::build(request_data.code, request_data.status,
+                               serverConfig, resp);
 
   switch (request_data.cur_method) {
   case methods::GET:
@@ -48,7 +49,7 @@ ResponseBuilder::build_response(std::list<std::vector<uint8_t>> &resp) {
   case methods::LAST_METH:
     return connection::CLOSE;
   }
-  return ErrorBuilder::build(ER400, serverConfig, resp);
+  return ErrorBuilder::build(ER400, request_data.status, serverConfig, resp);
 }
 
 ResponseBuilder::~ResponseBuilder() {}

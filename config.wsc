@@ -32,7 +32,7 @@ server
 server
 	host: 127.0.0.1
 	port: 8000
-	path_to_root: /goinfre/gdougal/our_web_server
+	path_to_root: /goinfre/lmallado/our_web_server
 	server_name: lol
     cgi_ext: “.bla”
     cgi_path: /cgi_tester

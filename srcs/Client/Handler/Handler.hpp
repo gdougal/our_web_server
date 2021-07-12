@@ -23,6 +23,7 @@ class Handler : public BaseClientHandler<server_config, handl_ret_codes> {
                                             const std::string &); // chunk
   handl_ret_codes file_checker(const std::string& target_path) const;
   handl_ret_codes route_searcher();
+  connection      connection_type_prehandler();
   void after_all();
 
 public:

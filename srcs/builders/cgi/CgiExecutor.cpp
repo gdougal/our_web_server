@@ -96,14 +96,14 @@ connection CgiExecutor::build(const t_request_data &data,
   int fd_in_out = open(file_in.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
   if (fd_in_out < 0) {
     std::cerr << "Post failed" << std::endl;
-    return ErrorBuilder::build(ER500, serverConfig, resp);
+    return ErrorBuilder::build(ER500, data.status,serverConfig, resp);
   }
   int fd_out_in = open(file_out.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
   if (fd_out_in < 0) {
     std::cerr << "Post failed" << std::endl;
     close(fd_in_out);
     std::remove(file_in.c_str());
-    return ErrorBuilder::build(ER500, serverConfig, resp);
+    return ErrorBuilder::build(ER500, data.status, serverConfig, resp);
     ;
   }
   write(fd_out_in, data.body.c_str(), data.body.size());
@@ -112,7 +112,7 @@ connection CgiExecutor::build(const t_request_data &data,
   if ((pid = fork()) == -1) {
     close(fd_out_in);
     close(fd_in_out);
-    return ErrorBuilder::build(ER500, serverConfig, resp);
+    return ErrorBuilder::build(ER500, data.status,serverConfig, resp);
     ;
   }
   if (!pid) {
@@ -128,7 +128,7 @@ connection CgiExecutor::build(const t_request_data &data,
   if (fork_resp < 0) {
     close(fd_out_in);
     close(fd_in_out);
-    return ErrorBuilder::build(ER500, serverConfig, resp);
+    return ErrorBuilder::build(ER500, data.status,serverConfig, resp);
   }
   lseek(fd_in_out, 0, SEEK_SET);
   struct stat s;
@@ -149,7 +149,7 @@ connection CgiExecutor::build(const t_request_data &data,
   delete env;
   std::remove(file_out.c_str());
   std::remove(file_in.c_str());
-  return HeadersBuilder::build(R200, connection::KEEP_ALIVE,
+  return HeadersBuilder::build(R200, data.status,
                                "text/html; "
                                "charset=utf-8",
                                resp.begin()->size(), serverConfig.host,

@@ -50,12 +50,12 @@ public:
     bzero(&(*g_recv_buffer), PORTION_SIZE + 1);
     int buffer_len;
     buffer_len = recv(fd_, &(*g_recv_buffer), PORTION_SIZE, 0);
-    if (buffer_len < 0) {
+    if (buffer_len <= 0) {
       cur_state_ = FINALL;
       return;
     }
-    else if(buffer_len == 0)
-      return;
+//    else if(buffer_len == 0)
+//      return;
     buffer_.insert(buffer_.end(), &(*g_recv_buffer), &(*g_recv_buffer) + buffer_len);
     if (handler_->is_recvest_end(buffer_)) {
       if (handler_->query_parsing(buffer_) != handle_status::CONTINUE) {

@@ -18,6 +18,7 @@ namespace http {
     const handl_ret_codes code;
     const methods cur_method;
     const std::string& query_string;
+    const connection	status;
   } t_request_data;
 
 }

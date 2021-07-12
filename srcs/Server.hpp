@@ -91,8 +91,6 @@ private:
     AUTO_FOR(iter_v_serv, v_serv, serv_) {
       FD_SET((*v_serv)->serv_fd_, &read_fds_);
       max_fd_ = std::max(max_fd_, (*v_serv)->serv_fd_);
-//      if((*v_serv)->clients_.size() > HOW_MANY_CLIENTS_WE_CAN) //TODO: Костыль
-//        (*v_serv)->clients_.clear();
       AUTO_FOR(iter_client, client, (*v_serv)->clients_) {
         if ((*client)->getCurState() ==state::READ_FROM_CLIENT) {
           FD_SET((*client)->getFd(), &read_fds_);
