@@ -208,8 +208,9 @@ bool Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
                      req_status_,
                      parse_utils::get_enum_methods(methos_and_path_.first),
                      query_string_});
-  builder.build_response(resp);
+  connection connection_status = builder.build_response(resp);
   after_all();
+  return static_cast<bool>(connection_status);
 }
 
 void Handler::after_all() {
