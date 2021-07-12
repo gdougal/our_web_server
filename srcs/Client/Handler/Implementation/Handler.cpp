@@ -201,7 +201,7 @@ bool Handler::is_recvest_end(const std::string &fo_pars) const {
   return false;
 }
 
-void Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
+bool Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
   ResponseBuilder builder(
       config,
       t_request_data{header_, body_, cur_route_, methos_and_path_.second,

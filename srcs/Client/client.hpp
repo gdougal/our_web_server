@@ -29,6 +29,7 @@ class Client {
   t_resp  resp_;
   size_t cur_pos_;
   char_arr g_recv_buffer;
+  bool     client_final_status_;
 
 public:
   Client(int client_fd, const data_type &data)
@@ -64,7 +65,7 @@ public:
 
   void send_to_client() {
     if (resp_.empty()) {
-      handler_->create_response(resp_);
+      client_final_status_ = handler_->create_response(resp_);
     }
     if ( !resp_.empty() ) {
       int tmp = send(fd_, &(resp_.begin()->data()[cur_pos_]),
@@ -74,8 +75,10 @@ public:
         cur_pos_ = 0;
         resp_.pop_front();
         if (resp_.empty()) {
-          cur_state_ = FINALL;
-          cur_pos_ = 0;
+          if (client_final_status_)
+            cur_state_ = READ_FROM_CLIENT;
+          else
+            cur_state_ = FINALL;
         }
       }
     }

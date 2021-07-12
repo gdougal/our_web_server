@@ -9,7 +9,7 @@ public:
   BaseClientHandler(const data_type&) {};
   virtual query_status	query_parsing(const std::string &) = 0;
   virtual bool is_recvest_end(const std::string &) const = 0;
-  virtual void create_response(std::list<std::vector<uint8_t>>&) = 0;
+  virtual bool create_response(std::list<std::vector<uint8_t>>&) = 0;
   virtual ~BaseClientHandler() = default;
 
   // отладочная

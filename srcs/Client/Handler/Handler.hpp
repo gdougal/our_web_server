@@ -31,7 +31,7 @@ public:
   virtual ~Handler();
   virtual bool is_recvest_end(const std::string &) const;
   virtual handl_ret_codes query_parsing(const std::string &);
-  virtual void create_response(std::list<std::vector<uint8_t>> &);
+  virtual bool create_response(std::list<std::vector<uint8_t>> &);
 
 private:
   size_t position_; // always start from end-line;
