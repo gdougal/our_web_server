@@ -11,6 +11,7 @@
 #include "unistd.h"
 #include "shared_ptr.hpp"
 #include "i_wanna_range_based_for.hpp"
+#include <stack>
 template <typename types, typename protocol_handler = typename types::protocol,
           typename data_type = typename types::datatypes>
 class Server {
@@ -55,13 +56,15 @@ public:
   };
 
   [[noreturn]] void run_server() throw() {
+    iter_client it;
+
     while (true) {
       manage_client_fd();
       select(max_fd_ + 1, &read_fds_, &write_fds_, nullptr, nullptr);
       AUTO_FOR(iter_v_serv, v_serv, serv_) {
         if (FD_ISSET((*v_serv)->serv_fd_, &read_fds_))
           create_client(*v_serv);
-        iter_client it = (*v_serv)->clients_.begin();
+        it = (*v_serv)->clients_.begin();
         while (it != (*v_serv)->clients_.end()) {
           if (FD_ISSET((*it)->getFd(), &read_fds_) &&
               (*it)->getCurState() == state::READ_FROM_CLIENT) {
@@ -95,7 +98,7 @@ private:
         if ((*client)->getCurState() ==state::READ_FROM_CLIENT) {
           FD_SET((*client)->getFd(), &read_fds_);
         }
-        else if ((*client)->getCurState() == state::SEND_TO_CLIENT) {
+        if ((*client)->getCurState() == state::SEND_TO_CLIENT) {
           FD_SET((*client)->getFd(), &write_fds_);
         }
         max_fd_ = std::max(max_fd_, (*client)->getFd());
@@ -103,12 +106,14 @@ private:
     }
   };
 
-  void create_client(v_serv_ptr v_serv) {
+  void create_client(v_serv_ptr& v_serv) {
     int client_fd;
-      if ( (client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
-        v_serv->clients_.push_back(new Client_t(client_fd, *(v_serv->config_data) ) );
-      }
-    }
+    if ((client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
+      v_serv->clients_.push_back(
+                                new Client_t(client_fd, *(v_serv->config_data))
+                                );
+     }
+  }
   int max_fd_;
   fd_set read_fds_;
   fd_set write_fds_;

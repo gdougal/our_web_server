@@ -18,7 +18,9 @@ connection Put::build(const t_request_data &data,
   std::string filename =
       get_file_name(data.path, data.status, serverConfig, resp);
   if (filename.empty())
-    return ErrorBuilder::build(ER400, data.status, serverConfig, resp);
+    return HeadersBuilder::build(R200, data.status, "text/plain", 0,
+                                 serverConfig.host, serverConfig.port, "",
+                                 resp);
   std::ofstream outfile;
   outfile.open(serverConfig.path_to_root + data.request_route.save_path + "/" +
                filename);

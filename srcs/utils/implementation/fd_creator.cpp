@@ -22,6 +22,14 @@ namespace fd_creator {
 			std::cerr << "Cant`t accept client" << std::endl;
 			return -1;
 		}
+                struct timeval tv{360, 0};
+                if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, (const
+                                                                 char*)&tv,
+                               sizeof (int)) < -1 )
+                {
+                  std::cerr << "Cant`t accept client" << std::endl;
+                  return -1;
+                }
 		fcntl(new_client_fd, F_SETFL, O_NONBLOCK);
 		return new_client_fd;
 	}
@@ -37,9 +45,8 @@ namespace fd_creator {
 		servaddr.sin_family = AF_INET;
 		servaddr.sin_addr.s_addr = inet_addr(host.c_str());;
 		servaddr.sin_port = htons(static_cast<uint16_t>(std::stoul(port)));
-		int yes = 1;
-
-		if (setsockopt(listen_fd_, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+                struct timeval tv{3600, 0};
+		if (setsockopt(listen_fd_, SOL_SOCKET, SO_REUSEADDR, (const char*)&tv, sizeof(int)) == -1) {
 			close_fd_error("error setsockopt", listen_fd_);
 		}
 		if ((bind(listen_fd_, (struct sockaddr *) &servaddr, sizeof servaddr)) == -1) {
@@ -48,7 +55,7 @@ namespace fd_creator {
 		if (fcntl(listen_fd_, F_SETFL, O_NONBLOCK) < 0) {
 			close_fd_error("fcntl error", listen_fd_);
 		}
-		if (listen(listen_fd_, 100) < 0) {
+		if (listen(listen_fd_, 256) < 0) {
 			close_fd_error("listen error!", listen_fd_);
 		}
 		return listen_fd_;

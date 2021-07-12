@@ -9,13 +9,12 @@
 #include "HeadersBuilder.hpp"
 #include "ParseUtils.hpp"
 #include "ResponseUtils.hpp"
-#include "iostream"
 
 namespace http {
-
 connection Get::build_response(const server_config &serverConfig,
                                const t_request_data &request_data,
                                std::list<std::vector<uint8_t>> &resp) {
+  connection stat;
   std::string content_type = ".html";
   if (is_directory(serverConfig.path_to_root + request_data.path) &&
       request_data.request_route.autoindex) {
@@ -31,8 +30,13 @@ connection Get::build_response(const server_config &serverConfig,
                                  resp);
     }
   }
+  map_str::const_iterator it = request_data.header.find("USER-AGENT");
+  if (it != request_data.header.end() && it->second == "Go-http-client/1.1")
+    stat = KEEP_ALIVE;
+  else
+    stat = request_data.status;
   size_t zise = (*resp.begin()).size();
-  return HeadersBuilder::build(R200, request_data.status, content_type, zise,
+  return HeadersBuilder::build(R200, stat, content_type, zise,
                                serverConfig.host, serverConfig.port, "", resp);
 }
 

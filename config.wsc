@@ -3,7 +3,7 @@ server
 	port: 8080
 	path_to_root: /goinfre/lmallado/our_web_server
 	server_name: lol
-    cgi_ext: “.bla”
+    cgi_ext: .bla
     cgi_path: /cgi_tester
 	error_pages
 	        404 : /pages_root/error_pages/404_error.html
@@ -34,14 +34,14 @@ server
 	port: 8000
 	path_to_root: /goinfre/lmallado/our_web_server
 	server_name: lol
-    cgi_ext: “.bla”
-    cgi_path: /cgi_tester
+    cgi_ext: .bla
+    cgi_path: /YoupiBanane/cgi_tester
 	error_pages
 	        404 : /pages_root/error_pages/404_error.html
             403 : /pages_root/error_pages/403_error.html
 	routes
         route: /
-            index_file: /pages_root/simple.html
+            index_file: /pages_root/error_pages/404_error.html
         	methods_allowed: GET;DELETE
         route: /redirect/
             redirection: http://google.com
