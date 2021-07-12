@@ -11,12 +11,12 @@
 
 namespace http {
 
-void Put::build(const t_request_data &data, const server_config &serverConfig,
+connection Put::build(const t_request_data &data, const server_config &serverConfig,
                 std::list<std::vector<uint8_t>> &resp) {
 
   std::string filename = get_file_name(data.path, serverConfig, resp);
   if (filename.empty())
-    return;
+    return ErrorBuilder::build(ER400, serverConfig, resp);
   std::ofstream outfile;
   outfile.open(serverConfig.path_to_root + data.request_route.save_path + "/" + filename);
   const std::string content_type(ResponseUtils::get_content_type(filename));
@@ -25,18 +25,18 @@ void Put::build(const t_request_data &data, const server_config &serverConfig,
 
   if (outfile.is_open()) {
     outfile.write(data.body.c_str(), data.body.size());
-    HeadersBuilder::build(R201, static_cast<connection>(b_connection),
+    outfile.close();
+    return HeadersBuilder::build(R201, static_cast<connection>(b_connection),
                           content_type, 0, serverConfig.host,
                           serverConfig.port, "", resp);
-    outfile.close();
   }
   else {
     outfile.open(serverConfig.path_to_root + data.request_route.save_path + "/" + filename);
     outfile.write(data.body.c_str(), data.body.size());
-    HeadersBuilder::build(R204, static_cast<connection>(b_connection),
+    outfile.close();
+    return HeadersBuilder::build(R204, static_cast<connection>(b_connection),
                           content_type, 0, serverConfig.host,
                           serverConfig.port, "", resp);
-    outfile.close();
   }
 }
 

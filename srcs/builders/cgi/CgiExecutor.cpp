@@ -3,12 +3,12 @@
 //
 
 #include "CgiExecutor.hpp"
-#include <CommonUtils.hpp>
-#include "unistd.h"
 #include "ErrorBuilder.hpp"
 #include "HeadersBuilder.hpp"
-#include <fcntl.h>
 #include "iostream"
+#include "unistd.h"
+#include <CommonUtils.hpp>
+#include <fcntl.h>
 
 namespace {
 const std::string SOFTWARE = "SERVER_SOFTWARE=GdougalLmalladoGdogeWebserv/1.0";
@@ -53,13 +53,14 @@ CgiExecutor::init_env(const t_request_data &data,
   env.push_back("REMOTE_ADDR=");
   env.push_back("REMOTE_IDENT=");
   env.push_back("REMOTE_USER=");
-  env.push_back("REQUEST_URI=http://" + serverConfig.host + ":" +serverConfig
-                                                                      .port +
-                    + "/directory/youpi.bla");
+  env.push_back("REQUEST_URI=http://" + serverConfig.host + ":" +
+                serverConfig.port + +"/directory/youpi.bla");
 
   env.push_back(CONTENT_TYPE_str + data.header.find("CONTENT-TYPE")->second);
-  env.push_back(CONTENT_LENGTH + ( (data.header.find("CONTENT-LENGTH") == data
-.header.end() ? "0" : data.header.find("CONTENT-LENGTH")->second) ) );
+  env.push_back(CONTENT_LENGTH +
+                ((data.header.find("CONTENT-LENGTH") == data.header.end()
+                      ? "0"
+                      : data.header.find("CONTENT-LENGTH")->second)));
   env.push_back(WTF_STRING);
   return env;
 }
@@ -68,7 +69,7 @@ char **CgiExecutor::get_env(const t_request_data &data,
                             const server_config &serverConfig) {
 
   std::list<std::string> dirty_env = init_env(data, serverConfig);
-  char** env(new char*[dirty_env.size() + 1]);
+  char **env(new char *[dirty_env.size() + 1]);
   std::list<std::string>::iterator first = dirty_env.begin();
   std::list<std::string>::iterator last = dirty_env.end();
   int i = 0;
@@ -81,55 +82,53 @@ char **CgiExecutor::get_env(const t_request_data &data,
   return env;
 }
 
-
-void CgiExecutor::build(const t_request_data &data,
-                        const server_config &serverConfig,
-                            std::list<std::vector<uint8_t>> &resp) {
+connection CgiExecutor::build(const t_request_data &data,
+                              const server_config &serverConfig,
+                              std::list<std::vector<uint8_t>> &resp) {
   int fork_resp;
-  std::string file_in = ("save_directory/file_in" + std::to_string(CgiExecutor::cnt_) );
-  std::string file_out = ("save_directory/file_out" + std::to_string(CgiExecutor::cnt_) );
+  std::string file_in =
+      ("save_directory/file_in" + std::to_string(CgiExecutor::cnt_));
+  std::string file_out =
+      ("save_directory/file_out" + std::to_string(CgiExecutor::cnt_));
   ++CgiExecutor::cnt_;
   char **env = get_env(data, serverConfig);
   int pid;
-  int fd_in_out = open( file_in.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
+  int fd_in_out = open(file_in.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
   if (fd_in_out < 0) {
-    ErrorBuilder::build(ER500, serverConfig, resp);
     std::cerr << "Post failed" << std::endl;
-    return;
+    return ErrorBuilder::build(ER500, serverConfig, resp);
   }
   int fd_out_in = open(file_out.c_str(), O_RDWR | O_TRUNC | O_CREAT, 0677);
   if (fd_out_in < 0) {
-    ErrorBuilder::build(ER500, serverConfig, resp);
     std::cerr << "Post failed" << std::endl;
     close(fd_in_out);
     std::remove(file_in.c_str());
-    return;
+    return ErrorBuilder::build(ER500, serverConfig, resp);
+    ;
   }
   write(fd_out_in, data.body.c_str(), data.body.size());
   lseek(fd_out_in, 0, SEEK_SET);
 
   if ((pid = fork()) == -1) {
-    ErrorBuilder::build(ER500, serverConfig, resp);
     close(fd_out_in);
     close(fd_in_out);
-    return ;
+    return ErrorBuilder::build(ER500, serverConfig, resp);
+    ;
   }
-  if (!pid)
-  {
+  if (!pid) {
     dup2(fd_out_in, 0);
     dup2(fd_in_out, 1);
-    char* argv[3];
+    char *argv[3];
     argv[0] = strdup((serverConfig.path_to_root + "/cgi_tester").c_str());
     argv[1] = strdup((serverConfig.path_to_root + "/cgi_tester").c_str());
     argv[2] = NULL;
-    exit(execve(argv[0], argv, env) );
+    exit(execve(argv[0], argv, env));
   }
   wait(&fork_resp);
   if (fork_resp < 0) {
     close(fd_out_in);
     close(fd_in_out);
-    ErrorBuilder::build(ER500, serverConfig, resp);
-    return ;
+    return ErrorBuilder::build(ER500, serverConfig, resp);
   }
   lseek(fd_in_out, 0, SEEK_SET);
   struct stat s;
@@ -142,14 +141,7 @@ void CgiExecutor::build(const t_request_data &data,
     poluchenie = poluchenie.substr(pos_var + strlen(parse_utils::query_end));
 
   resp.push_back(std::vector<uint8_t>(poluchenie.begin(), poluchenie.end()));
-  HeadersBuilder::build(R200, connection::KEEP_ALIVE, "text/html; "
-                                                      "charset=utf-8",
-                        resp.begin()->size(),
-                        serverConfig
-                            .host,
-                        serverConfig.port,
-                        "",
-                        resp);
+
   close(fd_out_in);
   close(fd_in_out);
   for (int i = 0; env[i]; ++i)
@@ -157,6 +149,11 @@ void CgiExecutor::build(const t_request_data &data,
   delete env;
   std::remove(file_out.c_str());
   std::remove(file_in.c_str());
+  return HeadersBuilder::build(R200, connection::KEEP_ALIVE,
+                               "text/html; "
+                               "charset=utf-8",
+                               resp.begin()->size(), serverConfig.host,
+                               serverConfig.port, "", resp);
 }
 
 } // namespace http

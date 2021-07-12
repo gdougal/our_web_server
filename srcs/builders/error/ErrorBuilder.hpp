@@ -20,7 +20,7 @@ static const std::map<handl_ret_codes, std::string> default_error_pages = {
 class ErrorBuilder {
 private:
 public:
-  static void build(handl_ret_codes error_code, server_config serverConfig,
+  static connection build(handl_ret_codes error_code, server_config serverConfig,
                     std::list<std::vector<uint8_t>> &);
 };
 

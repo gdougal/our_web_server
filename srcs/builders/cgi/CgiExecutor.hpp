@@ -14,7 +14,7 @@ private:
                                                   &serverConfig);
 
 public:
-  static void build(const t_request_data &data,
+  static connection build(const t_request_data &data,
                     const server_config &serverConfig,
                     std::list<std::vector<uint8_t>> &);
 };
