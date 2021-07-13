@@ -22,14 +22,6 @@ namespace fd_creator {
 			std::cerr << "Cant`t accept client" << std::endl;
 			return -1;
 		}
-                struct timeval tv{360, 0};
-                if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, (const
-                                                                 char*)&tv,
-                               sizeof (int)) < -1 )
-                {
-                  std::cerr << "Cant`t accept client" << std::endl;
-                  return -1;
-                }
 		fcntl(new_client_fd, F_SETFL, O_NONBLOCK);
 		return new_client_fd;
 	}
