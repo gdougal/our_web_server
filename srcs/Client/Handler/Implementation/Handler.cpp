@@ -9,6 +9,7 @@
 #include "RoutingUtils.hpp"
 #include "optional.hpp"
 #include "request_data.hpp"
+#include "i_wanna_range_based_for.hpp"
 
 namespace http {
 
@@ -201,15 +202,33 @@ bool Handler::is_recvest_end(const std::string &fo_pars) const {
   return false;
 }
 
-void Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
+connection  Handler::connection_type_prehandler() {
+  map_str::iterator it = header_.find("CONNECTION-TYPE");
+  if (it == header_.end()) {
+    return CLOSE;
+  }
+  else {
+    std::string upped;
+    upped.resize(it->second.size());
+    for (size_t i = 0; it->second[i]; ++i)
+      upped[i] = std::toupper(it->second[i]);
+    if (upped == "KEEP-ALIVE")
+      return KEEP_ALIVE;
+    else
+      return CLOSE;
+  }
+}
+
+bool Handler::create_response(std::list<std::vector<uint8_t>> &resp) {
   ResponseBuilder builder(
       config,
       t_request_data{header_, body_, cur_route_, methos_and_path_.second,
                      req_status_,
                      parse_utils::get_enum_methods(methos_and_path_.first),
-                     query_string_});
-  builder.build_response(resp);
+                     query_string_, connection_type_prehandler()});
+  connection connection_status = builder.build_response(resp);
   after_all();
+  return static_cast<bool>(connection_status);
 }
 
 void Handler::after_all() {

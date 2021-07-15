@@ -3,52 +3,56 @@ server
 	port: 8080
 	path_to_root: /goinfre/lmallado/our_web_server
 	server_name: lol
-    cgi_ext: “.bla”
+    cgi_ext: .bla
     cgi_path: /cgi_tester
 	error_pages
 	        404 : /pages_root/error_pages/404_error.html
             403 : /pages_root/error_pages/403_error.html
 	routes
-            route: /
+        route: /
             index_file: /pages_root/simple.html
         	methods_allowed: GET;DELETE
-        	route: /redirect/
+        route: /redirect/
             redirection: http://google.com
             methods_allowed: GET
-        	route: /put_test/
+        route: /put_test/
             save_path: /save_directory
             methods_allowed: PUT
-            route: /post_body/
+        route: /post_body/
             limit_body_size: 100
             methods_allowed: POST
-            route: /directory/
+        route: /directory/
             directory: /YoupiBanane
             index_file: /youpi.bad_extension
             methods_allowed: GET;POST
+        route: /directory/
+            directory: /YoupiBanane
+            index_file: /youpi.bad_extension
+            methods_allowed: GET
 server
 	host: 127.0.0.1
 	port: 8000
 	path_to_root: /goinfre/lmallado/our_web_server
 	server_name: lol
-    cgi_ext: “.bla”
-    cgi_path: /cgi_tester
+    cgi_ext: .bla
+    cgi_path: /YoupiBanane/cgi_tester
 	error_pages
 	        404 : /pages_root/error_pages/404_error.html
             403 : /pages_root/error_pages/403_error.html
 	routes
-            route: /
-            index_file: /pages_root/simple.html
+        route: /
+            index_file: /pages_root/error_pages/404_error.html
         	methods_allowed: GET;DELETE
-        	route: /redirect/
+        route: /redirect/
             redirection: http://google.com
             methods_allowed: GET
-        	route: /put_test/
+        route: /put_test/
             save_path: /save_directory
             methods_allowed: PUT
-            route: /post_body/
+        route: /post_body/
             limit_body_size: 100
             methods_allowed: POST
-            route: /directory/
+        route: /directory/
             directory: /YoupiBanane
             index_file: /youpi.bad_extension
             methods_allowed: GET;POST

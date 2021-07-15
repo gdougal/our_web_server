@@ -19,7 +19,7 @@ static const std::map<handl_ret_codes, std::string> response_code_description =
      {ER413, "Payload Too Large"},
      {ER500, "Internal Server Error"}};
 
-void HeadersBuilder::build(handl_ret_codes response_code,
+connection HeadersBuilder::build(handl_ret_codes response_code,
                            connection connectionType,
                            const std::string &contentType, size_t contentLength,
                            const std::string &host, const std::string &port,
@@ -42,6 +42,7 @@ void HeadersBuilder::build(handl_ret_codes response_code,
   header += parse_utils::query_end;
 
   resp.push_front(std::vector<uint8_t>(header.begin(), header.end()));
+  return connectionType;
 }
 
 std::string HeadersBuilder::get_connection_type(connection conn) {

@@ -11,7 +11,7 @@ namespace http {
 
   class Head {
   public:
-    static void build_response(const server_config &serverConfig,
+    static connection build_response(const server_config &serverConfig,
                                const t_request_data &request_data,
                                std::list<std::vector<uint8_t> > &resp);
   };

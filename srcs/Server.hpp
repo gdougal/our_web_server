@@ -11,6 +11,7 @@
 #include "unistd.h"
 #include "shared_ptr.hpp"
 #include "i_wanna_range_based_for.hpp"
+#include <stack>
 template <typename types, typename protocol_handler = typename types::protocol,
           typename data_type = typename types::datatypes>
 class Server {
@@ -55,15 +56,15 @@ public:
   };
 
   [[noreturn]] void run_server() throw() {
+    iter_client it;
+
     while (true) {
       manage_client_fd();
-      select(max_fd_, &read_fds_, &write_fds_, nullptr, nullptr);
+      select(max_fd_ + 1, &read_fds_, &write_fds_, nullptr, nullptr);
       AUTO_FOR(iter_v_serv, v_serv, serv_) {
         if (FD_ISSET((*v_serv)->serv_fd_, &read_fds_))
-          create_client();
-      }
-      AUTO_FOR(iter_v_serv, v_serv, serv_) {
-        iter_client it = (*v_serv)->clients_.begin();
+          create_client(*v_serv);
+        it = (*v_serv)->clients_.begin();
         while (it != (*v_serv)->clients_.end()) {
           if (FD_ISSET((*it)->getFd(), &read_fds_) &&
               (*it)->getCurState() == state::READ_FROM_CLIENT) {
@@ -92,28 +93,26 @@ private:
     FD_ZERO(&write_fds_);
     AUTO_FOR(iter_v_serv, v_serv, serv_) {
       FD_SET((*v_serv)->serv_fd_, &read_fds_);
-      if (max_fd_ <= (*v_serv)->serv_fd_)
-        max_fd_ = (*v_serv)->serv_fd_ + 1;
+      max_fd_ = std::max(max_fd_, (*v_serv)->serv_fd_);
       AUTO_FOR(iter_client, client, (*v_serv)->clients_) {
-        if ( (*client)->getCurState() ==state::READ_FROM_CLIENT ) {
+        if ((*client)->getCurState() ==state::READ_FROM_CLIENT) {
           FD_SET((*client)->getFd(), &read_fds_);
         }
-        if ( (*client)->getCurState() == state::SEND_TO_CLIENT ) {
+        if ((*client)->getCurState() == state::SEND_TO_CLIENT) {
           FD_SET((*client)->getFd(), &write_fds_);
         }
-        max_fd_ = (max_fd_ > (*client)->getFd() ? max_fd_ : (*client)->getFd()) + 1;
+        max_fd_ = std::max(max_fd_, (*client)->getFd());
       }
     }
   };
 
-  void create_client() {
+  void create_client(v_serv_ptr& v_serv) {
     int client_fd;
-    AUTO_FOR(iter_v_serv, v_serv, serv_) {
-      if (FD_ISSET((*v_serv)->serv_fd_, &read_fds_) &&
-          (client_fd = fd_creator::create_client_fd((*v_serv)->serv_fd_)) > 0) {
-        (*v_serv)->clients_.push_back(new Client_t(client_fd, *((*v_serv)->config_data) ) );
-      }
-    }
+    if ((client_fd = fd_creator::create_client_fd(v_serv->serv_fd_)) > 0) {
+      v_serv->clients_.push_back(
+                                new Client_t(client_fd, *(v_serv->config_data))
+                                );
+     }
   }
   int max_fd_;
   fd_set read_fds_;

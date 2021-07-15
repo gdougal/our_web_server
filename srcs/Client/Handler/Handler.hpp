@@ -23,6 +23,7 @@ class Handler : public BaseClientHandler<server_config, handl_ret_codes> {
                                             const std::string &); // chunk
   handl_ret_codes file_checker(const std::string& target_path) const;
   handl_ret_codes route_searcher();
+  connection      connection_type_prehandler();
   void after_all();
 
 public:
@@ -31,7 +32,7 @@ public:
   virtual ~Handler();
   virtual bool is_recvest_end(const std::string &) const;
   virtual handl_ret_codes query_parsing(const std::string &);
-  virtual void create_response(std::list<std::vector<uint8_t>> &);
+  virtual bool create_response(std::list<std::vector<uint8_t>> &);
 
 private:
   size_t position_; // always start from end-line;

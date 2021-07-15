@@ -60,17 +60,6 @@ namespace http {
         }
         first_server_routes++;
       }
-      //  { 2 } - serverConfig.routes
-      //  { 2,3,4,5 } - request_directories
-      //  for (auto& elem: request_directories) {
-      //   auto iter =  std::find(serverConfig.routes.begin(), serverConfig.routes
-      //                                                           .end(), elem);
-      //   if ( iter != serverConfig.routes.end() ) {
-      //     ++match_words;
-      //   }
-      //   if (serverConfig.routes.size() != match_words)
-      //     idi nahui;
-      //  }
       return result;
     }
 

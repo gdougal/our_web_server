@@ -19,7 +19,7 @@ namespace http {
     ResponseBuilder(const server_config &serverConfig,
                     const t_request_data &data);
 
-    void build_response(std::list<std::vector<uint8_t> > &);
+    connection build_response(std::list<std::vector<uint8_t> > &);
 
     virtual ~ResponseBuilder();
   };

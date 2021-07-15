@@ -24,7 +24,7 @@ private:
   static std::string get_connection_type(connection conn);
 
 public:
-  static void build(handl_ret_codes response_code, connection connectionType,
+  static connection build(handl_ret_codes response_code, connection connectionType,
                     const std::string &contentType, size_t contentLength,
                     const std::string &host, const std::string &port,
                     const std::string &location,

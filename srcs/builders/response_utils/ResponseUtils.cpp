@@ -26,11 +26,17 @@ void read_from_file(const std::string &path_res, std::list<std::vector<uint8_t> 
     body_tmp.resize(length);
     page.read((char *)(body_tmp.data()), length);
     body.emplace_back(body_tmp);
+    page.close();
   }
+  else
+    page.close();
 }
 
 std::string get_content_type(const std::string &filename) {
-  std::string fo_find(filename.substr(filename.find_last_of('.') + 1));
+  size_t  pos = filename.find_last_of('.');
+  if (pos == std::string::npos)
+    return "text/plain";
+  std::string fo_find(filename.substr(pos + 1));
   std::map<std::string, std::string>::const_iterator type =
       class_of_content.find(fo_find);
   if (type == class_of_content.end())
